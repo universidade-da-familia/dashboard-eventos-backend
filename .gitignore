@@ -6,6 +6,7 @@ tmp
 
 # Environment variables, never commit this file
 .env
+yarn.lock
 
 # The development sqlite file
 database/development.sqlite
