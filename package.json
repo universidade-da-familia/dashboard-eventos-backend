@@ -34,7 +34,8 @@
     "axios": "^0.19.0",
     "pagarme": "^4.4.0",
     "pg": "^7.12.0",
-    "raven": "^2.6.4"
+    "raven": "^2.6.4",
+    "url-parse": "^1.4.7"
   },
   "devDependencies": {
     "eslint": "^6.2.0",
@@ -48,6 +49,6 @@
     "App": "./app"
   },
   "engines": {
-    "node": "8.5.0"
+    "node": "10.16.3"
   }
 }
