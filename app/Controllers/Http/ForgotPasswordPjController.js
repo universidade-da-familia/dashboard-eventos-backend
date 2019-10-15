@@ -1,6 +1,6 @@
 "use strict";
 
-const Entity = use("App/Models/Entity");
+const Organization = use("App/Models/Organization");
 const Mail = use("Mail");
 
 const ValidateEmail = use("App/Controllers/Http/Validations/ValidateEmail");
@@ -9,7 +9,7 @@ const AsteriskEmail = use("App/Controllers/Http/Validations/AsteriskEmail");
 const moment = require("moment");
 const crypto = require("crypto");
 
-class ForgotPasswordController {
+class ForgotPasswordControllerPJ {
   async store({ request, response }) {
     try {
       const validateEmail = new ValidateEmail();
@@ -18,8 +18,8 @@ class ForgotPasswordController {
       const email_cpf_cnpj = request.input("email_cpf_cnpj");
 
       const user = (await validateEmail.validate(email_cpf_cnpj))
-        ? await Entity.findByOrFail("email", email_cpf_cnpj)
-        : await Entity.findByOrFail("cpf", email_cpf_cnpj);
+        ? await Organization.findByOrFail("email", email_cpf_cnpj)
+        : await Organization.findByOrFail("cnpj", email_cpf_cnpj);
 
       user.token = crypto.randomBytes(10).toString("hex");
       user.token_created_at = new Date();
@@ -55,7 +55,7 @@ class ForgotPasswordController {
     try {
       const { token, password } = request.all();
 
-      const user = await Entity.findByOrFail("token", token);
+      const user = await Organization.findByOrFail("token", token);
 
       const tokenExpired = moment()
         .subtract("2", "hours")
@@ -71,7 +71,6 @@ class ForgotPasswordController {
       user.token = null;
       user.token_created_at = null;
       user.password = password;
-      user.user_legacy = null;
 
       await user.save();
     } catch (err) {
@@ -83,4 +82,4 @@ class ForgotPasswordController {
   }
 }
 
-module.exports = ForgotPasswordController;
+module.exports = ForgotPasswordControllerPJ;
