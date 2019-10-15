@@ -34,6 +34,8 @@ class OrganizationsSchema extends Schema {
       table.string("facebook");
       table.string("instagram");
       table.string("linkedin");
+      table.string("token"); //Token para resetar senha
+      table.timestamp("token_created_at"); //Data do token para resetar senha
       table.timestamps();
     });
   }

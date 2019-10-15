@@ -161,9 +161,12 @@ Route.post("event_organization/:event_id", "EventOrganizationController.store");
 Route.put("event_organization/:id", "EventOrganizationController.update");
 Route.delete("event_organization/:id", "EventOrganizationController.destroy");
 
-//Solicitando e resetando a senha
+//Solicitando e resetando a senha PF
 Route.post("forgot_password", "ForgotPasswordController.store");
 Route.put("forgot_password", "ForgotPasswordController.update");
+//Solicitando e resetando a senha PJ
+Route.post("forgot_password_pj", "ForgotPasswordPjController.store");
+Route.put("forgot_password_pj", "ForgotPasswordPjController.update");
 
 Route.post("files/:user_id/:type", "FileController.store");
 Route.get("files/:id", "FileController.show");
