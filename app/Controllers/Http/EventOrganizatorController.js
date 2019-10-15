@@ -87,7 +87,16 @@ class EventOrganizatorController {
 
       const organizator = await Entity.findByOrFail("cpf", params.cpf);
 
-      await organizator.load("file");
+      await organizator.loadMany([
+      "file",
+      "families",
+      "organizators.defaultEvent.ministery",
+      "participants.defaultEvent.ministery",
+      "creditCards",
+      "addresses",
+      "checkouts",
+      "checkoutItems"
+    ]);
 
       if (organizator.sex === sex_type || sex_type === "A") {
         if (ministery_id === 1) {
@@ -98,21 +107,20 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não é de um líder válido"
+                  message: "O CPF Informado não é de um líder válido"
                 }
               });
             }
           } else if (organizator_type === "training_leader") {
             if (
-              organizator.cmn_hierarchy_id >= assistant_hierarchy_id &&
-              organizator.cmn_hierarchy_id < organizator_hierarchy_id
+              organizator.cmn_hierarchy_id >= assistant_hierarchy_id
             ) {
               return organizator;
             } else {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não pode ser assistente ou é líder"
+                  message: "O CPF Informado não pode ser assistente"
                 }
               });
             }
@@ -126,21 +134,20 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não é de um líder válido"
+                  message: "O CPF Informado não é de um líder válido"
                 }
               });
             }
           } else if (organizator_type === "training_leader") {
             if (
-              organizator.mu_hierarchy_id >= assistant_hierarchy_id &&
-              organizator.mu_hierarchy_id < organizator_hierarchy_id
+              organizator.mu_hierarchy_id >= assistant_hierarchy_id
             ) {
               return organizator;
             } else {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não pode ser assistente ou é líder"
+                  message: "O CPF Informado não pode ser assistente"
                 }
               });
             }
@@ -154,21 +161,20 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não é de um líder válido"
+                  message: "O CPF Informado não é de um líder válido"
                 }
               });
             }
           } else if (organizator_type === "training_leader") {
             if (
-              organizator.crown_hierarchy_id >= assistant_hierarchy_id &&
-              organizator.crown_hierarchy_id < organizator_hierarchy_id
+              organizator.crown_hierarchy_id >= assistant_hierarchy_id
             ) {
               return organizator;
             } else {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não pode ser assistente ou é líder"
+                  message: "O CPF Informado não pode ser assistente"
                 }
               });
             }
@@ -182,21 +188,20 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não é de um líder válido"
+                  message: "O CPF Informado não é de um líder válido"
                 }
               });
             }
           } else if (organizator_type === "training_leader") {
             if (
-              organizator.mp_hierarchy_id >= assistant_hierarchy_id &&
-              organizator.mp_hierarchy_id < organizator_hierarchy_id
+              organizator.mp_hierarchy_id >= assistant_hierarchy_id
             ) {
               return organizator;
             } else {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não pode ser assistente ou é líder"
+                  message: "O CPF Informado não pode ser assistente"
                 }
               });
             }
@@ -210,21 +215,20 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não é de um líder válido"
+                  message: "O CPF Informado não é de um líder válido"
                 }
               });
             }
           } else if (organizator_type === "training_leader") {
             if (
-              organizator.ffi_hierarchy_id >= assistant_hierarchy_id &&
-              organizator.ffi_hierarchy_id < organizator_hierarchy_id
+              organizator.ffi_hierarchy_id >= assistant_hierarchy_id
             ) {
               return organizator;
             } else {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não pode ser assistente ou é líder"
+                  message: "O CPF Informado não pode ser assistente"
                 }
               });
             }
@@ -238,21 +242,20 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não é de um líder válido"
+                  message: "O CPF Informado não é de um líder válido"
                 }
               });
             }
           } else if (organizator_type === "training_leader") {
             if (
-              organizator.gfi_hierarchy_id >= assistant_hierarchy_id &&
-              organizator.gfi_hierarchy_id < organizator_hierarchy_id
+              organizator.gfi_hierarchy_id >= assistant_hierarchy_id
             ) {
               return organizator;
             } else {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não pode ser assistente ou é líder"
+                  message: "O CPF Informado não pode ser assistente"
                 }
               });
             }
@@ -266,21 +269,20 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não é de um líder válido"
+                  message: "O CPF Informado não é de um líder válido"
                 }
               });
             }
           } else if (organizator_type === "training_leader") {
             if (
-              organizator.pg_hierarchy_id >= assistant_hierarchy_id &&
-              organizator.pg_hierarchy_id < organizator_hierarchy_id
+              organizator.pg_hierarchy_id >= assistant_hierarchy_id
             ) {
               return organizator;
             } else {
               return response.status(200).send({
                 error: {
                   title: "Aviso!",
-                  message: "CPF Informado não pode ser assistente ou é líder"
+                  message: "O CPF Informado não pode ser assistente"
                 }
               });
             }

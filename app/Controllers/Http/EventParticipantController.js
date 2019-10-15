@@ -71,7 +71,7 @@ class EventParticipantController {
           return response.status(200).send({
             error: {
               title: "Aviso!",
-              message: "O cpf informado já é de um líder em treinamento"
+              message: "O CPF informado já é de um líder em treinamento"
             }
           });
         } else if (!event_participant.pivot.assistant && !assistant) {
@@ -80,6 +80,12 @@ class EventParticipantController {
               title: "Aviso!",
               message: "O cpf informado já é um participante"
             }
+          });
+        } else if (event_participant.pivot.assistant && !assistant) {
+          await event.participants().detach([entity_id]);
+
+          await event.participants().attach([entity_id], row => {
+            row.assistant = assistant;
           });
         }
       } else {
@@ -96,7 +102,7 @@ class EventParticipantController {
 
       await event.save();
     } else {
-      return response.status(404).send({
+      return response.status(200).send({
         error: {
           title: "Falha!",
           message: "O participante é um organizador"
