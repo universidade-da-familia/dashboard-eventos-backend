@@ -19,7 +19,7 @@ class SessionController {
    */
   async store({ request, response, auth }) {
     try {
-      const { email_cpf_cnpj, password, remember } = request.all();
+      const { email_cpf_cnpj, password } = request.all();
 
       const validateEmail = new ValidateEmail();
       const isEmail = await validateEmail.validate(email_cpf_cnpj);
@@ -30,11 +30,26 @@ class SessionController {
 
       if (user.user_legacy === true) {
         return {
-          error: {
+          expired: {
             title: "Senha expirada!",
             message: "Atualize a sua senha de acesso."
           }
         };
+      }
+
+      if (
+        user.cmn_hierarchy_id < 2 &&
+        user.mu_hierarchy_id < 2 &&
+        user.crown_hierarchy_id < 2 &&
+        user.mp_hierarchy_id < 2 &&
+        user.ffi_hierarchy_id < 2 &&
+        user.gfi_hierarchy_id < 2 &&
+        user.pg_hierarchy_id < 2
+      ) {
+        return response.status(401).send({
+          title: "Não permitido!",
+          message: "Acesso restrito para igrejas, líderes e assistentes."
+        });
       }
 
       const token = isEmail
@@ -50,10 +65,8 @@ class SessionController {
       };
     } catch (err) {
       return response.status(err.status).send({
-        error: {
-          title: "Falha!",
-          message: "Usuário ou senha inválidos"
-        }
+        title: "Falha!",
+        message: "Usuário ou senha inválidos."
       });
     }
   }
@@ -68,15 +81,6 @@ class SessionController {
       const user = isEmail
         ? await Organization.findByOrFail("email", email_cpf_cnpj)
         : await Organization.findByOrFail("cnpj", email_cpf_cnpj);
-
-      if (user.user_legacy === true) {
-        return {
-          error: {
-            title: "Senha expirada!",
-            message: "Atualize a sua senha de acesso."
-          }
-        };
-      }
 
       const token = isEmail
         ? await auth
@@ -93,10 +97,8 @@ class SessionController {
       };
     } catch (err) {
       return response.status(err.status).send({
-        error: {
-          title: "Falha!",
-          message: "Usuário ou senha inválidos"
-        }
+        title: "Falha!",
+        message: "Usuário ou senha inválidos."
       });
     }
   }
