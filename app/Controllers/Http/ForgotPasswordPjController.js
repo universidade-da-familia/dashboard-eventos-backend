@@ -46,7 +46,8 @@ class ForgotPasswordControllerPJ {
       };
     } catch (err) {
       return response.status(err.status).send({
-        error: { title: "Falha!", message: "Esse e-mail existe?" }
+        title: "Falha!",
+        message: "Esse e-mail existe?"
       });
     }
   }
