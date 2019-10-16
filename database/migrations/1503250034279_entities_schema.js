@@ -9,6 +9,10 @@ class EntitySchema extends Schema {
       table.increments();
       table.integer("netsuite_id");
       table
+        .string("entity_type", 20)
+        .notNullable()
+        .defaultTo("lead");
+      table
         .integer("file_id")
         .unsigned()
         .references("id")

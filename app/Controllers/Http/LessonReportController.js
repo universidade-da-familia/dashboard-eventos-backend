@@ -19,8 +19,13 @@ class LessonReportController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response, view }) {
-    const lessonReport = await LessonReport.all();
+  async index({ params }) {
+    const lessonReport = await LessonReport.query()
+      .where("event_id", params.event_id)
+      .with("lesson")
+      .with("event.participants")
+      .with("attendances")
+      .fetch();
 
     return lessonReport;
   }
@@ -34,10 +39,14 @@ class LessonReportController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response, view }) {
+  async show({ params }) {
     const lessonReport = await LessonReport.findOrFail(params.id);
 
-    await lessonReport.loadMany(["lesson", "attendances"]);
+    await lessonReport.loadMany([
+      "event.participants",
+      "lesson",
+      "attendances"
+    ]);
 
     return lessonReport;
   }
@@ -52,43 +61,39 @@ class LessonReportController {
    */
   async update({ params, request, response }) {
     try {
-      const {
-        event_id,
-        lesson_id,
-        offer,
-        date,
-        testimony,
-        doubts,
-        is_finished
-      } = request.only([
-        "event_id",
-        "lesson_id",
-        "offer",
-        "date",
-        "testimony",
-        "doubts",
-        "is_finished"
-      ]);
+      const data = request.all();
+
+      const { participants, offer, date, testimony, doubts } = data;
 
       const lessonReport = await LessonReport.findOrFail(params.id);
 
-      lessonReport.event_id = event_id || lessonReport.event_id;
-      lessonReport.lesson_id = lesson_id || lessonReport.lesson_id;
-      lessonReport.offer = offer || lessonReport.offer;
       lessonReport.date = date || lessonReport.date;
+      lessonReport.offer = offer || lessonReport.offer;
       lessonReport.testimony = testimony || lessonReport.testimony;
       lessonReport.doubts = doubts || lessonReport.doubts;
-      lessonReport.is_finished = is_finished || lessonReport.is_finished;
+      lessonReport.is_finished = true;
 
       await lessonReport.save();
 
-      return lessonReport;
+      if (participants && participants.length > 0) {
+        console.log("maior que 0");
+        participants.map(async participant => {
+          await lessonReport.attendances().detach([participant.id]);
+
+          await lessonReport.attendances().attach([participant.id], row => {
+            row.is_present = participant.is_present;
+          });
+        });
+      }
+
+      return response.status(200).send({
+        title: "Sucesso!",
+        message: "O relatório foi enviado corretamente."
+      });
     } catch (err) {
       return response.status(err.status).send({
-        error: {
-          title: "Falha!",
-          message: "Erro ao atualizar o layout do certificado"
-        }
+        title: "Falha!",
+        message: "Erro ao atualizar o relatório."
       });
     }
   }

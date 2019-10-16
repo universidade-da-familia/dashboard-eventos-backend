@@ -15,7 +15,7 @@ class LessonReport extends Model {
   attendances() {
     return this.belongsToMany("App/Models/Participant")
       .pivotTable("attendances")
-      .withPivot(["is_present"])
+      .withPivot(["participant_id", "lesson_report_id", "is_present"])
       .withTimestamps();
   }
 }

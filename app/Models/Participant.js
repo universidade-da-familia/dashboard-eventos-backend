@@ -5,13 +5,13 @@ const Model = use("Model");
 
 class Participant extends Model {
   static get table() {
-    return "participants"
+    return "participants";
   }
 
   attendances() {
     return this.belongsToMany("App/Models/LessonReport")
       .pivotTable("attendances")
-      .withPivot(["is_present"])
+      .withPivot(["participant_id", "lesson_report_id", "is_present"])
       .withTimestamps();
   }
 }

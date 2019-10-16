@@ -74,7 +74,7 @@ Route.put("lesson/:id", "LessonController.update").validator("Lesson");
 Route.delete("lesson/:id", "LessonController.destroy");
 
 //CRUD lesson report
-Route.get("lesson_report", "LessonReportController.index");
+Route.get("lesson_reports/:event_id", "LessonReportController.index");
 Route.put("lesson_report/:id", "LessonReportController.update");
 Route.get("lesson_report/:id", "LessonReportController.show");
 
