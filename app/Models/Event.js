@@ -54,6 +54,7 @@ class Event extends Model {
         "id",
         "assistant",
         "attendance_status",
+        "is_quitter",
         "event_authorization"
       ])
       .withTimestamps();

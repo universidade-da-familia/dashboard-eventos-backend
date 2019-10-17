@@ -134,11 +134,8 @@ Route.get(
   "EventParticipantController.show"
 );
 Route.post("event_participant", "EventParticipantController.store");
-Route.put("event_participant", "EventParticipantController.update");
-Route.delete(
-  "event_participant/:entity_id/event/:event_id",
-  "EventParticipantController.destroy"
-);
+Route.put("event_participant/:id", "EventParticipantController.update");
+Route.delete("event_participant/:id", "EventParticipantController.destroy");
 
 //CRUD entity organizators
 Route.get("entity_organizators", "EntityOrganizatorController.index");
