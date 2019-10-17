@@ -12,6 +12,7 @@ Route.post("entity", "EntityController.store").validator("Entity");
 Route.get("entity/:id", "EntityController.show");
 Route.put("entity/:id", "EntityController.update");
 Route.get("entities", "EntityController.index");
+Route.delete("entity/:id", "EntityController.destroy");
 
 //CRUD familia
 Route.resource("family", "FamilyController");
