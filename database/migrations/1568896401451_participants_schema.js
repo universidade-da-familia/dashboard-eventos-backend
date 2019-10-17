@@ -30,6 +30,10 @@ class ParticipantsSchema extends Schema {
         .notNullable()
         .defaultTo("em andamento"); // em andamento, aprovado, reprovado, reposição
       table
+        .boolean("is_quitter")
+        .notNullable()
+        .defaultTo(false);
+      table
         .boolean("event_authorization")
         .notNullable()
         .defaultTo(false);

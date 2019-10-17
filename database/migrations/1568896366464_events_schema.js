@@ -16,7 +16,7 @@ class EventsSchema extends Schema {
         .onDelete("SET NULL");
       table.integer("order_id");
       table.datetime("start_date").notNullable();
-      table.datetime("end_date").notNullable();
+      table.datetime("end_date");
       table
         .integer("responsible_organization_id")
         .unsigned()

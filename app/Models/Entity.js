@@ -2,6 +2,7 @@
 
 const Model = use("Model");
 const Hash = use("Hash");
+const moment = require("moment");
 
 // const axios = require("axios");
 
@@ -33,6 +34,16 @@ class Entity extends Model {
     //     is_business: userInstance.is_business
     //   });
     // });
+  }
+
+  static get computed() {
+    return ["age"];
+  }
+
+  getAge({ birthday }) {
+    const age = moment().diff(moment(birthday), "years", false);
+
+    return age;
   }
 
   tokens() {

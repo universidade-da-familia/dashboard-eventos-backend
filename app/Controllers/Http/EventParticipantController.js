@@ -7,7 +7,7 @@
 const Event = use("App/Models/Event");
 const Entity = use("App/Models/Entity");
 const DefaultEvent = use("App/Models/DefaultEvent");
-
+const Participant = use("App/Models/Participant");
 /**
  * Resourceful controller for interacting with participants
  */
@@ -198,47 +198,32 @@ class EventParticipantController {
    * @param {Response} ctx.response
    */
   async update({ params, request, response }) {
-    const { event_id, entity_id, assistant } = request.only([
-      "event_id",
-      "entity_id",
-      "assistant"
-    ]);
+    try {
+      const { is_quitter } = request.only(["is_quitter"]);
 
-    const event = await Event.findOrFail(event_id);
-    const entity = await Entity.findOrFail(entity_id);
+      const participant = await Participant.findOrFail(params.id);
+      const event = await Event.findOrFail(participant.event_id);
 
-    await entity.load("organizators");
-    await entity.load("participants");
-
-    const event_organizator = entity
-      .toJSON()
-      .organizators.find(organizator => organizator.id === parseInt(event_id));
-
-    const event_participant = entity
-      .toJSON()
-      .participants.find(participant => participant.id === parseInt(event_id));
-
-    if (event_organizator === undefined) {
-      await event.participants().detach([entity_id]);
-
-      await event.participants().attach([entity_id], row => {
-        row.assistant = assistant;
-      });
-
-      if (!event_participant.pivot.assistant && assistant) {
+      if (is_quitter) {
         event.participants_count = event.participants_count - 1;
-      } else if (event_participant.pivot.assistant === !assistant) {
-        event.participants_count = event.participants_count + 1;
+        await event.save();
       }
 
-      await event.save();
+      if (!is_quitter) {
+        event.participants_count = event.participants_count + 1;
+        await event.save();
+      }
 
-      return event;
-    } else {
-      return response.status(404).send({
+      participant.is_quitter = is_quitter;
+
+      await participant.save();
+
+      return participant;
+    } catch (err) {
+      return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "O participante é um organizador"
+          message: "Erro ao atualizar o participante"
         }
       });
     }
@@ -252,25 +237,14 @@ class EventParticipantController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {
+  async destroy({ params, response }) {
     try {
-      const entity_id = params.entity_id;
-      const event_id = params.event_id;
+      const participant = await Participant.findOrFail(params.id);
+      const event = await Event.findOrFail(participant.event_id);
 
-      const event = await Event.findOrFail(event_id);
-      const entity = await Entity.findOrFail(entity_id);
+      await event.participants().detach([participant.entity_id]);
 
-      await entity.load("participants");
-
-      const event_participant = entity
-        .toJSON()
-        .participants.find(
-          participant => participant.id === parseInt(event_id)
-        );
-
-      await event.participants().detach([entity_id]);
-
-      if (!event_participant.pivot.assistant) {
+      if (!participant.assistant && !participant.is_quitter) {
         event.participants_count = event.participants_count - 1;
       }
 
