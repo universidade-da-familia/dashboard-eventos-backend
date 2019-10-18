@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const LessonReport = use("App/Models/LessonReport");
+const Entity = use("App/Models/Entity");
 
 /**
  * Resourceful controller for interacting with lessons
@@ -76,7 +77,6 @@ class LessonReportController {
       await lessonReport.save();
 
       if (participants && participants.length > 0) {
-        console.log("maior que 0");
         participants.map(async participant => {
           await lessonReport.attendances().detach([participant.id]);
 

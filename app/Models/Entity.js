@@ -105,7 +105,13 @@ class Entity extends Model {
   participants() {
     return this.belongsToMany("App/Models/Event")
       .pivotTable("participants")
-      .withPivot(["assistant", "attendance_status", "event_authorization"])
+      .withPivot([
+        "id",
+        "assistant",
+        "attendance_status",
+        "is_quitter",
+        "event_authorization"
+      ])
       .withTimestamps();
   }
 }
