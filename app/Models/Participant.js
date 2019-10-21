@@ -4,14 +4,14 @@
 const Model = use("Model");
 
 class Participant extends Model {
-  static get table() {
-    return "participants";
-  }
+  // static get table() {
+  //   return "participants";
+  // }
 
   attendances() {
     return this.belongsToMany("App/Models/LessonReport")
       .pivotTable("attendances")
-      .withPivot(["participant_id", "lesson_report_id", "is_present"])
+      .withPivot(["id", "participant_id", "lesson_report_id", "is_present"])
       .withTimestamps();
   }
 }
