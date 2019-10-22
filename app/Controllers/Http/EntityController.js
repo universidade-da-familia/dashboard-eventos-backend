@@ -112,6 +112,7 @@ class EntityController {
       "file",
       "families",
       "organizators.defaultEvent.ministery",
+      "organizators.organization",
       "participants.defaultEvent.ministery",
       "creditCards",
       "addresses",
