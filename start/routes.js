@@ -10,7 +10,7 @@ Route.get("sessions/:type", "SessionController.show");
 //CRUD usuário
 Route.post("entity", "EntityController.store").validator("Entity");
 Route.get("entity/:id", "EntityController.show");
-Route.put("entity/:id", "EntityController.update");
+Route.put("entity/:id", "EntityController.update").validator("EntityUpdate");
 Route.get("entities", "EntityController.index");
 Route.delete("entity/:id", "EntityController.destroy");
 
