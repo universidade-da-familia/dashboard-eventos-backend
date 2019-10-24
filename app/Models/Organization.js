@@ -50,6 +50,10 @@ class Organization extends Model {
   checkouts() {
     return this.hasMany("App/Models/Checkout");
   }
+
+  orders() {
+    return this.hasMany("App/Models/Order");
+  }
 }
 
 module.exports = Organization;

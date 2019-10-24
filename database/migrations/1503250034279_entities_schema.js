@@ -7,7 +7,7 @@ class EntitySchema extends Schema {
   up() {
     this.create("entities", table => {
       table.increments();
-      table.integer("netsuite_id");
+      table.integer("netsuite_id").unsigned();
       table
         .string("entity_type", 20)
         .notNullable()
