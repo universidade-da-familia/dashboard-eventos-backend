@@ -4,12 +4,12 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Status = use("App/Models/Status");
+const Coupon = use("App/Models/Coupon");
 
-class StatusController {
+class CouponController {
   /**
-   * Show a list of all status.
-   * GET status
+   * Show a list of all coupons.
+   * GET coupons
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -17,14 +17,14 @@ class StatusController {
    * @param {View} ctx.view
    */
   async index() {
-    const status = Status.query().fetch();
+    const coupon = Coupon.query().fetch();
 
-    return status;
+    return coupon;
   }
 
   /**
-   * Create/save a new status.
-   * POST status
+   * Create/save a new coupon.
+   * POST coupons
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -32,11 +32,11 @@ class StatusController {
    */
   async store({ request, response }) {
     try {
-      const data = request.only(["name"]);
+      const data = request.only(["name", "percent"]);
 
-      const status = await Status.create(data);
+      const coupon = await Coupon.create(data);
 
-      return status;
+      return coupon;
     } catch (err) {
       return response.status(err.status).send({
         error: {
@@ -48,8 +48,8 @@ class StatusController {
   }
 
   /**
-   * Display a single status.
-   * GET status/:id
+   * Display a single coupon.
+   * GET coupons/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -58,22 +58,22 @@ class StatusController {
    */
   async show({ params, response }) {
     try {
-      const status = await Status.findOrFail(params.id);
+      const coupon = await Coupon.findOrFail(params.id);
 
-      return status;
+      return coupon;
     } catch (err) {
       return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "Nenhum status encontrado."
+          message: "Nenhum cupom encontrado."
         }
       });
     }
   }
 
   /**
-   * Update status details.
-   * PUT or PATCH status/:id
+   * Update coupon details.
+   * PUT or PATCH coupons/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -81,15 +81,15 @@ class StatusController {
    */
   async update({ params, request, response }) {
     try {
-      const status = await Status.findOrFail(params.id);
+      const coupon = await Coupon.findOrFail(params.id);
 
       const data = request.all();
 
-      status.merge(data);
+      coupon.merge(data);
 
-      await status.save();
+      await coupon.save();
 
-      return status;
+      return coupon;
     } catch (err) {
       return response.status(err.status).send({
         error: {
@@ -101,8 +101,8 @@ class StatusController {
   }
 
   /**
-   * Delete a status with id.
-   * DELETE status/:id
+   * Delete a coupon with id.
+   * DELETE coupons/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -110,23 +110,23 @@ class StatusController {
    */
   async destroy({ params, response }) {
     try {
-      const status = await Status.findOrFail(params.id);
+      const coupon = await Coupon.findOrFail(params.id);
 
-      await status.delete();
+      await coupon.delete();
 
       return response.status(200).send({
         title: "Sucesso!",
-        message: "O status foi removido."
+        message: "O cupom foi removido."
       });
     } catch (err) {
       return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "Erro ao excluir o status"
+          message: "Erro ao excluir o cupom"
         }
       });
     }
   }
 }
 
-module.exports = StatusController;
+module.exports = CouponController;

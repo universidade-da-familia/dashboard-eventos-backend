@@ -12,6 +12,8 @@ class CouponsSchema extends Schema {
         .integer("percent")
         .unsigned()
         .notNullable();
+      table.date("initial_date").notNullable();
+      table.date("expiration_date").notNullable();
       table.timestamps();
     });
   }

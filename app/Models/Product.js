@@ -16,7 +16,7 @@ class Product extends Model {
 
   orders() {
     return this.belongsToMany("App/Models/Order")
-      .pivotTable("orders")
+      .pivotTable("order_products")
       .withPivot(["quantity"])
       .withTimestamps();
   }

@@ -117,7 +117,8 @@ class EntityController {
       "creditCards",
       "addresses",
       "checkouts",
-      "checkoutItems"
+      "checkoutItems",
+      "orders"
     ]);
 
     return entity;

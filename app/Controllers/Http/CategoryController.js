@@ -72,17 +72,6 @@ class CategoryController {
   }
 
   /**
-   * Render a form to update an existing category.
-   * GET categories/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit({ params, request, response, view }) {}
-
-  /**
    * Update category details.
    * PUT or PATCH categories/:id
    *
@@ -100,7 +89,7 @@ class CategoryController {
 
       await category.save();
 
-      return entity;
+      return category;
     } catch (err) {
       return response.status(err.status).send({
         error: {
@@ -119,7 +108,25 @@ class CategoryController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy({ params, response }) {
+    try {
+      const category = await Category.findOrFail(params.id);
+
+      await category.delete();
+
+      return response.status(200).send({
+        title: "Sucesso!",
+        message: "A categoria foi removida."
+      });
+    } catch (err) {
+      return response.status(err.status).send({
+        error: {
+          title: "Falha!",
+          message: "Erro a categoria"
+        }
+      });
+    }
+  }
 }
 
 module.exports = CategoryController;

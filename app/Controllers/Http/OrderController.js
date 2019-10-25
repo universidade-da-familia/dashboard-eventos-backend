@@ -4,12 +4,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Status = use("App/Models/Status");
+const Database = use("Database");
+const Order = use("App/Models/Order");
 
-class StatusController {
+class OrderController {
   /**
-   * Show a list of all status.
-   * GET status
+   * Show a list of all orders.
+   * GET orders
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -17,14 +18,14 @@ class StatusController {
    * @param {View} ctx.view
    */
   async index() {
-    const status = Status.query().fetch();
+    const order = Order.query().fetch();
 
-    return status;
+    return order;
   }
 
   /**
-   * Create/save a new status.
-   * POST status
+   * Create/save a new order.
+   * POST orders
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -32,24 +33,28 @@ class StatusController {
    */
   async store({ request, response }) {
     try {
-      const data = request.only(["name"]);
+      const data = request.all();
 
-      const status = await Status.create(data);
+      const trx = await Database.beginTransaction();
 
-      return status;
+      const order = await Order.create(data, trx);
+
+      await trx.commit();
+
+      return order;
     } catch (err) {
       return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "Tente cadastrar novamente"
+          message: "Erro ao criar o pedido"
         }
       });
     }
   }
 
   /**
-   * Display a single status.
-   * GET status/:id
+   * Display a single order.
+   * GET orders/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -58,22 +63,24 @@ class StatusController {
    */
   async show({ params, response }) {
     try {
-      const status = await Status.findOrFail(params.id);
+      const order = await Order.findOrFail(params.id);
 
-      return status;
+      await order.loadMany(["status", "organization", "entity", "products"]);
+
+      return order;
     } catch (err) {
-      return response.status(err.status).send({
+      return response.status(err.order).send({
         error: {
           title: "Falha!",
-          message: "Nenhum status encontrado."
+          message: "Nenhum pedido encontrado."
         }
       });
     }
   }
 
   /**
-   * Update status details.
-   * PUT or PATCH status/:id
+   * Update order details.
+   * PUT or PATCH orders/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -81,52 +88,52 @@ class StatusController {
    */
   async update({ params, request, response }) {
     try {
-      const status = await Status.findOrFail(params.id);
-
       const data = request.all();
 
-      status.merge(data);
+      const order = await Order.findOrFail(params.id);
 
-      await status.save();
+      order.merge(data);
 
-      return status;
+      await order.save();
+
+      return order;
     } catch (err) {
       return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "Tente atualizar novamente"
+          message: "Erro ao atualizar o pedido"
         }
       });
     }
   }
 
   /**
-   * Delete a status with id.
-   * DELETE status/:id
+   * Delete a order with id.
+   * DELETE orders/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, response }) {
+  async destroy({ params, request, response }) {
     try {
-      const status = await Status.findOrFail(params.id);
+      const order = await Order.findOrFail(params.id);
 
-      await status.delete();
+      await order.delete();
 
       return response.status(200).send({
         title: "Sucesso!",
-        message: "O status foi removido."
+        message: "O pedido foi removido."
       });
     } catch (err) {
       return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "Erro ao excluir o status"
+          message: "Erro ao excluir o pedido"
         }
       });
     }
   }
 }
 
-module.exports = StatusController;
+module.exports = OrderController;

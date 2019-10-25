@@ -154,9 +154,15 @@ Route.get("image/:id", "FileController.showImage");
 
 Route.get("site_event/:id", "SiteEventController.show");
 
-Route.resource("address", "AddressController");
+Route.resource("address", "AddressController").except(["edit", "create"]);
 
-Route.resource("category", "CategoryController");
+Route.resource("category", "CategoryController").except(["edit", "create"]);
+
+Route.resource("status", "StatusController").except(["edit", "create"]);
+
+Route.resource("coupon", "CouponController").except(["edit", "create"]);
+
+Route.resource("order", "OrderController").except(["edit", "create"]);
 
 Route.group(() => {
   //Busca o Líder solicitado pelo CPF
