@@ -38,25 +38,38 @@ class AddressController {
    */
   async store({ request, response }) {
     try {
-      const data = request.all();
+      const { addressesPost, addressesPut } = request.only([
+        "addressesPost",
+        "addressesPut"
+      ]);
 
       const trx = await Database.beginTransaction();
 
-      const address = await Address.create(data, trx);
+      if (addressesPost && addressesPost.length > 0) {
+        await Address.createMany(addressesPost, trx);
+      }
 
-      await address.load("entity");
+      if (addressesPut && addressesPut.length > 0) {
+        addressesPut.map(async address => {
+          console.log(address);
+          const searchAddress = await Address.findOrFail(address.id);
 
-      //await event.lessonReports().createMany(lessons, trx);
+          searchAddress.merge(address, trx);
 
-      await trx.commit();
+          await searchAddress.save();
+        });
+      }
 
-      return address;
+      trx.commit();
+
+      return response.status(200).send({
+        title: "Sucesso!",
+        message: "Seus endereços foram atualizados."
+      });
     } catch (err) {
       return response.status(err.status).send({
-        error: {
-          title: "Falha!",
-          message: "Erro ao criar o endereço"
-        }
+        title: "Falha!",
+        message: "Erro ao criar o endereço"
       });
     }
   }
