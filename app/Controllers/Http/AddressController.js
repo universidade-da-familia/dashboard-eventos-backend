@@ -51,7 +51,6 @@ class AddressController {
 
       if (addressesPut && addressesPut.length > 0) {
         addressesPut.map(async address => {
-          console.log(address);
           const searchAddress = await Address.findOrFail(address.id);
 
           searchAddress.merge(address, trx);
