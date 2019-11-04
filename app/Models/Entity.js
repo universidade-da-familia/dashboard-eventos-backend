@@ -67,7 +67,7 @@ class Entity extends Model {
   }
 
   addresses() {
-    return this.hasMany("App/Models/Address");
+    return this.hasMany("App/Models/Address").orderBy("id");
   }
 
   creditCards() {
