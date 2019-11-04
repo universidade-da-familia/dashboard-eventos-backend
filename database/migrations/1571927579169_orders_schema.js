@@ -13,7 +13,7 @@ class OrdersSchema extends Schema {
         .integer("status_id")
         .unsigned()
         .references("id")
-        .inTable("status")
+        .inTable("statuses")
         .defaultTo(1)
         .notNullable()
         .onUpdate("CASCADE")
