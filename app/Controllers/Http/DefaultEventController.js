@@ -44,42 +44,49 @@ class DefaultEventController {
       .where("organizator_hierarchy_id", "<=", cmn_hierarchy_id)
       .andWhere("ministery_id", 1)
       .with("ministery")
+      .with("kit.products")
       .fetch();
 
     const mu = await DefaultEvent.query()
       .where("organizator_hierarchy_id", "<=", mu_hierarchy_id)
       .andWhere("ministery_id", 2)
       .with("ministery")
+      .with("kit.products")
       .fetch();
 
     const crown = await DefaultEvent.query()
       .where("organizator_hierarchy_id", "<=", crown_hierarchy_id)
       .andWhere("ministery_id", 3)
       .with("ministery")
+      .with("kit.products")
       .fetch();
 
     const mp = await DefaultEvent.query()
       .where("organizator_hierarchy_id", "<=", mp_hierarchy_id)
       .andWhere("ministery_id", 4)
       .with("ministery")
+      .with("kit.products")
       .fetch();
 
     const ffi = await DefaultEvent.query()
       .where("organizator_hierarchy_id", "<=", ffi_hierarchy_id)
       .andWhere("ministery_id", 5)
       .with("ministery")
+      .with("kit.products")
       .fetch();
 
     const gfi = await DefaultEvent.query()
       .where("organizator_hierarchy_id", "<=", gfi_hierarchy_id)
       .andWhere("ministery_id", 6)
       .with("ministery")
+      .with("kit.products")
       .fetch();
 
     const pg = await DefaultEvent.query()
       .where("organizator_hierarchy_id", "<=", pg_hierarchy_id)
       .andWhere("ministery_id", 7)
       .with("ministery")
+      .with("kit.products")
       .fetch();
 
     const defaults = [

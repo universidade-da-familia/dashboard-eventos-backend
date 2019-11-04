@@ -9,6 +9,17 @@ class Product extends Model {
       .pivotTable("kit_products")
       .withTimestamps();
   }
+
+  category() {
+    return this.belongsTo("App/Models/Category");
+  }
+
+  orders() {
+    return this.belongsToMany("App/Models/Order")
+      .pivotTable("order_products")
+      .withPivot(["quantity"])
+      .withTimestamps();
+  }
 }
 
 module.exports = Product;

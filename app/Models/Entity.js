@@ -114,6 +114,10 @@ class Entity extends Model {
       ])
       .withTimestamps();
   }
+
+  orders() {
+    return this.hasMany("App/Models/Order");
+  }
 }
 
 module.exports = Entity;

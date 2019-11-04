@@ -22,6 +22,7 @@ class AddressesSchema extends Schema {
         .onUpdate("CASCADE")
         .onDelete("CASCADE");
       table.string("type", 80).notNullable();
+      table.string("other_type_name", 80);
       table.string("cep", 8).notNullable();
       table.string("city", 254).notNullable();
       table.string("uf", 2).notNullable();
