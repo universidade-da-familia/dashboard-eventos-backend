@@ -105,7 +105,7 @@ class EventParticipantController {
       return response.status(200).send({
         error: {
           title: "Falha!",
-          message: "O participante é um organizador"
+          message: "O CPF informado é de um organizador."
         }
       });
     }

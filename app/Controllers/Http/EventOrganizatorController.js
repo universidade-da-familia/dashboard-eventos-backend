@@ -56,7 +56,7 @@ class EventOrganizatorController {
       return response.status(404).send({
         error: {
           title: "Falha!",
-          message: "O Organizador é um participante"
+          message: "O CPF é de um participante inscrito"
         }
       });
     }
@@ -88,15 +88,15 @@ class EventOrganizatorController {
       const organizator = await Entity.findByOrFail("cpf", params.cpf);
 
       await organizator.loadMany([
-      "file",
-      "families",
-      "organizators.defaultEvent.ministery",
-      "participants.defaultEvent.ministery",
-      "creditCards",
-      "addresses",
-      "checkouts",
-      "checkoutItems"
-    ]);
+        "file",
+        "families",
+        "organizators.defaultEvent.ministery",
+        "participants.defaultEvent.ministery",
+        "creditCards",
+        "addresses",
+        "checkouts",
+        "checkoutItems"
+      ]);
 
       if (organizator.sex === sex_type || sex_type === "A") {
         if (ministery_id === 1) {
@@ -112,9 +112,7 @@ class EventOrganizatorController {
               });
             }
           } else if (organizator_type === "training_leader") {
-            if (
-              organizator.cmn_hierarchy_id >= assistant_hierarchy_id
-            ) {
+            if (organizator.cmn_hierarchy_id >= assistant_hierarchy_id) {
               return organizator;
             } else {
               return response.status(200).send({
@@ -139,9 +137,7 @@ class EventOrganizatorController {
               });
             }
           } else if (organizator_type === "training_leader") {
-            if (
-              organizator.mu_hierarchy_id >= assistant_hierarchy_id
-            ) {
+            if (organizator.mu_hierarchy_id >= assistant_hierarchy_id) {
               return organizator;
             } else {
               return response.status(200).send({
@@ -166,9 +162,7 @@ class EventOrganizatorController {
               });
             }
           } else if (organizator_type === "training_leader") {
-            if (
-              organizator.crown_hierarchy_id >= assistant_hierarchy_id
-            ) {
+            if (organizator.crown_hierarchy_id >= assistant_hierarchy_id) {
               return organizator;
             } else {
               return response.status(200).send({
@@ -193,9 +187,7 @@ class EventOrganizatorController {
               });
             }
           } else if (organizator_type === "training_leader") {
-            if (
-              organizator.mp_hierarchy_id >= assistant_hierarchy_id
-            ) {
+            if (organizator.mp_hierarchy_id >= assistant_hierarchy_id) {
               return organizator;
             } else {
               return response.status(200).send({
@@ -220,9 +212,7 @@ class EventOrganizatorController {
               });
             }
           } else if (organizator_type === "training_leader") {
-            if (
-              organizator.ffi_hierarchy_id >= assistant_hierarchy_id
-            ) {
+            if (organizator.ffi_hierarchy_id >= assistant_hierarchy_id) {
               return organizator;
             } else {
               return response.status(200).send({
@@ -247,9 +237,7 @@ class EventOrganizatorController {
               });
             }
           } else if (organizator_type === "training_leader") {
-            if (
-              organizator.gfi_hierarchy_id >= assistant_hierarchy_id
-            ) {
+            if (organizator.gfi_hierarchy_id >= assistant_hierarchy_id) {
               return organizator;
             } else {
               return response.status(200).send({
@@ -274,9 +262,7 @@ class EventOrganizatorController {
               });
             }
           } else if (organizator_type === "training_leader") {
-            if (
-              organizator.pg_hierarchy_id >= assistant_hierarchy_id
-            ) {
+            if (organizator.pg_hierarchy_id >= assistant_hierarchy_id) {
               return organizator;
             } else {
               return response.status(200).send({
