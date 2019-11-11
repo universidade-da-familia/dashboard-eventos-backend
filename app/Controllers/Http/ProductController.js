@@ -34,7 +34,17 @@ class ProductController {
    */
   async store({ request, response }) {
     try {
-      const data = request.only(["name", "unit_price", "netsuite_id"]);
+      const data = request.only([
+        "name",
+        "unit_price",
+        "netsuite_id",
+        "weight",
+        "width",
+        "height",
+        "length",
+        "sku_id",
+        "product_category"
+      ]);
 
       const product = await Product.create(data);
 
@@ -76,7 +86,17 @@ class ProductController {
    */
   async update({ params, request }) {
     try {
-      const data = request.only(["name", "unit_price", "netsuite_id"]);
+      const data = request.only([
+        "name",
+        "unit_price",
+        "netsuite_id",
+        "weight",
+        "width",
+        "height",
+        "length",
+        "sku_id",
+        "product_category"
+      ]);
 
       const product = await Product.findOrFail(params.id);
 
