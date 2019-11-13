@@ -24,14 +24,14 @@ class EventsSchema extends Schema {
         .inTable("organizations")
         .onUpdate("CASCADE")
         .onDelete("SET NULL");
-      table.string("address_name").notNullable();
-      table.string("cep", 8).notNullable();
-      table.string("city", 254).notNullable();
-      table.string("uf", 2).notNullable();
-      table.string("country", 100).notNullable();
-      table.string("street", 254).notNullable();
-      table.string("street_number", 50).notNullable();
-      table.string("neighborhood", 100).notNullable();
+      table.string("address_name");
+      table.string("cep", 8);
+      table.string("city", 254);
+      table.string("uf", 2);
+      table.string("country", 100);
+      table.string("street", 254);
+      table.string("street_number", 50);
+      table.string("neighborhood", 100);
       table.string("complement", 100);
       table.string("img_address_url").notNullable();
       table
