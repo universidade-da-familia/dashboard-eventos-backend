@@ -5,7 +5,7 @@ const Model = use("Model");
 
 class DefaultEvent extends Model {
   ministery() {
-    return this.belongsTo("App/Models/Ministery");
+    return this.belongsTo("App/Models/Ministery").orderBy("id");
   }
 
   kit() {

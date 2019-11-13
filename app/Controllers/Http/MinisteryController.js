@@ -20,7 +20,9 @@ class MinisteryController {
    * @param {View} ctx.view
    */
   async index() {
-    const ministery = await Ministery.all();
+    const ministery = await Ministery.query()
+      .orderBy("id")
+      .fetch();
 
     return ministery;
   }
