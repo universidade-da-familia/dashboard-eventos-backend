@@ -279,14 +279,14 @@ class EventOrganizatorController {
           return response.status(200).send({
             error: {
               title: "Aviso!",
-              message: "Evento somente permite sexo masculino"
+              message: "Evento exclusivo para o sexo masculino."
             }
           });
         } else {
           return response.status(200).send({
             error: {
               title: "Aviso!",
-              message: "Evento somente permite sexo feminino"
+              message: "Evento exclusivo para o sexo feminino."
             }
           });
         }
