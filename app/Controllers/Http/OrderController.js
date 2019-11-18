@@ -34,14 +34,15 @@ class OrderController {
   async store({ request, response }) {
     try {
       const data = request.all();
+      const { user, card, products, shipping_address, shipping_options } = data;
 
-      const trx = await Database.beginTransaction();
+      // const trx = await Database.beginTransaction();
 
-      const order = await Order.create(data, trx);
+      // const order = await Order.create(data, trx);
 
-      await trx.commit();
+      // await trx.commit();
 
-      return order;
+      // return order;
     } catch (err) {
       return response.status(err.status).send({
         error: {
