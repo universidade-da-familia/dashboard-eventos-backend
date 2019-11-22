@@ -38,7 +38,7 @@ module.exports = {
     host: Env.get("REDIS_HOST", REDIS_URL.hostname),
     port: Env.get("REDIS_PORT", REDIS_URL.port),
     user: Env.get("REDIS_USER", REDIS_URL.username),
-    password: Env.get(JSON.parse("REDIS_PASSWORD"), REDIS_URL.password),
+    password: Env.get("REDIS_PASSWORD", REDIS_URL.password),
     db: 0,
     keyPrefix: ""
   },
