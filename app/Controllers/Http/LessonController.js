@@ -17,7 +17,9 @@ class LessonController {
    * @param {View} ctx.view
    */
   async index() {
-    const lessons = await Lesson.all();
+    const lessons = await Lesson.query()
+      .with("defaultEvent.ministery")
+      .fetch();
 
     return lessons;
   }
@@ -64,6 +66,8 @@ class LessonController {
    */
   async show({ params }) {
     const lesson = await Lesson.findOrFail(params.id);
+
+    await lesson.load("defaultEvent");
 
     return lesson;
   }
