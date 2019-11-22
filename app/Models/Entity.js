@@ -2,18 +2,11 @@
 
 const Model = use("Model");
 const Hash = use("Hash");
+
+const Kue = use("Kue");
+const Job = use("App/Jobs/CreateProspect");
+
 const moment = require("moment");
-
-const axios = require("axios");
-
-const api = axios.default.create({
-  baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization:
-      "NLAuth nlauth_account=5260046, nlauth_email=lucas.alves@udf.org.br, nlauth_signature=TI@udf2019#@!,nlauth_role=1077"
-  }
-});
 
 class Entity extends Model {
   static boot() {
@@ -26,25 +19,28 @@ class Entity extends Model {
     });
 
     this.addHook("afterCreate", async entityInstance => {
-      const { name, email, cpf } = entityInstance;
+      const { id, name, email, cpf } = entityInstance;
 
       const fullname = name.split(" ");
       const firstname = fullname[0];
       fullname.shift();
       const lastname = fullname.length >= 1 ? fullname.join(" ") : "";
 
-      const response = await api.post("/restlet.nl?script=162&deploy=1", {
-        is_business: false,
-        name,
-        firstname,
-        lastname,
-        email,
-        cpf_cnpj: cpf
-      });
-
-      entityInstance.netsuite_id = response.data.id;
-
-      await entityInstance.save();
+      Kue.dispatch(
+        Job.key,
+        {
+          id,
+          is_business: false,
+          name,
+          firstname,
+          lastname,
+          email,
+          cpf_cnpj: cpf
+        },
+        {
+          attempts: 5
+        }
+      );
     });
   }
 

@@ -26,6 +26,10 @@ class Order extends Model {
       .withPivot(["quantity"])
       .withTimestamps();
   }
+
+  transactions() {
+    return this.hasMany("App/Models/OrderTransaction");
+  }
 }
 
 module.exports = Order;
