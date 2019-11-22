@@ -6,6 +6,17 @@
 
 const Database = use("Database");
 const Order = use("App/Models/Order");
+const OrderTransaction = use("App/Models/OrderTransaction");
+
+const axios = require("axios");
+
+const api = axios.default.create({
+  baseURL: "https://api.payulatam.com",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  }
+});
 
 class OrderController {
   /**
@@ -34,15 +45,58 @@ class OrderController {
   async store({ request, response }) {
     try {
       const data = request.all();
-      const { user, card, products, shipping_address, shipping_options } = data;
+      const {
+        user,
+        card,
+        products,
+        shipping_address,
+        shipping_option,
+        order_details,
+        payu
+      } = data;
 
-      // const trx = await Database.beginTransaction();
+      const responsePayu = await api.post(
+        "/payments-api/4.0/service.cgi",
+        payu
+      );
 
-      // const order = await Order.create(data, trx);
+      const { data: payuData } = responsePayu;
 
-      // await trx.commit();
+      const order = await Order.create({
+        status_id: 1,
+        entity_id: user.id,
+        payment_name: card === null ? "Boleto" : "Cartão de crédito",
+        shipping_name: shipping_option.delivery_method_name,
+        delivery_estimate_days:
+          shipping_option.delivery_estimate_transit_time_business_days,
+        shipping_cost: order_details.shipping_amount,
+        total: order_details.amount
+      });
 
-      // return order;
+      await order.products().attach(
+        products.map(product => product.id),
+        row => {
+          const product = products.find(
+            product => product.id === row.product_id
+          );
+
+          (row.quantity = product.quantity),
+            (row.total = product.cost_of_goods * product.quantity);
+        }
+      );
+
+      const transactions = await OrderTransaction.create({
+        order_id: order.id,
+        transaction_id: payuData.transactionResponse.transactionId,
+        api_order_id: payuData.transactionResponse.orderId,
+        status: payuData.transactionResponse.state,
+        boleto_url:
+          payuData.transactionResponse.extraParameters.URL_PAYMENT_RECEIPT_HTML
+      });
+
+      order.transactions = transactions;
+
+      return order;
     } catch (err) {
       return response.status(err.status).send({
         error: {
@@ -66,7 +120,13 @@ class OrderController {
     try {
       const order = await Order.findOrFail(params.id);
 
-      await order.loadMany(["status", "organization", "entity", "products"]);
+      await order.loadMany([
+        "status",
+        "transactions",
+        "organization",
+        "entity",
+        "products"
+      ]);
 
       return order;
     } catch (err) {

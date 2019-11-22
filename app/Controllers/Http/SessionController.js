@@ -119,7 +119,8 @@ class SessionController {
           "entityOrganizations",
           "organizators",
           "participants",
-          "orders.status"
+          "orders.status",
+          "orders.transactions"
         ])
       : await user.loadMany([
           "file",
