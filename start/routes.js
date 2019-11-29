@@ -152,7 +152,7 @@ Route.put("forgot_password_pj", "ForgotPasswordPjController.update");
 
 Route.post("files/:user_id/:type", "FileController.store");
 Route.get("files/:id", "FileController.show");
-Route.get("image/:id", "FileController.showImage");
+Route.delete("files/:id", "FileController.destroy");
 
 Route.get("site_event/:id", "SiteEventController.show");
 
