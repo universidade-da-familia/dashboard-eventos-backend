@@ -35,7 +35,7 @@ class FileController {
         "file",
         {
           types: ["image"],
-          size: "2mb"
+          size: "2"
         },
         async file => {
           try {
