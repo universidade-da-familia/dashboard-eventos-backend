@@ -22,8 +22,11 @@ class EventController {
    */
   async index() {
     const events = await Event.query()
+      .with("defaultEvent")
+      .with("defaultEvent.ministery")
       .with("organizators")
       .with("participants")
+      .orderBy("id")
       .fetch();
 
     return events;
