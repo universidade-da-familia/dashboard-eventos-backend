@@ -70,7 +70,15 @@ class OrderController {
         delivery_estimate_days:
           shipping_option.delivery_estimate_transit_time_business_days,
         shipping_cost: order_details.shipping_amount,
-        total: order_details.amount
+        total: order_details.amount,
+        shipping_cep: shipping_address.cep,
+        shipping_uf: shipping_address.uf,
+        shipping_city: shipping_address.city,
+        shipping_street: shipping_address.street,
+        shipping_street_number: shipping_address.street_number,
+        shipping_neighborhood: shipping_address.neighborhood,
+        shipping_complement: shipping_address.complement,
+        shipping_receiver: shipping_address.receiver
       });
 
       await order.products().attach(

@@ -21,9 +21,9 @@ const providers = [
   "@adonisjs/framework/providers/ViewProvider",
   "@adonisjs/validator/providers/ValidatorProvider",
   "@adonisjs/antl/providers/AntlProvider",
+  "@adonisjs/drive/providers/DriveProvider",
   "@adonisjs/redis/providers/RedisProvider",
-  "adonis-kue/providers/KueProvider",
-  "@adonisjs/drive/providers/DriveProvider"
+  "adonis-kue/providers/KueProvider"
 ];
 
 /*
@@ -72,6 +72,6 @@ const commands = [];
 | Here you store your queue jobs
 |
 */
-const jobs = ["App/Jobs/CreateProspect"];
+const jobs = ["App/Jobs/CreateProspect", "App/Jobs/CreateOrder"];
 
 module.exports = { providers, aceProviders, aliases, commands, jobs };
