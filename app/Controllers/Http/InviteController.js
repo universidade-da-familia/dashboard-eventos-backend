@@ -22,28 +22,12 @@ class InviteController {
   }
 
   async store({ request }) {
-    const data = request.only(["event_id", "name", "email"]);
+    const data = request.only(["event_id", "event_type", "name", "email"]);
 
     const invite = await Invite.create(data);
 
     return invite;
   }
-  // async store({ request, response }) {
-  //   try {
-  //     const data = request.all();
-
-  //     const invite = await Invite.create(data);
-
-  //     return invite;
-  //   } catch (err) {
-  //     return response.status(err.status).send({
-  //       error: {
-  //         title: "Falha!",
-  //         message: "Erro ao criar o invite"
-  //       }
-  //     });
-  //   }
-  // }
 
   /**
    * Display a single layoutcertificate.
