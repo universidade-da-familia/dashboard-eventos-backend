@@ -22,8 +22,6 @@ class TransactionController {
   async payu({ request, response, view }) {
     const data = request.all();
 
-    console.log(data);
-
     await Mail.send(
       ["emails.payu"],
       {

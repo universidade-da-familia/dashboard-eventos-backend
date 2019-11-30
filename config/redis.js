@@ -35,6 +35,22 @@ module.exports = {
   |
   */
   local: {
+    host: "127.0.0.1",
+    port: 6379,
+    password: null,
+    db: 0,
+    keyPrefix: ""
+  },
+
+  /*
+  |--------------------------------------------------------------------------
+  | heroku connection config
+  |--------------------------------------------------------------------------
+  |
+  | Configuration for a named connection.
+  |
+  */
+  heroku: {
     host: Env.get("REDIS_HOST", REDIS_URL.hostname),
     port: Env.get("REDIS_PORT", REDIS_URL.port),
     user: Env.get("REDIS_USER", REDIS_URL.username),

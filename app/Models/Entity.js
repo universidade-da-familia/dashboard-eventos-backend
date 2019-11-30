@@ -29,8 +29,8 @@ class Entity extends Model {
       Kue.dispatch(
         Job.key,
         {
-          id,
           is_business: false,
+          id,
           name,
           firstname,
           lastname,
