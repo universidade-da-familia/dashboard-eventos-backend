@@ -1,5 +1,7 @@
 "use strict";
 
+const Env = use("Env");
+
 const Mail = use("Mail");
 
 const InviteHook = (exports = module.exports = {});
@@ -7,14 +9,18 @@ const InviteHook = (exports = module.exports = {});
 InviteHook.sendNewInviteMail = async inviteInstance => {
   if (!inviteInstance.email && !inviteInstance.dirty.email) return;
 
-  const { id, event_id, event_type, firstname, email } = inviteInstance;
+  const { id, event_id, event_type, name, email } = inviteInstance;
+  const node_env = Env.get("NODE_ENV");
 
   await Mail.send(
     ["emails.event_invite", "emails.event_invite-text"],
     {
       email,
-      firstname,
-      redirect_url: `http://172.16.3.26:3000/evento/${event_id}/checkout/convite/${id}`,
+      name,
+      redirect_url:
+        node_env === "development"
+          ? `http://172.16.0.188:3000/evento/${event_id}/convite/${id}/confirmacao`
+          : `https://eventos.udf.org.br/evento/${event_id}/convite/${id}/confirmaca`,
       event_type
     },
     message => {
