@@ -1,5 +1,7 @@
 "use strict";
 
+const Env = use("Env");
+
 module.exports = {
   /*
   |--------------------------------------------------------------------------
@@ -16,7 +18,16 @@ module.exports = {
   | Function - Receives the current origin and should return one of the above values.
   |
   */
-  origin: true,
+  origin: function(currentOrigin) {
+    if (Env.get("NODE_ENV") === "production") {
+      return (
+        currentOrigin ===
+        ["http://eventos.udf.org.br", "https://eventos.udf.org.br"]
+      );
+    } else {
+      return true;
+    }
+  },
 
   /*
   |--------------------------------------------------------------------------
