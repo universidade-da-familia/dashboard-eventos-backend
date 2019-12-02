@@ -18,16 +18,10 @@ module.exports = {
   | Function - Receives the current origin and should return one of the above values.
   |
   */
-  origin: function(currentOrigin) {
-    if (Env.get("NODE_ENV") === "production") {
-      return (
-        currentOrigin ===
-        ["http://eventos.udf.org.br", "https://eventos.udf.org.br"]
-      );
-    } else {
-      return true;
-    }
-  },
+  origin:
+    Env.get("NODE_ENV") === "production"
+      ? ["http://eventos.udf.org.br", "https://eventos.udf.org.br"]
+      : true,
 
   /*
   |--------------------------------------------------------------------------
