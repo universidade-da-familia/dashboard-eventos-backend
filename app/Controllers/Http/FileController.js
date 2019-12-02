@@ -30,62 +30,60 @@ class FileController {
   }
 
   async store({ request, response, params }) {
-    request.multipart
-      .file(
-        "file",
-        {
-          types: ["image"],
-          size: "2"
-        },
-        async file => {
-          try {
-            const ContentType = file.headers["content-type"];
-            const ACL = "public-read";
-            const Key = `${(Math.random() * 100).toString(32)}-${
-              file.clientName
-            }`;
+    request.multipart.file(
+      "file",
+      {
+        types: ["image"],
+        size: "2mb"
+      },
+      async file => {
+        try {
+          const ContentType = file.headers["content-type"];
+          const ACL = "public-read";
+          const Key = `${(Math.random() * 100).toString(32)}-${
+            file.clientName
+          }`;
 
-            const url = await Drive.put(Key, file.stream, {
-              ContentType,
-              ACL
-            });
+          const url = await Drive.put(Key, file.stream, {
+            ContentType,
+            ACL
+          });
 
-            const dbFile = await File.create({
-              file: Key,
-              name: file.clientName,
-              url,
-              type: ContentType,
-              subtype: file.subtype
-            });
+          const dbFile = await File.create({
+            file: Key,
+            name: file.clientName,
+            url,
+            type: ContentType,
+            subtype: file.subtype
+          });
 
-            if (params.type === "entity") {
-              const entity = await Entity.findOrFail(params.user_id);
+          if (params.type === "entity") {
+            const entity = await Entity.findOrFail(params.user_id);
 
-              entity.file_id = dbFile.id || entity.file_id;
+            entity.file_id = dbFile.id || entity.file_id;
 
-              await entity.save();
-            } else {
-              const organization = await Organization.findOrFail(
-                params.user_id
-              );
+            await entity.save();
+          } else {
+            const organization = await Organization.findOrFail(params.user_id);
 
-              organization.file_id = dbFile.id || organization.file_id;
+            organization.file_id = dbFile.id || organization.file_id;
 
-              await organization.save();
-            }
-
-            return response.status(200).send(file);
-          } catch (err) {
-            return response.status(err.status).send({
-              error: {
-                message: "Não foi possível enviar o arquivo!",
-                err_message: err.message
-              }
-            });
+            await organization.save();
           }
+
+          return response.status(200).send(file);
+        } catch (err) {
+          return response.status(err.status).send({
+            error: {
+              message: "Não foi possível enviar o arquivo!",
+              err_message: err.message
+            }
+          });
         }
-      )
-      .process();
+      }
+    );
+
+    await request.multipart.process();
   }
 
   async destroy({ params }) {
