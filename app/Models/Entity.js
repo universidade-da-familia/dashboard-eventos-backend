@@ -92,6 +92,10 @@ class Entity extends Model {
       .withTimestamps();
   }
 
+  church() {
+    return this.belongsTo("App/Models/Organization");
+  }
+
   organizators() {
     return this.belongsToMany("App/Models/Event")
       .pivotTable("organizators")
@@ -113,6 +117,10 @@ class Entity extends Model {
 
   orders() {
     return this.hasMany("App/Models/Order");
+  }
+
+  relationships() {
+    return this.hasMany("App/Models/Relationship");
   }
 }
 
