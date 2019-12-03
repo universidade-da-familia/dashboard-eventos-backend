@@ -120,7 +120,8 @@ class SessionController {
           "organizators",
           "participants",
           "orders.status",
-          "orders.transactions"
+          "orders.transactions",
+          "church"
         ])
       : await user.loadMany([
           "file",
@@ -129,7 +130,8 @@ class SessionController {
           "checkouts",
           "entityOrganizations",
           "events",
-          "orders.status"
+          "orders.status",
+          "entities"
         ]);
 
     return user;
