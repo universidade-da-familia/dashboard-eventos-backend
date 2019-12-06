@@ -167,14 +167,16 @@ class EventParticipantController {
           return response.status(200).send({
             error: {
               title: "Aviso!",
-              message: "Evento exclusivo para o sexo masculino."
+              message: "Evento exclusivo para o sexo masculino.",
+              type: "sex_type"
             }
           });
         } else {
           return response.status(200).send({
             error: {
               title: "Aviso!",
-              message: "Evento exclusivo para o sexo feminino."
+              message: "Evento exclusivo para o sexo feminino.",
+              type: "sex_type"
             }
           });
         }
@@ -183,7 +185,8 @@ class EventParticipantController {
       return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "Nenhum participante foi encontrado com este cpf"
+          message: "Nenhum participante foi encontrado com este CPF",
+          type: "not_found"
         }
       });
     }
