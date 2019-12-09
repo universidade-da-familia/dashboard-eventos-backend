@@ -62,7 +62,7 @@ class EventParticipantController {
         if (!event_participant.pivot.assistant && assistant) {
           await event.participants().detach([entity_id]);
 
-          event.participants_count = event.participants_count - 1;
+          // event.participants_count = event.participants_count - 1;
 
           await event.participants().attach([entity_id], row => {
             row.assistant = assistant;
@@ -96,9 +96,9 @@ class EventParticipantController {
 
       await event.participants().fetch();
 
-      if (!assistant) {
-        event.participants_count = event.participants_count + 1;
-      }
+      // if (!assistant) {
+      //   event.participants_count = event.participants_count + 1;
+      // }
 
       await event.save();
     } else {
@@ -207,15 +207,15 @@ class EventParticipantController {
       const participant = await Participant.findOrFail(params.id);
       const event = await Event.findOrFail(participant.event_id);
 
-      if (is_quitter) {
-        event.participants_count = event.participants_count - 1;
-        await event.save();
-      }
+      // if (is_quitter) {
+      //   event.participants_count = event.participants_count - 1;
+      //   await event.save();
+      // }
 
-      if (!is_quitter) {
-        event.participants_count = event.participants_count + 1;
-        await event.save();
-      }
+      // if (!is_quitter) {
+      //   event.participants_count = event.participants_count + 1;
+      //   await event.save();
+      // }
 
       participant.is_quitter = is_quitter;
 
@@ -247,9 +247,9 @@ class EventParticipantController {
 
       await event.participants().detach([participant.entity_id]);
 
-      if (!participant.assistant && !participant.is_quitter) {
-        event.participants_count = event.participants_count - 1;
-      }
+      // if (!participant.assistant && !participant.is_quitter) {
+      //   event.participants_count = event.participants_count - 1;
+      // }
 
       await event.participants().fetch();
 
