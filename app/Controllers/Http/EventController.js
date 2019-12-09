@@ -99,6 +99,7 @@ class EventController {
         "defaultEvent.lessons",
         "organization",
         "organizators.file",
+        "noQuitterParticipants",
         "participants.file",
         "invites",
         "lessonReports.attendances",

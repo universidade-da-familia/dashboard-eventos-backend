@@ -113,6 +113,7 @@ class EntityController {
       "families",
       "organizators.defaultEvent.ministery",
       "organizators.organization",
+      "organizators.noQuitterParticipants",
       "participants.defaultEvent.ministery",
       "creditCards",
       "addresses",

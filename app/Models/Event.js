@@ -47,6 +47,21 @@ class Event extends Model {
       .withTimestamps();
   }
 
+  noQuitterParticipants() {
+    return this.belongsToMany("App/Models/Entity")
+      .pivotTable("participants")
+      .withPivot([
+        "id",
+        "assistant",
+        "attendance_status",
+        "is_quitter",
+        "event_authorization"
+      ])
+      .withTimestamps()
+      .where("is_quitter", false)
+      .andWhere("assistant", false);
+  }
+
   participants() {
     return this.belongsToMany("App/Models/Entity")
       .pivotTable("participants")
