@@ -8,8 +8,14 @@ class RemoveColumnPgHierarquyEntitiesSchema extends Schema {
     this.table("entities", table => {
       // alter table
       table.dropColumn("pg_hierarchy_id");
-      table.integer("pg_hab_hierarchy_id");
-      table.integer("pg_yes_hierarchy_id");
+      table
+        .integer("pg_hab_hierarchy_id")
+        .unsigned()
+        .defaultTo(0);
+      table
+        .integer("pg_yes_hierarchy_id")
+        .unsigned()
+        .defaultTo(0);
     });
   }
 
