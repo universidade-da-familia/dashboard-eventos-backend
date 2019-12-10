@@ -36,7 +36,9 @@ class ProductController {
     try {
       const data = request.only([
         "name",
-        "unit_price",
+        "group_price",
+        "training_price",
+        "seminary_price",
         "netsuite_id",
         "weight",
         "width",
@@ -88,7 +90,9 @@ class ProductController {
     try {
       const data = request.only([
         "name",
-        "unit_price",
+        "group_price",
+        "training_price",
+        "seminary_price",
         "netsuite_id",
         "weight",
         "width",
