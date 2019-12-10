@@ -10,7 +10,9 @@ class Product {
   get rules() {
     return {
       name: "required",
-      unit_price: "required",
+      group_price: "required",
+      training_price: "required",
+      seminary_price: "required",
       netsuite_id: "required"
     };
   }
