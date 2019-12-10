@@ -29,7 +29,8 @@ class DefaultEventController {
       mp_hierarchy_id,
       ffi_hierarchy_id,
       gfi_hierarchy_id,
-      pg_hierarchy_id
+      pg_hab_hierarchy_id,
+      pg_yes_hierarchy_id
     } = request.only([
       "cmn_hierarchy_id",
       "mu_hierarchy_id",
@@ -37,7 +38,8 @@ class DefaultEventController {
       "mp_hierarchy_id",
       "ffi_hierarchy_id",
       "gfi_hierarchy_id",
-      "pg_hierarchy_id"
+      "pg_hab_hierarchy_id",
+      "pg_yes_hierarchy_id"
     ]);
 
     const cmn = await DefaultEvent.query()
@@ -82,9 +84,16 @@ class DefaultEventController {
       .with("kit.products")
       .fetch();
 
-    const pg = await DefaultEvent.query()
-      .where("organizator_hierarchy_id", "<=", pg_hierarchy_id)
+    const pg_hab = await DefaultEvent.query()
+      .where("organizator_hierarchy_id", "<=", pg_hab_hierarchy_id)
       .andWhere("ministery_id", 7)
+      .with("ministery")
+      .with("kit.products")
+      .fetch();
+
+    const pg_yes = await DefaultEvent.query()
+      .where("organizator_hierarchy_id", "<=", pg_yes_hierarchy_id)
+      .andWhere("ministery_id", 8)
       .with("ministery")
       .with("kit.products")
       .fetch();
@@ -96,7 +105,8 @@ class DefaultEventController {
       ...mp.toJSON(),
       ...ffi.toJSON(),
       ...gfi.toJSON(),
-      ...pg.toJSON()
+      ...pg_hab.toJSON(),
+      ...pg_yes.toJSON()
     ];
 
     return defaults;

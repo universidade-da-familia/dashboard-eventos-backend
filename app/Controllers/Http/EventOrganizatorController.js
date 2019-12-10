@@ -251,7 +251,7 @@ class EventOrganizatorController {
         }
         if (ministery_id === 7) {
           if (organizator_type === "leader") {
-            if (organizator.pg_hierarchy_id >= organizator_hierarchy_id) {
+            if (organizator.pg_hab_hierarchy_id >= organizator_hierarchy_id) {
               return organizator;
             } else {
               return response.status(200).send({
@@ -262,7 +262,32 @@ class EventOrganizatorController {
               });
             }
           } else if (organizator_type === "training_leader") {
-            if (organizator.pg_hierarchy_id >= assistant_hierarchy_id) {
+            if (organizator.pg_hab_hierarchy_id >= assistant_hierarchy_id) {
+              return organizator;
+            } else {
+              return response.status(200).send({
+                error: {
+                  title: "Aviso!",
+                  message: "O CPF Informado não pode ser assistente"
+                }
+              });
+            }
+          }
+        }
+        if (ministery_id === 8) {
+          if (organizator_type === "leader") {
+            if (organizator.pg_yes_hierarchy_id >= organizator_hierarchy_id) {
+              return organizator;
+            } else {
+              return response.status(200).send({
+                error: {
+                  title: "Aviso!",
+                  message: "O CPF Informado não é de um líder válido"
+                }
+              });
+            }
+          } else if (organizator_type === "training_leader") {
+            if (organizator.pg_yes_hierarchy_id >= assistant_hierarchy_id) {
               return organizator;
             } else {
               return response.status(200).send({

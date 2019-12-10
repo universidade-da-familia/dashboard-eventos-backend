@@ -44,7 +44,8 @@ class SessionController {
         user.mp_hierarchy_id < 2 &&
         user.ffi_hierarchy_id < 2 &&
         user.gfi_hierarchy_id < 2 &&
-        user.pg_hierarchy_id < 2
+        user.pg_hab_hierarchy_id < 2 &&
+        user.pg_yes_hierarchy_id < 2
       ) {
         return response.status(401).send({
           title: "Não permitido!",
