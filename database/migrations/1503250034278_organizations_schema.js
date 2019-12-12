@@ -27,7 +27,7 @@ class OrganizationsSchema extends Schema {
         .string("cnpj", 14)
         .notNullable()
         .unique();
-      table.string("inscricao_estadual", 12).unique();
+      table.string("inscricao_estadual", 20);
       table.date("foundation");
       table.string("phone", 20);
       table.string("alt_phone", 20);

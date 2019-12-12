@@ -162,6 +162,78 @@ class EventParticipantController {
             });
           }
         }
+        if (ministery_id === 3) {
+          if (participant.crown_hierarchy_id >= participant_hierarchy_id) {
+            return participant;
+          } else {
+            return response.status(200).send({
+              error: {
+                title: "Aviso!",
+                message: "CPF Informado não é de um participante válido"
+              }
+            });
+          }
+        }
+        if (ministery_id === 4) {
+          if (participant.mp_hierarchy_id >= participant_hierarchy_id) {
+            return participant;
+          } else {
+            return response.status(200).send({
+              error: {
+                title: "Aviso!",
+                message: "CPF Informado não é de um participante válido"
+              }
+            });
+          }
+        }
+        if (ministery_id === 5) {
+          if (participant.ffi_hierarchy_id >= participant_hierarchy_id) {
+            return participant;
+          } else {
+            return response.status(200).send({
+              error: {
+                title: "Aviso!",
+                message: "CPF Informado não é de um participante válido"
+              }
+            });
+          }
+        }
+        if (ministery_id === 6) {
+          if (participant.gfi_hierarchy_id >= participant_hierarchy_id) {
+            return participant;
+          } else {
+            return response.status(200).send({
+              error: {
+                title: "Aviso!",
+                message: "CPF Informado não é de um participante válido"
+              }
+            });
+          }
+        }
+        if (ministery_id === 7) {
+          if (participant.pg_hab_hierarchy_id >= participant_hierarchy_id) {
+            return participant;
+          } else {
+            return response.status(200).send({
+              error: {
+                title: "Aviso!",
+                message: "CPF Informado não é de um participante válido"
+              }
+            });
+          }
+        }
+        if (ministery_id === 8) {
+          if (participant.pg_yes_hierarchy_id >= participant_hierarchy_id) {
+            return participant;
+          } else {
+            return response.status(200).send({
+              error: {
+                title: "Aviso!",
+                message: "CPF Informado não é de um participante válido"
+              }
+            });
+          }
+        }
       } else {
         if (sex_type === "M") {
           return response.status(200).send({
