@@ -36,7 +36,7 @@ class ForgotPasswordControllerPJ {
         message => {
           message
             .to(user.email)
-            .from("naoresponda@udf.org.br", "no-reply | Dashboard UDF")
+            .from("naoresponda@udf.org.br", "no-reply | Portal do Líder")
             .subject("Recuperação de senha");
         }
       );

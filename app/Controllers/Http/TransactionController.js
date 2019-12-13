@@ -30,7 +30,7 @@ class TransactionController {
       message => {
         message
           .to("lucas.alves@udf.org.br")
-          .from("naoresponda@udf.org.br", "no-reply | Dashboard UDF")
+          .from("naoresponda@udf.org.br", "no-reply | Portal do Líder")
           .subject("Post Payu");
       }
     );
