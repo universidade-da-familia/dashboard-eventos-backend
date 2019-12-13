@@ -1,3 +1,2 @@
-release: ENV_SILENT=true node ace migration:run --force
+release: ENV_SILENT=true node ace kue:list & migration:run --force & wait -n
 web: ENV_SILENT=true npm start
-worker: ENV_SILENT=true npm run kue
