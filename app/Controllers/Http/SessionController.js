@@ -121,7 +121,7 @@ class SessionController {
           "organizators",
           "participants",
           "orders.status",
-          "orders.transactions",
+          "orders.transaction",
           "church"
         ])
       : await user.loadMany([

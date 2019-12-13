@@ -6,7 +6,6 @@
 
 const Database = use("Database");
 const Order = use("App/Models/Order");
-const OrderTransaction = use("App/Models/OrderTransaction");
 
 const axios = require("axios");
 
@@ -15,6 +14,15 @@ const api = axios.default.create({
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json"
+  }
+});
+
+const apiNetsuite = axios.default.create({
+  baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization:
+      "NLAuth nlauth_account=5260046, nlauth_email=lucas.alves@udf.org.br, nlauth_signature=0rZFiwRE!!@@##,nlauth_role=1077"
   }
 });
 
@@ -62,7 +70,27 @@ class OrderController {
 
       const { data: payuData } = responsePayu;
 
+      const orderNetsuite = {
+        entity: user,
+        products,
+        shipping_cost: order_details.shipping_amount,
+        shipping_cep: shipping_address.cep,
+        shipping_uf: shipping_address.uf,
+        shipping_city: shipping_address.city,
+        shipping_street: shipping_address.street,
+        shipping_street_number: shipping_address.street_number,
+        shipping_neighborhood: shipping_address.neighborhood,
+        shipping_complement: shipping_address.complement,
+        shipping_receiver: shipping_address.receiver
+      };
+
+      const responseNetsuite = await apiNetsuite.post(
+        "/restlet.nl?script=179&deploy=1",
+        orderNetsuite
+      );
+
       const order = await Order.create({
+        netsuite_id: responseNetsuite.data.id,
         status_id: 1,
         entity_id: user.id,
         payment_name: card === null ? "Boleto" : "Cartão de crédito",
@@ -93,7 +121,7 @@ class OrderController {
         }
       );
 
-      const transactions = await OrderTransaction.create({
+      const transaction = await order.transaction().create({
         order_id: order.id,
         transaction_id: payuData.transactionResponse.transactionId,
         api_order_id: payuData.transactionResponse.orderId,
@@ -102,7 +130,8 @@ class OrderController {
           payuData.transactionResponse.extraParameters.URL_PAYMENT_RECEIPT_HTML
       });
 
-      order.transactions = transactions;
+      order.products = await order.products().fetch();
+      order.transaction = transaction || order.transaction;
 
       return order;
     } catch (err) {
@@ -130,7 +159,7 @@ class OrderController {
 
       await order.loadMany([
         "status",
-        "transactions",
+        "transaction",
         "organization",
         "entity",
         "products"
