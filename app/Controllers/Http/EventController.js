@@ -26,6 +26,7 @@ class EventController {
       .with("defaultEvent.ministery")
       .with("organizators")
       .with("participants")
+      .with("noQuitterParticipants")
       .orderBy("id")
       .fetch();
 
