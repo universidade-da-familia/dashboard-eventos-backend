@@ -81,7 +81,8 @@ class OrderController {
         shipping_street_number: shipping_address.street_number,
         shipping_neighborhood: shipping_address.neighborhood,
         shipping_complement: shipping_address.complement,
-        shipping_receiver: shipping_address.receiver
+        shipping_receiver: shipping_address.receiver,
+        shipping_option
       };
 
       const responseNetsuite = await apiNetsuite.post(
