@@ -83,7 +83,7 @@ class Event extends Model {
     );
   }
 
-  static waitingForAdminPrintCertificates() {
+  static waitingForAdminPrintCertificates(page) {
     return this.query()
       .where("is_inscription_finished", true)
       .andWhere("is_admin_printed", false)
@@ -92,7 +92,8 @@ class Event extends Model {
       .with("organizators")
       .with("participants")
       .with("noQuitterParticipants")
-      .fetch();
+      .orderBy("start_date", "desc")
+      .paginate(page, 5);
   }
 }
 

@@ -51,14 +51,16 @@ class EventController {
       .with("organizators")
       .with("participants")
       .with("noQuitterParticipants")
-      .orderBy("id")
+      .orderBy("start_date", "desc")
       .paginate(page, 10);
 
     return events;
   }
 
-  async waitingForAdminPrintCertificates() {
-    const events = await Event.waitingForAdminPrintCertificates();
+  async waitingForAdminPrintCertificates({ request }) {
+    const { page } = request.get();
+
+    const events = await Event.waitingForAdminPrintCertificates(page);
 
     return events;
   }

@@ -141,6 +141,16 @@ define(["N/record"], function(record) {
         fieldId: "custbody_enl_trans_freightamount",
         value: 0
       });
+
+      salesOrder.setValue({
+        fieldId: "altshippingcost",
+        value: 0
+      });
+
+      salesOrder.setValue({
+        fieldId: "shippingcost",
+        value: 0
+      });
     }
 
     const shippingAddress = salesOrder.getSubrecord({
