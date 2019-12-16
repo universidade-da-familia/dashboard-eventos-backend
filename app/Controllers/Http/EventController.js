@@ -34,6 +34,30 @@ class EventController {
   }
 
   /**
+   * Show a list of all events.
+   * GET events
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async indexPaginate({ request }) {
+    const { page } = request.get();
+
+    const events = await Event.query()
+      .with("defaultEvent")
+      .with("defaultEvent.ministery")
+      .with("organizators")
+      .with("participants")
+      .with("noQuitterParticipants")
+      .orderBy("id")
+      .paginate(page, 10);
+
+    return events;
+  }
+
+  /**
    * Create/save a new event.
    * POST events
    *

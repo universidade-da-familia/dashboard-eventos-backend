@@ -70,6 +70,7 @@ Route.resource("programation", "ProgramationController").except([
 
 //CRUD event
 Route.resource("event", "EventController").except(["edit", "create"]);
+Route.get("event_paginate", "EventController.indexPaginate");
 
 //CRUD Organization
 Route.resource("organization", "OrganizationController").except([
