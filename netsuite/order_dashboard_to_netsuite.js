@@ -33,10 +33,114 @@ define(["N/record"], function(record) {
       fieldId: "custbody_enl_order_documenttype",
       value: "1"
     });
+    salesOrder.setValue({
+      fieldId: "custbodyudf_observacao_cliente",
+      value: "Pedido gerado automaticamente através da plataforma de líderes"
+    });
+
+    salesOrder.setValue({ fieldId: "custbody_enl_freighttype", value: "1" });
+
+    if (context.shipping_option.delivery_method_name === "Correios PAC") {
+      salesOrder.setValue({
+        fieldId: "shipmethod",
+        value: 3647
+      });
+
+      salesOrder.setValue({
+        fieldId: "custbody_enl_carrierid",
+        value: 4
+      });
+    } else if (
+      context.shipping_option.delivery_method_name === "Correios Sedex"
+    ) {
+      salesOrder.setValue({
+        fieldId: "shipmethod",
+        value: 3651
+      });
+
+      salesOrder.setValue({
+        fieldId: "custbody_enl_carrierid",
+        value: 5
+      });
+    } else if (
+      context.shipping_option.delivery_method_name === "Braspress Standard"
+    ) {
+      salesOrder.setValue({
+        fieldId: "shipmethod",
+        value: 3653
+      });
+
+      salesOrder.setValue({
+        fieldId: "custbody_enl_carrierid",
+        value: 3
+      });
+    } else if (
+      context.shipping_option.delivery_method_name === "Braspress Multiply"
+    ) {
+      salesOrder.setValue({
+        fieldId: "shipmethod",
+        value: 3652
+      });
+
+      salesOrder.setValue({
+        fieldId: "custbody_enl_carrierid",
+        value: 3
+      });
+    } else if (
+      context.shipping_option.delivery_method_name === "Braspress Aéreo"
+    ) {
+      salesOrder.setValue({
+        fieldId: "shipmethod",
+        value: 3654
+      });
+
+      salesOrder.setValue({
+        fieldId: "custbody_enl_carrierid",
+        value: 3
+      });
+    } else if (
+      context.shipping_option.delivery_method_name === "Azul Cargo Express"
+    ) {
+      salesOrder.setValue({
+        fieldId: "shipmethod",
+        value: 3655
+      });
+
+      salesOrder.setValue({
+        fieldId: "custbody_enl_carrierid",
+        value: 1
+      });
+    } else if (
+      context.shipping_option.delivery_method_name === "Araçalog Aéreo"
+    ) {
+      salesOrder.setValue({
+        fieldId: "shipmethod",
+        value: 3656
+      });
+
+      salesOrder.setValue({
+        fieldId: "custbody_enl_carrierid",
+        value: 2
+      });
+    } else if (
+      context.shipping_option.delivery_method_name === "Aracalog Standard"
+    ) {
+      salesOrder.setValue({
+        fieldId: "shipmethod",
+        value: 3657
+      });
+
+      salesOrder.setValue({
+        fieldId: "custbody_enl_carrierid",
+        value: 2
+      });
+    }
+
     if (context.shipping_cost === 0) {
-      salesOrder.setValue({ fieldId: "custbody_enl_freighttype", value: "1" });
-    } else {
-      salesOrder.setValue({ fieldId: "custbody_enl_freighttype", value: "2" });
+      salesOrder.setValue({
+        fieldId: "custbody_enl_trans_freightamount",
+        value: 0
+      });
     }
 
     const shippingAddress = salesOrder.getSubrecord({
@@ -45,7 +149,7 @@ define(["N/record"], function(record) {
 
     shippingAddress.setValue({
       fieldId: "addr1",
-      value: context.shipping_street
+      value: context.shipping_street + ", " + context.shipping_street_number
     });
     shippingAddress.setValue({
       fieldId: "city",
@@ -81,7 +185,7 @@ define(["N/record"], function(record) {
       salesOrder.setCurrentSublistValue({
         sublistId: "item",
         fieldId: "quantity",
-        value: product.pivot.quantity
+        value: product.quantity
       });
 
       salesOrder.commitLine({ sublistId: "item" });
