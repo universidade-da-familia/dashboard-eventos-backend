@@ -71,6 +71,10 @@ Route.resource("programation", "ProgramationController").except([
 //CRUD event
 Route.resource("event", "EventController").except(["edit", "create"]);
 Route.get("event_paginate", "EventController.indexPaginate");
+Route.get(
+  "event_for_print_certificate",
+  "EventController.waitingForAdminPrintCertificates"
+);
 
 //CRUD Organization
 Route.resource("organization", "OrganizationController").except([

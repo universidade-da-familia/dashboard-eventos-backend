@@ -57,6 +57,12 @@ class EventController {
     return events;
   }
 
+  async waitingForAdminPrintCertificates() {
+    const events = await Event.waitingForAdminPrintCertificates();
+
+    return events;
+  }
+
   /**
    * Create/save a new event.
    * POST events

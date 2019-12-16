@@ -82,6 +82,18 @@ class Event extends Model {
       "id"
     );
   }
+
+  static waitingForAdminPrintCertificates() {
+    return this.query()
+      .where("is_inscription_finished", true)
+      .andWhere("is_admin_printed", false)
+      .with("defaultEvent")
+      .with("defaultEvent.ministery")
+      .with("organizators")
+      .with("participants")
+      .with("noQuitterParticipants")
+      .fetch();
+  }
 }
 
 module.exports = Event;
