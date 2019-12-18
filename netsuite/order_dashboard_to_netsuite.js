@@ -38,6 +38,16 @@ define(["N/record"], function(record) {
       value: "Pedido gerado automaticamente através da plataforma de líderes"
     });
 
+    salesOrder.setValue({
+      fieldId: "custbody_rsc_payu_order_id",
+      value: context.payu_order_id
+    });
+
+    salesOrder.setValue({
+      fieldId: "custbody_rsc_payu_json",
+      value: context.payu_json
+    });
+
     salesOrder.setValue({ fieldId: "custbody_enl_freighttype", value: "1" });
 
     if (context.shipping_option.delivery_method_name === "Correios PAC") {

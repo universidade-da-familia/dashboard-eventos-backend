@@ -63,6 +63,9 @@ class OrderController {
         payu
       } = data;
 
+      console.log(payu);
+      console.log("------");
+
       const responsePayu = await api.post(
         "/payments-api/4.0/service.cgi",
         payu
@@ -70,9 +73,28 @@ class OrderController {
 
       const { data: payuData } = responsePayu;
 
+      console.log(payuData);
+
+      if (
+        card !== null &&
+        payuData.transactionResponse.responseCode !== "APPROVED"
+      ) {
+        return response.status(400).send({
+          title: "Falha!",
+          message: "Houve um problema com o pagamento.",
+          payu: payuData.transactionResponse.responseCode
+        });
+      }
+
       const orderNetsuite = {
         entity: user,
         products,
+        payu_order_id: payu.transaction.order.referenceCode,
+        payu_json:
+          card === null
+            ? payuData.transactionResponse.extraParameters
+                .URL_PAYMENT_RECEIPT_HTML
+            : "Pagamento aprovado com cartão de crédito",
         shipping_cost: order_details.shipping_amount,
         shipping_cep: shipping_address.cep,
         shipping_uf: shipping_address.uf,
@@ -92,7 +114,7 @@ class OrderController {
 
       const order = await Order.create({
         netsuite_id: responseNetsuite.data.id,
-        status_id: 1,
+        status_id: card === null ? 1 : 2,
         entity_id: user.id,
         payment_name: card === null ? "Boleto" : "Cartão de crédito",
         shipping_name: shipping_option.delivery_method_name,
@@ -128,7 +150,10 @@ class OrderController {
         api_order_id: payuData.transactionResponse.orderId,
         status: payuData.transactionResponse.state,
         boleto_url:
-          payuData.transactionResponse.extraParameters.URL_PAYMENT_RECEIPT_HTML
+          card === null
+            ? payuData.transactionResponse.extraParameters
+                .URL_PAYMENT_RECEIPT_HTML
+            : null
       });
 
       order.products = await order.products().fetch();
