@@ -43,24 +43,66 @@ class EventController {
    * @param {View} ctx.view
    */
   async indexPaginate({ request }) {
-    const { page } = request.get();
+    const { page, filterData } = request.only(["page", "filterData"]);
 
     const events = await Event.query()
-      .with("defaultEvent")
       .with("defaultEvent.ministery")
       .with("organizators")
       .with("participants")
       .with("noQuitterParticipants")
-      .orderBy("start_date", "desc")
+      .whereHas("defaultEvent", builder => {
+        if (!!filterData.event_type) {
+          builder.where("event_type", filterData.event_type);
+        }
+        if (!!filterData.ministery) {
+          builder.where("ministery_id", filterData.ministery);
+        }
+        builder.whereRaw(
+          "LOWER(name) like '%' || LOWER(?) || '%'",
+          filterData.event_description
+        );
+      })
+      .where(function() {
+        const currentDate = new Date();
+        const [start_date] = filterData.start_date.split("T");
+        const [end_date] = filterData.end_date.split("T");
+
+        if (!!filterData.id) {
+          this.where("id", filterData.id);
+        }
+
+        if (filterData.status === "Finalizado") {
+          this.where("is_finished", true);
+        }
+        if (filterData.status === "Não iniciado") {
+          this.where("start_date", ">", currentDate);
+          this.where("is_finished", false);
+        }
+        if (filterData.status === "Em andamento") {
+          this.where("start_date", "<=", currentDate);
+          this.where("is_finished", false);
+        }
+
+        if (!!start_date) {
+          this.where("start_date", ">=", start_date);
+        }
+        if (!!end_date) {
+          this.where("start_date", "<=", end_date);
+        }
+      })
       .paginate(page, 10);
 
     return events;
   }
 
   async waitingForAdminPrintCertificates({ request }) {
-    const { page } = request.get();
+    const { page, filterPrintData } = request.only(["page", "filterPrintData"]);
+    console.log(filterPrintData);
 
-    const events = await Event.waitingForAdminPrintCertificates(page);
+    const events = await Event.waitingForAdminPrintCertificates(
+      page,
+      filterPrintData
+    );
 
     return events;
   }

@@ -83,15 +83,59 @@ class Event extends Model {
     );
   }
 
-  static waitingForAdminPrintCertificates(page) {
+  adminPrint() {
+    return this.belongsTo("App/Models/Entity", "admin_print_id", "id");
+  }
+
+  static waitingForAdminPrintCertificates(page, filterPrintData) {
     return this.query()
-      .where("is_inscription_finished", true)
-      .andWhere("is_admin_printed", false)
-      .with("defaultEvent")
       .with("defaultEvent.ministery")
       .with("organizators")
       .with("participants")
       .with("noQuitterParticipants")
+      .whereHas("defaultEvent", builder => {
+        if (!!filterPrintData.event_type) {
+          builder.where("event_type", filterPrintData.event_type);
+        }
+        if (!!filterPrintData.ministery) {
+          builder.where("ministery_id", filterPrintData.ministery);
+        }
+        builder.whereRaw(
+          "LOWER(name) like '%' || LOWER(?) || '%'",
+          filterPrintData.event_description
+        );
+      })
+      .where(function() {
+        const currentDate = new Date();
+        const [start_date] = filterPrintData.start_date.split("T");
+        const [end_date] = filterPrintData.end_date.split("T");
+
+        this.where("is_inscription_finished", true);
+        this.where("is_admin_printed", false);
+
+        if (!!filterPrintData.id) {
+          this.where("id", filterPrintData.id);
+        }
+
+        if (filterPrintData.status === "Finalizado") {
+          this.where("is_finished", true);
+        }
+        if (filterPrintData.status === "Não iniciado") {
+          this.where("start_date", ">", currentDate);
+          this.where("is_finished", false);
+        }
+        if (filterPrintData.status === "Em andamento") {
+          this.where("start_date", "<=", currentDate);
+          this.where("is_finished", false);
+        }
+
+        if (!!start_date) {
+          this.where("start_date", ">=", start_date);
+        }
+        if (!!end_date) {
+          this.where("start_date", "<=", end_date);
+        }
+      })
       .orderBy("start_date", "desc")
       .paginate(page, 5);
   }
