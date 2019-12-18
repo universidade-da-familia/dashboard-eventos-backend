@@ -130,6 +130,10 @@ class Entity extends Model {
       .withTimestamps();
   }
 
+  adminPrints() {
+    return this.hasMany("App/Models/Event", "id", "admin_print_id");
+  }
+
   orders() {
     return this.hasMany("App/Models/Order");
   }
