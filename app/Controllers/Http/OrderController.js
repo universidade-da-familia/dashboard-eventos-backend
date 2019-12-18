@@ -63,17 +63,12 @@ class OrderController {
         payu
       } = data;
 
-      console.log(payu);
-      console.log("------");
-
       const responsePayu = await api.post(
         "/payments-api/4.0/service.cgi",
         payu
       );
 
       const { data: payuData } = responsePayu;
-
-      console.log(payuData);
 
       if (
         card !== null &&

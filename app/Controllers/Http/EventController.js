@@ -97,7 +97,6 @@ class EventController {
 
   async waitingForAdminPrintCertificates({ request }) {
     const { page, filterPrintData } = request.only(["page", "filterPrintData"]);
-    console.log(filterPrintData);
 
     const events = await Event.waitingForAdminPrintCertificates(
       page,

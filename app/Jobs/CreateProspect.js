@@ -43,8 +43,6 @@ class CreateProspect {
       cpf_cnpj
     });
 
-    console.log(response.data);
-
     const entity = await Entity.findOrFail(id);
 
     entity.netsuite_id = response.data.id || entity.netsuite_id;

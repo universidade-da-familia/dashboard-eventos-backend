@@ -94,37 +94,37 @@ class Event extends Model {
       .with("participants")
       .with("noQuitterParticipants")
       .whereHas("defaultEvent", builder => {
-        if (!!filterPrintData.event_type) {
-          builder.where("event_type", filterPrintData.event_type);
+        if (!!filterPrintData.event_type_print) {
+          builder.where("event_type", filterPrintData.event_type_print);
         }
-        if (!!filterPrintData.ministery) {
-          builder.where("ministery_id", filterPrintData.ministery);
+        if (!!filterPrintData.ministery_print) {
+          builder.where("ministery_id", filterPrintData.ministery_print);
         }
         builder.whereRaw(
           "LOWER(name) like '%' || LOWER(?) || '%'",
-          filterPrintData.event_description
+          filterPrintData.event_description_print
         );
       })
       .where(function() {
         const currentDate = new Date();
-        const [start_date] = filterPrintData.start_date.split("T");
-        const [end_date] = filterPrintData.end_date.split("T");
+        const [start_date] = filterPrintData.start_date_print.split("T");
+        const [end_date] = filterPrintData.end_date_print.split("T");
 
         this.where("is_inscription_finished", true);
         this.where("is_admin_printed", false);
 
-        if (!!filterPrintData.id) {
-          this.where("id", filterPrintData.id);
+        if (!!filterPrintData.id_print) {
+          this.where("id", filterPrintData.id_print);
         }
 
-        if (filterPrintData.status === "Finalizado") {
+        if (filterPrintData.status_print === "Finalizado") {
           this.where("is_finished", true);
         }
-        if (filterPrintData.status === "Não iniciado") {
+        if (filterPrintData.status_print === "Não iniciado") {
           this.where("start_date", ">", currentDate);
           this.where("is_finished", false);
         }
-        if (filterPrintData.status === "Em andamento") {
+        if (filterPrintData.status_print === "Em andamento") {
           this.where("start_date", "<=", currentDate);
           this.where("is_finished", false);
         }
