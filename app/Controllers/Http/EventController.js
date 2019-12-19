@@ -90,6 +90,7 @@ class EventController {
           this.where("start_date", "<=", end_date);
         }
       })
+      .orderBy("start_date", "desc")
       .paginate(page, 10);
 
     return events;
