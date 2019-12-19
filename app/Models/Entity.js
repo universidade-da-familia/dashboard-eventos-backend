@@ -3,8 +3,16 @@
 const Model = use("Model");
 const Hash = use("Hash");
 
-const Kue = use("Kue");
-const Job = use("App/Jobs/CreateProspect");
+const axios = require("axios");
+
+const api = axios.default.create({
+  baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization:
+      "NLAuth nlauth_account=5260046, nlauth_email=lucas.alves@udf.org.br, nlauth_signature=0rZFiwRE!!@@##,nlauth_role=1077"
+  }
+});
 
 const moment = require("moment");
 
@@ -12,13 +20,13 @@ class Entity extends Model {
   static boot() {
     super.boot();
 
-    this.addHook("beforeSave", async userInstance => {
-      if (userInstance.dirty.password) {
-        userInstance.password = await Hash.make(userInstance.password);
+    this.addHook("beforeSave", async entityInstance => {
+      if (entityInstance.dirty.password) {
+        entityInstance.password = await Hash.make(entityInstance.password);
       }
     });
 
-    this.addHook("afterCreate", async entityInstance => {
+    this.addHook("beforeCreate", async entityInstance => {
       const { id, name, email, cpf } = entityInstance;
 
       const fullname = name.split(" ");
@@ -26,21 +34,55 @@ class Entity extends Model {
       fullname.shift();
       const lastname = fullname.length >= 1 ? fullname.join(" ") : "";
 
-      Kue.dispatch(
-        Job.key,
-        {
-          is_business: false,
-          id,
-          name,
-          firstname,
-          lastname,
-          email,
-          cpf_cnpj: cpf
-        },
-        {
-          attempts: 5
-        }
-      );
+      const response = await api.post("/restlet.nl?script=162&deploy=1", {
+        is_business: false,
+        id,
+        name,
+        firstname,
+        lastname,
+        email,
+        cpf_cnpj: cpf
+      });
+
+      entityInstance.netsuite_id =
+        response.data.id || entityInstance.netsuite_id;
+      entityInstance.entity_type = "prospect" || entityInstance.entity_type;
+    });
+
+    this.addHook("beforeUpdate", async entityInstance => {
+      const {
+        id,
+        netsuite_id,
+        personal_state_id,
+        name,
+        email,
+        cpf,
+        birthday,
+        sex,
+        phone,
+        alt_phone
+      } = entityInstance;
+
+      const fullname = name.split(" ");
+      const firstname = fullname[0];
+      fullname.shift();
+      const lastname = fullname.length >= 1 ? fullname.join(" ") : "";
+
+      const response = await api.put("/restlet.nl?script=182&deploy=1", {
+        is_business: false,
+        id,
+        netsuite_id,
+        personal_state_id,
+        name,
+        firstname,
+        lastname,
+        email,
+        cpf_cnpj: cpf,
+        new_birthday: new Date(moment(birthday).format("DD/MM/YYYY")),
+        sex,
+        phone,
+        alt_phone
+      });
     });
   }
 

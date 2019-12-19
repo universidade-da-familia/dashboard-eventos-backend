@@ -47,10 +47,6 @@ define(["N/search", "N/record"], function(search, record) {
 
       if (context.is_business) {
         customer.setValue({
-          fieldId: "custentity_enl_legalname",
-          value: context.name
-        });
-        customer.setValue({
           fieldId: "companyname",
           value: context.company_name
         });
@@ -60,15 +56,24 @@ define(["N/search", "N/record"], function(search, record) {
         });
         customer.setValue({ fieldId: "isperson", value: "F" });
       } else {
-        customer.setValue({
-          fieldId: "custentity_enl_legalname",
-          value: context.name
-        });
         customer.setValue({ fieldId: "firstname", value: context.firstname });
         customer.setValue({ fieldId: "lastname", value: context.lastname });
         customer.setValue({ fieldId: "isperson", value: "T" });
+        customer.setValue({ fieldId: "custentity_enl_ienum", value: "ISENTO" });
       }
 
+      customer.setValue({
+        fieldId: "custentity_enl_enviarnota",
+        value: true
+      });
+      customer.setValue({
+        fieldId: "custentity_enl_legalname",
+        value: context.name
+      });
+      customer.setValue({
+        fieldId: "custentity_enl_ent_activitysector",
+        value: 4
+      });
       customer.setValue({
         fieldId: "custentityid_dashboard_cliente",
         value: context.id
