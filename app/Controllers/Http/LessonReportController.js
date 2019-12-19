@@ -69,9 +69,9 @@ class LessonReportController {
       const lessonReport = await LessonReport.findOrFail(params.id);
 
       lessonReport.date = date || lessonReport.date;
-      lessonReport.offer = offer || lessonReport.offer;
-      lessonReport.testimony = testimony || lessonReport.testimony;
-      lessonReport.doubts = doubts || lessonReport.doubts;
+      lessonReport.offer = offer;
+      lessonReport.testimony = testimony;
+      lessonReport.doubts = doubts;
       lessonReport.is_finished = true;
 
       await lessonReport.save();
