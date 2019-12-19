@@ -84,6 +84,11 @@ class OrderController {
       const orderNetsuite = {
         entity: user,
         products,
+        card,
+        installments:
+          card !== null
+            ? payu.transactions.extraParameters.INSTALLMENTS_NUMBER
+            : 1,
         payu_order_id: payu.transaction.order.referenceCode,
         payu_json:
           card === null

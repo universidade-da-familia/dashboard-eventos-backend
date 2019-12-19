@@ -24,7 +24,23 @@ define(["N/record"], function(record) {
     salesOrder.setValue({ fieldId: "department", value: "3" });
     salesOrder.setValue({ fieldId: "class", value: "1" });
     salesOrder.setValue({ fieldId: "location", value: "1" });
-    salesOrder.setValue({ fieldId: "terms", value: "10" });
+
+    if (context.card === null) {
+      salesOrder.setValue({ fieldId: "terms", value: "10" });
+    } else {
+      if (context.installments === 1) {
+        salesOrder.setValue({ fieldId: "terms", value: "1" });
+      }
+
+      if (context.installments === 2) {
+        salesOrder.setValue({ fieldId: "terms", value: "15" });
+      }
+
+      if (context.installments === 3) {
+        salesOrder.setValue({ fieldId: "terms", value: "16" });
+      }
+    }
+
     salesOrder.setValue({
       fieldId: "custbody_enl_operationtypeid",
       value: "1"
@@ -206,6 +222,11 @@ define(["N/record"], function(record) {
         sublistId: "item",
         fieldId: "quantity",
         value: product.quantity
+      });
+      salesOrder.setCurrentSublistValue({
+        sublistId: "item",
+        fieldId: "price",
+        value: 7
       });
 
       salesOrder.commitLine({ sublistId: "item" });
