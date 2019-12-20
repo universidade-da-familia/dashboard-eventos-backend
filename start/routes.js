@@ -17,6 +17,8 @@ Route.resource("entity", "EntityController").except([
 ]);
 Route.post("entity", "EntityController.store").validator("Entity");
 
+Route.put("entity_hierarchy", "EntityHierarchyController.update");
+
 //CRUD familia
 Route.resource("family", "FamilyController");
 

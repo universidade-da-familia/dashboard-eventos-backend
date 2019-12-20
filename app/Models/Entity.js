@@ -183,6 +183,85 @@ class Entity extends Model {
   relationships() {
     return this.hasMany("App/Models/Relationship");
   }
+
+  static updateHierarchy(id, hierarchyName, hierarchyId) {
+    if (hierarchyName === "cmn_hierarchy_id") {
+      console.log("entreiaqui");
+
+      console.log(hierarchyName);
+      console.log(hierarchyId);
+      const entities = this.query()
+        .where(function() {
+          this.whereIn("id", id).andWhere(hierarchyName, "<", hierarchyId);
+        })
+        .update({ cmn_hierarchy_id: hierarchyId });
+
+      return entities;
+    }
+    if (hierarchyName === "mu_hierarchy_id") {
+      const entities = this.query()
+        .where(function() {
+          this.whereIn("id", id).andWhere(hierarchyName, "<", hierarchyId);
+        })
+        .update({ mu_hierarchy_id: hierarchyId });
+
+      return entities;
+    }
+    if (hierarchyName === "crown_hierarchy_id") {
+      const entities = this.query()
+        .where(function() {
+          this.whereIn("id", id).andWhere(hierarchyName, "<", hierarchyId);
+        })
+        .update({ crown_hierarchy_id: hierarchyId });
+
+      return entities;
+    }
+    if (hierarchyName === "mp_hierarchy_id") {
+      const entities = this.query()
+        .where(function() {
+          this.whereIn("id", id).andWhere(hierarchyName, "<", hierarchyId);
+        })
+        .update({ mp_hierarchy_id: hierarchyId });
+
+      return entities;
+    }
+    if (hierarchyName === "ffi_hierarchy_id") {
+      const entities = this.query()
+        .where(function() {
+          this.whereIn("id", id).andWhere(hierarchyName, "<", hierarchyId);
+        })
+        .update({ ffi_hierarchy_id: hierarchyId });
+
+      return entities;
+    }
+    if (hierarchyName === "gfi_hierarchy_id") {
+      const entities = this.query()
+        .where(function() {
+          this.whereIn("id", id).andWhere(hierarchyName, "<", hierarchyId);
+        })
+        .update({ gfi_hierarchy_id: hierarchyId });
+
+      return entities;
+    }
+    if (hierarchyName === "pg_hab_hierarchy_id") {
+      const entities = this.query()
+        .where(function() {
+          this.whereIn("id", id).andWhere(hierarchyName, "<", hierarchyId);
+        })
+        .update({ pg_hab_hierarchy_id: hierarchyId });
+
+      return entities;
+    }
+    if (hierarchyName === "pg_yes_hierarchy_id") {
+      const entities = this.query()
+        .where(function() {
+          this.whereIn("id", id).andWhere(hierarchyName, "<", hierarchyId);
+        })
+        .update({ pg_yes_hierarchy_id: hierarchyId });
+
+      return entities;
+    }
+  }
 }
 
 module.exports = Entity;
