@@ -42,28 +42,6 @@ class EventController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async teste () {
-    const events = await Event.query()
-      .with('defaultEvent')
-      .with('defaultEvent.ministery')
-      .with('organizators')
-      .with('participants')
-      .with('noQuitterParticipants')
-      .orderBy('id')
-      .fetch()
-
-    return events
-  }
-
-  /**
-   * Show a list of all events.
-   * GET events
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
   async indexPaginate ({ request }) {
     const { page, filterData } = request.only(['page', 'filterData'])
 
