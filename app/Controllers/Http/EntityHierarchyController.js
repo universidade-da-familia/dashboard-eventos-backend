@@ -1,10 +1,13 @@
-"use strict";
+'use strict'
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Entity = use("App/Models/Entity");
+const Entity = use('App/Models/Entity')
+const LessonReport = use('App/Models/LessonReport')
+const Attendance = use('App/Models/Attendance')
+const Event = use('App/Models/Event')
 
 /**
  * Resourceful controller for interacting with entityhierarchies
@@ -19,7 +22,7 @@ class EntityHierarchyController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response }) {}
+  async index ({ request, response }) {}
 
   /**
    * Render a form to be used for creating a new entityhierarchy.
@@ -30,7 +33,7 @@ class EntityHierarchyController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create({ request, response }) {}
+  async create ({ request, response }) {}
 
   /**
    * Create/save a new entityhierarchy.
@@ -40,7 +43,7 @@ class EntityHierarchyController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {}
+  async store ({ request, response }) {}
 
   /**
    * Display a single entityhierarchy.
@@ -51,7 +54,7 @@ class EntityHierarchyController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response }) {}
+  async show ({ params, request, response }) {}
 
   /**
    * Render a form to update an existing entityhierarchy.
@@ -62,7 +65,7 @@ class EntityHierarchyController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit({ params, request, response }) {}
+  async edit ({ params, request, response }) {}
 
   /**
    * Update entityhierarchy details.
@@ -72,16 +75,49 @@ class EntityHierarchyController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ request }) {
-    const { id, hierarchyName, hierarchyId } = request.only([
-      "id",
-      "hierarchyName",
-      "hierarchyId"
-    ]);
+  async update ({ params, request }) {
+    const { entitiesId, hierarchyName, hierarchyWillBecome } = request.only([
+      'entitiesId',
+      'hierarchyName',
+      'hierarchyWillBecome'
+    ])
 
-    const entities = Entity.updateHierarchy(id, hierarchyName, hierarchyId);
+    const event = await Event.findOrFail(params.event_id)
+    await event.load('defaultEvent')
 
-    return entities;
+    const lessonReportsId = await LessonReport.query()
+      .select('id')
+      .where('event_id', params.event_id)
+      .pluck('id')
+
+    const attendances = await Attendance.query()
+      .whereIn('lesson_report_id', lessonReportsId)
+      .with('participant')
+      .fetch()
+
+    let count = 0
+
+    const approvedEntities = entitiesId.filter(entity => {
+      count = 0
+
+      attendances.toJSON().map(attendance => {
+        if (attendance.participant.entity_id === entity) {
+          if (!attendance.is_present) {
+            count += 1
+          }
+        }
+      })
+
+      if (count <= event.toJSON().defaultEvent.max_faults) {
+        return entity
+      }
+    })
+
+    console.log(approvedEntities)
+
+    const entities = Entity.updateHierarchy(approvedEntities, hierarchyName, hierarchyWillBecome)
+
+    return entities
   }
 
   /**
@@ -92,7 +128,7 @@ class EntityHierarchyController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy ({ params, request, response }) {}
 }
 
-module.exports = EntityHierarchyController;
+module.exports = EntityHierarchyController

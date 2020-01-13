@@ -1,11 +1,11 @@
-"use strict";
+'use strict'
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Database = use("Database");
-const Event = use("App/Models/Event");
+const Database = use('Database')
+const Event = use('App/Models/Event')
 
 /**
  * Resourceful controller for interacting with events
@@ -20,17 +20,17 @@ class EventController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index() {
+  async index () {
     const events = await Event.query()
-      .with("defaultEvent")
-      .with("defaultEvent.ministery")
-      .with("organizators")
-      .with("participants")
-      .with("noQuitterParticipants")
-      .orderBy("id")
-      .fetch();
+      .with('defaultEvent')
+      .with('defaultEvent.ministery')
+      .with('organizators')
+      .with('participants')
+      .with('noQuitterParticipants')
+      .orderBy('id')
+      .fetch()
 
-    return events;
+    return events
   }
 
   /**
@@ -42,69 +42,91 @@ class EventController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async indexPaginate({ request }) {
-    const { page, filterData } = request.only(["page", "filterData"]);
+  async teste () {
+    const events = await Event.query()
+      .with('defaultEvent')
+      .with('defaultEvent.ministery')
+      .with('organizators')
+      .with('participants')
+      .with('noQuitterParticipants')
+      .orderBy('id')
+      .fetch()
+
+    return events
+  }
+
+  /**
+   * Show a list of all events.
+   * GET events
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async indexPaginate ({ request }) {
+    const { page, filterData } = request.only(['page', 'filterData'])
 
     const events = await Event.query()
-      .with("defaultEvent.ministery")
-      .with("organizators")
-      .with("participants")
-      .with("noQuitterParticipants")
-      .whereHas("defaultEvent", builder => {
-        if (!!filterData.event_type) {
-          builder.where("event_type", filterData.event_type);
+      .with('defaultEvent.ministery')
+      .with('organizators')
+      .with('participants')
+      .with('noQuitterParticipants')
+      .whereHas('defaultEvent', builder => {
+        if (filterData.event_type) {
+          builder.where('event_type', filterData.event_type)
         }
-        if (!!filterData.ministery) {
-          builder.where("ministery_id", filterData.ministery);
+        if (filterData.ministery) {
+          builder.where('ministery_id', filterData.ministery)
         }
         builder.whereRaw(
           "LOWER(name) like '%' || LOWER(?) || '%'",
           filterData.event_description
-        );
+        )
       })
-      .where(function() {
-        const currentDate = new Date();
-        const [start_date] = filterData.start_date.split("T");
-        const [end_date] = filterData.end_date.split("T");
+      .where(function () {
+        const currentDate = new Date()
+        const [start_date] = filterData.start_date.split('T')
+        const [end_date] = filterData.end_date.split('T')
 
-        if (!!filterData.id) {
-          this.where("id", filterData.id);
-        }
-
-        if (filterData.status === "Finalizado") {
-          this.where("is_finished", true);
-        }
-        if (filterData.status === "Não iniciado") {
-          this.where("start_date", ">", currentDate);
-          this.where("is_finished", false);
-        }
-        if (filterData.status === "Em andamento") {
-          this.where("start_date", "<=", currentDate);
-          this.where("is_finished", false);
+        if (filterData.id) {
+          this.where('id', filterData.id)
         }
 
-        if (!!start_date) {
-          this.where("start_date", ">=", start_date);
+        if (filterData.status === 'Finalizado') {
+          this.where('is_finished', true)
         }
-        if (!!end_date) {
-          this.where("start_date", "<=", end_date);
+        if (filterData.status === 'Não iniciado') {
+          this.where('start_date', '>', currentDate)
+          this.where('is_finished', false)
+        }
+        if (filterData.status === 'Em andamento') {
+          this.where('start_date', '<=', currentDate)
+          this.where('is_finished', false)
+        }
+
+        if (start_date) {
+          this.where('start_date', '>=', start_date)
+        }
+        if (end_date) {
+          this.where('start_date', '<=', end_date)
         }
       })
-      .orderBy("start_date", "desc")
-      .paginate(page, 10);
+      .orderBy('start_date', 'desc')
+      .paginate(page, 10)
 
-    return events;
+    return events
   }
 
-  async waitingForAdminPrintCertificates({ request }) {
-    const { page, filterPrintData } = request.only(["page", "filterPrintData"]);
+  async waitingForAdminPrintCertificates ({ request }) {
+    const { page, filterPrintData } = request.only(['page', 'filterPrintData'])
 
     const events = await Event.waitingForAdminPrintCertificates(
       page,
       filterPrintData
-    );
+    )
 
-    return events;
+    return events
   }
 
   /**
@@ -115,15 +137,15 @@ class EventController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {
+  async store ({ request, response }) {
     try {
-      const data = request.all();
+      const data = request.all()
 
-      const trx = await Database.beginTransaction();
+      const trx = await Database.beginTransaction()
 
-      const event = await Event.create(data, trx);
+      const event = await Event.create(data, trx)
 
-      await event.load("defaultEvent.lessons");
+      await event.load('defaultEvent.lessons')
 
       const lessons = event.toJSON().defaultEvent.lessons.map(lesson => {
         return {
@@ -134,23 +156,23 @@ class EventController {
           testimony: null,
           doubts: null,
           is_finished: false
-        };
-      });
+        }
+      })
 
-      await event.lessonReports().createMany(lessons, trx);
+      await event.lessonReports().createMany(lessons, trx)
 
-      await trx.commit();
+      await trx.commit()
 
-      await event.load("lessonReports");
+      await event.load('lessonReports')
 
-      return event;
+      return event
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Erro ao criar o evento"
+          title: 'Falha!',
+          message: 'Erro ao criar o evento'
         }
-      });
+      })
     }
   }
 
@@ -163,32 +185,32 @@ class EventController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, response }) {
+  async show ({ params, response }) {
     try {
-      const event = await Event.findOrFail(params.id);
+      const event = await Event.findOrFail(params.id)
 
       await event.loadMany([
-        "defaultEvent.ministery",
-        "defaultEvent.kit.products",
-        "defaultEvent.layoutCertificate",
-        "defaultEvent.lessons",
-        "organization",
-        "organizators.file",
-        "noQuitterParticipants",
-        "participants.file",
-        "invites",
-        "lessonReports.attendances",
-        "lessonReports.lesson"
-      ]);
+        'defaultEvent.ministery',
+        'defaultEvent.kit.products',
+        'defaultEvent.layoutCertificate',
+        'defaultEvent.lessons',
+        'organization',
+        'organizators.file',
+        'noQuitterParticipants',
+        'participants.file',
+        'invites',
+        'lessonReports.attendances',
+        'lessonReports.lesson'
+      ])
 
-      return event;
+      return event
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Erro ao mostrar o evento"
+          title: 'Falha!',
+          message: 'Erro ao mostrar o evento'
         }
-      });
+      })
     }
   }
 
@@ -200,24 +222,24 @@ class EventController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {
+  async update ({ params, request, response }) {
     try {
-      const data = request.all();
+      const data = request.all()
 
-      const event = await Event.findOrFail(params.id);
+      const event = await Event.findOrFail(params.id)
 
-      event.merge(data);
+      event.merge(data)
 
-      await event.save();
+      await event.save()
 
-      return event;
+      return event
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Erro ao atualizar o evento"
+          title: 'Falha!',
+          message: 'Erro ao atualizar o evento'
         }
-      });
+      })
     }
   }
 
@@ -229,25 +251,25 @@ class EventController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, response }) {
+  async destroy ({ params, response }) {
     try {
-      const event = await Event.findOrFail(params.id);
+      const event = await Event.findOrFail(params.id)
 
-      await event.delete();
+      await event.delete()
 
       return response.status(200).send({
-        title: "Sucesso!",
-        message: "O evento foi removido."
-      });
+        title: 'Sucesso!',
+        message: 'O evento foi removido.'
+      })
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Erro ao deletar o evento"
+          title: 'Falha!',
+          message: 'Erro ao deletar o evento'
         }
-      });
+      })
     }
   }
 }
 
-module.exports = EventController;
+module.exports = EventController
