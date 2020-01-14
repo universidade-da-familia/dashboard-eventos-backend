@@ -20,7 +20,6 @@ define(["N/runtime", "N/http"], function(runtime, http) {
       http.post({
         url: "http://apieventos.udf.org.br/entity",
         body: {
-          entity_type: "prospect",
           name: newRecord.getValue({ name: "altname" }),
           email: newRecord.getValue({ name: "email" }),
           cpf: newRecord.getValue({ name: "custentity_enl_cnpjcpf" }),

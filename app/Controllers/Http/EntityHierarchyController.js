@@ -113,8 +113,6 @@ class EntityHierarchyController {
       }
     })
 
-    console.log(approvedEntities)
-
     const entities = Entity.updateHierarchy(approvedEntities, hierarchyName, hierarchyWillBecome)
 
     return entities

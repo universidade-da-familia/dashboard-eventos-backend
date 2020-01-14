@@ -46,7 +46,6 @@ class Entity extends Model {
 
       entityInstance.netsuite_id =
         response.data.id || entityInstance.netsuite_id
-      entityInstance.entity_type = 'prospect' || entityInstance.entity_type
     })
 
     this.addHook('beforeUpdate', async entityInstance => {
