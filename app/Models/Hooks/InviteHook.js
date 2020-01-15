@@ -20,7 +20,7 @@ InviteHook.sendNewInviteMail = async inviteInstance => {
       redirect_url:
         node_env === "development"
           ? `http://localhost:3000/evento/${event_id}/convite/${id}/confirmacao`
-          : `https://eventos.udf.org.br/evento/${event_id}/convite/${id}/confirmacao`,
+          : `https://lider.udf.org.br/evento/${event_id}/convite/${id}/confirmacao`,
       event_type
     },
     message => {
