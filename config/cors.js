@@ -21,10 +21,8 @@ module.exports = {
   origin:
     Env.get("NODE_ENV") === "production"
       ? [
-          "http://eventos.udf.org.br",
-          "https://eventos.udf.org.br",
-          "http://lideres.udf.org.br",
-          "https://lideres.udf.org.br"
+          "http://lider.udf.org.br",
+          "https://lider.udf.org.br"
         ]
       : true,
 
