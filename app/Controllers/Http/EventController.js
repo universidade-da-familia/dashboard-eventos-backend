@@ -27,7 +27,7 @@ class EventController {
       .with('organizators')
       .with('participants')
       .with('noQuitterParticipants')
-      .orderBy('id')
+      .orderBy('start_date', 'desc')
       .fetch()
 
     return events
