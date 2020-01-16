@@ -1,6 +1,6 @@
-"use strict";
+'use strict'
 
-const Env = use("Env");
+const Env = use('Env')
 
 module.exports = {
   /*
@@ -18,14 +18,7 @@ module.exports = {
   | Function - Receives the current origin and should return one of the above values.
   |
   */
-  origin:
-    Env.get("NODE_ENV") === "production"
-      ? [
-          "http://lider.udf.org.br",
-          "https://lider.udf.org.br",
-          "https://5260046.app.netsuite.com"
-        ]
-      : true,
+  origin: true,
 
   /*
   |--------------------------------------------------------------------------
@@ -38,7 +31,7 @@ module.exports = {
   | Array - An array of allowed methods
   |
   */
-  methods: ["GET", "PUT", "PATCH", "POST", "DELETE"],
+  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
 
   /*
   |--------------------------------------------------------------------------
@@ -93,4 +86,4 @@ module.exports = {
   |
   */
   maxAge: 90
-};
+}
