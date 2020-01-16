@@ -22,7 +22,8 @@ module.exports = {
     Env.get("NODE_ENV") === "production"
       ? [
           "http://lider.udf.org.br",
-          "https://lider.udf.org.br"
+          "https://lider.udf.org.br",
+          "https://5260046.app.netsuite.com"
         ]
       : true,
 
