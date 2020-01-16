@@ -18,7 +18,14 @@ module.exports = {
   | Function - Receives the current origin and should return one of the above values.
   |
   */
-  origin: true,
+  origin:
+    Env.get('NODE_ENV') === 'production'
+      ? [
+        'http://lider.udf.org.br',
+        'https://lider.udf.org.br',
+        'https://5260046.app.netsuite.com'
+      ]
+      : true,
 
   /*
   |--------------------------------------------------------------------------
