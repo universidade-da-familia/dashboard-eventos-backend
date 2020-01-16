@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  *@author Lucas Alves
  *
@@ -226,7 +227,7 @@ define(["N/record"], function(record) {
       salesOrder.setCurrentSublistValue({
         sublistId: "item",
         fieldId: "price",
-        value: 7
+        value: 3
       });
 
       salesOrder.commitLine({ sublistId: "item" });

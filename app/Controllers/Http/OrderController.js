@@ -1,30 +1,30 @@
-"use strict";
+/* eslint-disable no-unused-expressions */
+'use strict'
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Database = use("Database");
-const Order = use("App/Models/Order");
+const Order = use('App/Models/Order')
 
-const axios = require("axios");
+const axios = require('axios')
 
 const api = axios.default.create({
-  baseURL: "https://api.payulatam.com",
+  baseURL: 'https://api.payulatam.com',
   headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json"
+    'Content-Type': 'application/json',
+    Accept: 'application/json'
   }
-});
+})
 
 const apiNetsuite = axios.default.create({
-  baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
+  baseURL: 'https://5260046.restlets.api.netsuite.com/app/site/hosting',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     Authorization:
-      "NLAuth nlauth_account=5260046, nlauth_email=lucas.alves@udf.org.br, nlauth_signature=0rZFiwRE!!@@##,nlauth_role=1077"
+      'NLAuth nlauth_account=5260046, nlauth_email=lucas.alves@udf.org.br, nlauth_signature=0rZFiwRE!!@@##,nlauth_role=1077'
   }
-});
+})
 
 class OrderController {
   /**
@@ -36,10 +36,10 @@ class OrderController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index() {
-    const order = Order.query().fetch();
+  async index () {
+    const order = Order.query().fetch()
 
-    return order;
+    return order
   }
 
   /**
@@ -50,9 +50,9 @@ class OrderController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {
+  async store ({ request, response }) {
     try {
-      const data = request.all();
+      const data = request.all()
       const {
         user,
         card,
@@ -61,24 +61,24 @@ class OrderController {
         shipping_option,
         order_details,
         payu
-      } = data;
+      } = data
 
       const responsePayu = await api.post(
-        "/payments-api/4.0/service.cgi",
+        '/payments-api/4.0/service.cgi',
         payu
-      );
+      )
 
-      const { data: payuData } = responsePayu;
+      const { data: payuData } = responsePayu
 
       if (
         card !== null &&
-        payuData.transactionResponse.responseCode !== "APPROVED"
+        payuData.transactionResponse.responseCode !== 'APPROVED'
       ) {
         return response.status(400).send({
-          title: "Falha!",
-          message: "Houve um problema com o pagamento.",
+          title: 'Falha!',
+          message: 'Houve um problema com o pagamento.',
           payu: payuData.transactionResponse.responseCode
-        });
+        })
       }
 
       const orderNetsuite = {
@@ -93,8 +93,8 @@ class OrderController {
         payu_json:
           card === null
             ? payuData.transactionResponse.extraParameters
-                .URL_PAYMENT_RECEIPT_HTML
-            : "Pagamento aprovado com cartão de crédito",
+              .URL_PAYMENT_RECEIPT_HTML
+            : 'Pagamento aprovado com cartão de crédito',
         shipping_cost: order_details.shipping_amount,
         shipping_cep: shipping_address.cep,
         shipping_uf: shipping_address.uf,
@@ -105,18 +105,18 @@ class OrderController {
         shipping_complement: shipping_address.complement,
         shipping_receiver: shipping_address.receiver,
         shipping_option
-      };
+      }
 
       const responseNetsuite = await apiNetsuite.post(
-        "/restlet.nl?script=179&deploy=1",
+        '/restlet.nl?script=185&deploy=1',
         orderNetsuite
-      );
+      )
 
       const order = await Order.create({
         netsuite_id: responseNetsuite.data.id,
         status_id: card === null ? 1 : 2,
         entity_id: user.id,
-        payment_name: card === null ? "Boleto" : "Cartão de crédito",
+        payment_name: card === null ? 'Boleto' : 'Cartão de crédito',
         shipping_name: shipping_option.delivery_method_name,
         delivery_estimate_days:
           shipping_option.delivery_estimate_transit_time_business_days,
@@ -130,19 +130,19 @@ class OrderController {
         shipping_neighborhood: shipping_address.neighborhood,
         shipping_complement: shipping_address.complement,
         shipping_receiver: shipping_address.receiver
-      });
+      })
 
       await order.products().attach(
         products.map(product => product.id),
         row => {
           const product = products.find(
             product => product.id === row.product_id
-          );
+          )
 
-          (row.quantity = product.quantity),
-            (row.total = product.cost_of_goods * product.quantity);
+          row.quantity = product.quantity
+          row.total = product.cost_of_goods * product.quantity
         }
-      );
+      )
 
       const transaction = await order.transaction().create({
         order_id: order.id,
@@ -152,21 +152,21 @@ class OrderController {
         boleto_url:
           card === null
             ? payuData.transactionResponse.extraParameters
-                .URL_PAYMENT_RECEIPT_HTML
+              .URL_PAYMENT_RECEIPT_HTML
             : null
-      });
+      })
 
-      order.products = await order.products().fetch();
-      order.transaction = transaction || order.transaction;
+      order.products = await order.products().fetch()
+      order.transaction = transaction || order.transaction
 
-      return order;
+      return order
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Erro ao criar o pedido"
+          title: 'Falha!',
+          message: 'Erro ao criar o pedido'
         }
-      });
+      })
     }
   }
 
@@ -179,26 +179,26 @@ class OrderController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, response }) {
+  async show ({ params, response }) {
     try {
-      const order = await Order.findOrFail(params.id);
+      const order = await Order.findOrFail(params.id)
 
       await order.loadMany([
-        "status",
-        "transaction",
-        "organization",
-        "entity",
-        "products"
-      ]);
+        'status',
+        'transaction',
+        'organization',
+        'entity',
+        'products'
+      ])
 
-      return order;
+      return order
     } catch (err) {
       return response.status(err.order).send({
         error: {
-          title: "Falha!",
-          message: "Nenhum pedido encontrado."
+          title: 'Falha!',
+          message: 'Nenhum pedido encontrado.'
         }
-      });
+      })
     }
   }
 
@@ -210,24 +210,24 @@ class OrderController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {
+  async update ({ params, request, response }) {
     try {
-      const data = request.all();
+      const data = request.all()
 
-      const order = await Order.findOrFail(params.id);
+      const order = await Order.findOrFail(params.id)
 
-      order.merge(data);
+      order.merge(data)
 
-      await order.save();
+      await order.save()
 
-      return order;
+      return order
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Erro ao atualizar o pedido"
+          title: 'Falha!',
+          message: 'Erro ao atualizar o pedido'
         }
-      });
+      })
     }
   }
 
@@ -239,25 +239,25 @@ class OrderController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {
+  async destroy ({ params, request, response }) {
     try {
-      const order = await Order.findOrFail(params.id);
+      const order = await Order.findOrFail(params.id)
 
-      await order.delete();
+      await order.delete()
 
       return response.status(200).send({
-        title: "Sucesso!",
-        message: "O pedido foi removido."
-      });
+        title: 'Sucesso!',
+        message: 'O pedido foi removido.'
+      })
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Erro ao excluir o pedido"
+          title: 'Falha!',
+          message: 'Erro ao excluir o pedido'
         }
-      });
+      })
     }
   }
 }
 
-module.exports = OrderController;
+module.exports = OrderController
