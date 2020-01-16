@@ -1,15 +1,15 @@
-"use strict";
+'use strict'
 
-const axios = require("axios");
+const axios = require('axios')
 
 const api = axios.default.create({
-  baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
+  baseURL: 'https://5260046.restlets.api.netsuite.com/app/site/hosting',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     Authorization:
-      "NLAuth nlauth_account=5260046, nlauth_email=lucas.alves@udf.org.br, nlauth_signature=TI@udf2019#@!,nlauth_role=1077"
+      'NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=Shalom1234,nlauth_role=1077'
   }
-});
+})
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -28,7 +28,7 @@ class ChurchController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response, view }) {}
+  async index ({ request, response, view }) {}
 
   /**
    * Render a form to be used for creating a new church.
@@ -39,7 +39,7 @@ class ChurchController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create({ request, response, view }) {}
+  async create ({ request, response, view }) {}
 
   /**
    * Create/save a new church.
@@ -49,7 +49,7 @@ class ChurchController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {}
+  async store ({ request, response }) {}
 
   /**
    * Display a single church.
@@ -60,31 +60,31 @@ class ChurchController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params }) {
+  async show ({ params }) {
     try {
       const response = await api.get(
         `/restlet.nl?script=124&deploy=1&uf=${params.uf}&city=${
           params.city
         }&name=${params.name}`
-      );
+      )
 
-      if(response.data.length === 0){
+      if (response.data.length === 0) {
         return {
           error: {
-            title: "Falha!",
-            message: "Nenhuma igreja encontrada"
+            title: 'Falha!',
+            message: 'Nenhuma igreja encontrada'
           }
         }
       }
 
-      return response.data;
+      return response.data
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Erro encontrado, tente novamente"
+          title: 'Falha!',
+          message: 'Erro encontrado, tente novamente'
         }
-      });
+      })
     }
   }
 
@@ -97,7 +97,7 @@ class ChurchController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit({ params, request, response, view }) {}
+  async edit ({ params, request, response, view }) {}
 
   /**
    * Update church details.
@@ -107,7 +107,7 @@ class ChurchController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {}
+  async update ({ params, request, response }) {}
 
   /**
    * Delete a church with id.
@@ -117,7 +117,7 @@ class ChurchController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy ({ params, request, response }) {}
 }
 
-module.exports = ChurchController;
+module.exports = ChurchController

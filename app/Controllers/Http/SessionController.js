@@ -12,7 +12,7 @@ const api = axios.default.create({
   headers: {
     'Content-Type': 'application/json',
     Authorization:
-      'NLAuth nlauth_account=5260046, nlauth_email=lucas.alves@udf.org.br, nlauth_signature=0rZFiwRE!!@@##,nlauth_role=1077'
+      'NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=Shalom1234,nlauth_role=1077'
   }
 })
 
@@ -147,7 +147,6 @@ class SessionController {
       ])
 
     const { data: overdue_cpfs } = await api.get('/restlet.nl?script=184&deploy=1')
-    overdue_cpfs.push('42317441819')
     const unique_cpfs = [...new Set(overdue_cpfs)]
     const overdue = unique_cpfs.find(cpf => cpf === user.cpf)
 

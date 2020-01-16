@@ -1,17 +1,17 @@
-"use strict";
+'use strict'
 
-const Entity = use("App/Models/Entity");
+const Entity = use('App/Models/Entity')
 
-const axios = require("axios");
+const axios = require('axios')
 
 const api = axios.default.create({
-  baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
+  baseURL: 'https://5260046.restlets.api.netsuite.com/app/site/hosting',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     Authorization:
-      "NLAuth nlauth_account=5260046, nlauth_email=lucas.alves@udf.org.br, nlauth_signature=TI@udf2019#@!,nlauth_role=1077"
+      'NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=Shalom1234,nlauth_role=1077'
   }
-});
+})
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -30,7 +30,7 @@ class LeaderController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response, view }) {}
+  async index ({ request, response, view }) {}
 
   /**
    * Render a form to be used for creating a new leader.
@@ -41,7 +41,7 @@ class LeaderController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create({ request, response, view }) {}
+  async create ({ request, response, view }) {}
 
   /**
    * Create/save a new leader.
@@ -51,7 +51,7 @@ class LeaderController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {}
+  async store ({ request, response }) {}
 
   /**
    * Display a single leader.
@@ -62,20 +62,20 @@ class LeaderController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params }) {
-    const leader = await Entity.findByOrFail("cpf_cnpj", params.cpf);
+  async show ({ params }) {
+    const leader = await Entity.findByOrFail('cpf_cnpj', params.cpf)
 
-    await leader.load("file");
+    await leader.load('file')
 
     const customizer = await api.get(
       `/restlet.nl?script=121&deploy=1&cpf=${params.cpf}`
-    );
+    )
 
     if (customizer.data.error) {
-      return customizer.data;
+      return customizer.data
     }
 
-    return leader;
+    return leader
   }
 
   /**
@@ -87,7 +87,7 @@ class LeaderController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit({ params, request, response, view }) {}
+  async edit ({ params, request, response, view }) {}
 
   /**
    * Update leader details.
@@ -97,7 +97,7 @@ class LeaderController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {}
+  async update ({ params, request, response }) {}
 
   /**
    * Delete a leader with id.
@@ -107,7 +107,7 @@ class LeaderController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy ({ params, request, response }) {}
 }
 
-module.exports = LeaderController;
+module.exports = LeaderController
