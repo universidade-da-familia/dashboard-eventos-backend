@@ -7,6 +7,17 @@
 const Database = use("Database");
 const Address = use("App/Models/Address");
 
+const axios = require('axios')
+
+const api = axios.default.create({
+  baseURL: 'https://5260046.restlets.api.netsuite.com/app/site/hosting',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization:
+      'NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=Shalom1234,nlauth_role=1077'
+  }
+})
+
 /**
  * Resourceful controller for interacting with addresses
  */
@@ -38,7 +49,8 @@ class AddressController {
    */
   async store({ request, response }) {
     try {
-      const { addressesPost, addressesPut } = request.only([
+      const { netsuite_id, addressesPost, addressesPut } = request.only([
+        "netsuite_id",
         "addressesPost",
         "addressesPut"
       ]);
@@ -58,6 +70,15 @@ class AddressController {
           await searchAddress.save();
         });
       }
+
+      // const responseTeste = await api.post(
+      //   '/restlet.nl?script=186&deploy=1',
+      //   {
+      //     netsuite_id,
+      //     addressesPost,
+      //     addressesPut
+      //   }
+      // )
 
       trx.commit();
 
