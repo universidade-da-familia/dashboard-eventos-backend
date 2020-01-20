@@ -19,10 +19,32 @@ define(["N/record", "N/search"], function(record, search) {
         isDynamic: true
       });
 
-      if(context.addressesPost && context.addressesPost.length > 0) {
+      const numberOfAddresses = customer.getLineCount({
+        sublistId: "addressbook"
+      });
+
+      if(numberOfAddresses > 0) {
+        for (var index = 0; index < numberOfAddresses; index += 1) {
+          customer.selectLine({
+            sublistId: "addressbook",
+            line: index
+          });
+
+          customer.removeCurrentSublistSubrecord({
+            sublistId: "addressbook",
+            fieldId: "addressbookaddress"
+          });
+
+          customer.commitLine({
+            sublistId: 'addressbook'
+          });
+        }
+      }
+
+      if(context.netsuiteAddresses && context.netsuiteAddresses.length > 0) {
         customer.selectNewLine({ sublistId: "addressbook" });
 
-        context.addressesPost.forEach(function(address) {
+        context.netsuiteAddresses.forEach(function(address) {
           const searchColumns = ["internalid"]
           const ufIds = search.create({
             type: "customlist_enl_state",
@@ -58,9 +80,6 @@ define(["N/record", "N/search"], function(record, search) {
 
                 return id;
               })
-
-          log.debug({ "title": "ufs", "details": ufIds });
-          log.debug({ "title": "cities", "details": cityIds });
 
           const addressSubrecord = customer.getCurrentSublistSubrecord({
             sublistId: 'addressbook',
@@ -124,121 +143,8 @@ define(["N/record", "N/search"], function(record, search) {
           });
 
           customer.commitLine({ sublistId: "addressbook" });
+
         });
-      }
-
-      if(context.addressesPut && context.addressesPut.length > 0) {
-        context.addressesPut.forEach(function(address) {
-          const searchColumns = ["internalid"]
-          const ufIds = search.create({
-            type: "customlist_enl_state",
-            filters: [
-              ["name", "is", address.uf]
-            ],
-            columns: searchColumns
-          })
-            .run()
-            .getRange({
-              start: 0,
-              end: 1000
-            })
-            .map(function (result) {
-              const id = result.getValue({ name: "internalid" });
-
-              return id;
-            })
-          const cityIds = search.create({
-              type: "customrecord_enl_cities",
-              filters: [
-                ["name", "is", address.city]
-              ],
-              columns: searchColumns
-            })
-              .run()
-              .getRange({
-                start: 0,
-                end: 1000
-              })
-              .map(function (result) {
-                const id = result.getValue({ name: "internalid" });
-
-                return id;
-              })
-
-          const lineNumber = customer.findSublistLineWithValue({
-            sublistId: "addressbook",
-            fieldId: "id",
-            value: parseInt(address.netsuite_id)
-          });
-
-          customer.selectLine({
-            sublistId: 'addressbook',
-            line: lineNumber
-          });
-
-          const addressSubrecord = customer.getCurrentSublistSubrecord({
-            sublistId: 'addressbook',
-            fieldId: 'addressbookaddress'
-          });
-
-          if(address.type === "other") {
-            customer.setCurrentSublistValue({
-              sublistId: "addressbook",
-              fieldId: "label",
-              value: address.other_type_name || address.street
-            });
-          } else if(address.type === "home") {
-            customer.setCurrentSublistValue({
-              sublistId: "addressbook",
-              fieldId: "label",
-              value: "Minha casa"
-            });
-          } else {
-            customer.setCurrentSublistValue({
-              sublistId: "addressbook",
-              fieldId: "label",
-              value: "Meu trabalho"
-            });
-          }
-          addressSubrecord.setValue({
-            fieldId: "country",
-            value: "BR"
-          });
-          addressSubrecord.setValue({
-            fieldId: "zip",
-            value: address.cep,
-          });
-          addressSubrecord.setValue({
-            fieldId: "addr1",
-            value: address.street,
-          });
-          addressSubrecord.setValue({
-            fieldId: "custrecord_enl_numero",
-            value: address.street_number
-          });
-          addressSubrecord.setValue({
-            fieldId: "addr2",
-            value: address.complement
-          });
-          addressSubrecord.setValue({
-            fieldId: "addr3",
-            value: address.neighborhood
-          });
-          addressSubrecord.setValue({
-            fieldId: "custrecord_enl_uf",
-            value: parseInt(ufIds[0]) || ""
-          });
-          addressSubrecord.setValue({
-            fieldId: "custrecord_enl_city",
-            value: parseInt(cityIds[0]) || ""
-          });
-          addressSubrecord.setValue({
-            fieldId: "addressee",
-            value: address.receiver || customer.custentity_enl_legalname
-          });
-
-          customer.commitLine({ sublistId: "addressbook" });
-        })
       }
 
       customer.save({
