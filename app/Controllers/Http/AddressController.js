@@ -6,6 +6,8 @@
 
 const Database = use('Database')
 const Address = use('App/Models/Address')
+const Entity = use('App/Models/Entity')
+const Organization = use('App/Models/Organization')
 
 const axios = require('axios')
 
@@ -47,25 +49,17 @@ class AddressController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response, params }) {
     try {
-      const { netsuite_id, addressesPost, addressesPut } = request.only([
+      let user
+      const { netsuite_id, user_type, addressesPost, addressesPut } = request.only([
         'netsuite_id',
+        'user_type',
         'addressesPost',
         'addressesPut'
       ])
 
-      const netsuiteAddresses = addressesPut.concat(addressesPost)
-
       const trx = await Database.beginTransaction()
-
-      await api.post(
-        '/restlet.nl?script=186&deploy=1',
-        {
-          netsuite_id,
-          netsuiteAddresses
-        }
-      )
 
       if (addressesPost && addressesPost.length > 0) {
         await Address.createMany(addressesPost, trx)
@@ -82,6 +76,22 @@ class AddressController {
       }
 
       trx.commit()
+
+      if (user_type === 'entity') {
+        user = await Entity.findByOrFail('netsuite_id', netsuite_id)
+      } else {
+        user = await Organization.findByOrFail('netsuite_id', netsuite_id)
+      }
+
+      await user.load('addresses')
+
+      await api.post(
+        '/restlet.nl?script=186&deploy=1',
+        {
+          netsuite_id,
+          netsuiteAddresses: user.toJSON().addresses
+        }
+      )
 
       return response.status(200).send({
         title: 'Sucesso!',

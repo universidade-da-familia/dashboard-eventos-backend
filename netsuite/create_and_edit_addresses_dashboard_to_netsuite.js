@@ -19,6 +19,9 @@ define(["N/record", "N/search"], function(record, search) {
         isDynamic: true
       });
 
+      log.debug({ "title": "customer", "details": customer })
+      log.debug({ "title": "add", "details": context.netsuiteAddresses })
+
       const numberOfAddresses = customer.getLineCount({
         sublistId: "addressbook"
       });
@@ -41,10 +44,12 @@ define(["N/record", "N/search"], function(record, search) {
         }
       }
 
+
       if(context.netsuiteAddresses && context.netsuiteAddresses.length > 0) {
         customer.selectNewLine({ sublistId: "addressbook" });
 
-        context.netsuiteAddresses.forEach(function(address) {
+        context.netsuiteAddresses.forEach(function(address, index) {
+          log.debug({ "title": "logs", "details": address })
           const searchColumns = ["internalid"]
           const ufIds = search.create({
             type: "customlist_enl_state",
@@ -85,6 +90,19 @@ define(["N/record", "N/search"], function(record, search) {
             sublistId: 'addressbook',
             fieldId: 'addressbookaddress'
           });
+
+          if(index === 0) {
+            customer.setCurrentSublistValue({
+              sublistId: "addressbook",
+              fieldId: "defaultbilling",
+              value: true
+            });
+            customer.setCurrentSublistValue({
+              sublistId: "addressbook",
+              fieldId: "defaultshipping",
+              value: true
+            });
+          }
 
           if(address.type === "other") {
             customer.setCurrentSublistValue({
@@ -141,6 +159,10 @@ define(["N/record", "N/search"], function(record, search) {
             fieldId: "addressee",
             value: address.receiver
           });
+          addressSubrecord.setValue({
+            fieldId: "custrecordudf_dashboard_address_id",
+            value: address.id
+          });
 
           customer.commitLine({ sublistId: "addressbook" });
 
@@ -171,10 +193,7 @@ define(["N/record", "N/search"], function(record, search) {
    * @param requestParams
    */
   function destroy(requestParams) {
-    log.debug({ "title": "params", "details": requestParams });
     try {
-      log.debug({ "title": "params2", "details": requestParams.netsuite_id });
-
       const customer = record.load({
         type: record.Type.CUSTOMER,
         id: requestParams.netsuite_id,
