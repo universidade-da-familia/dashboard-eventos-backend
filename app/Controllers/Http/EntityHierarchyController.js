@@ -75,11 +75,13 @@ class EntityHierarchyController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request }) {
-    const { entitiesId, hierarchyName, hierarchyWillBecome } = request.only([
-      'entitiesId',
+  async update ({ params, request, response }) {
+    const { participantsId, assistantsId, hierarchyName, participantWillBecome, assistantWillBecome } = request.only([
+      'participantsId',
+      'assistantsId',
       'hierarchyName',
-      'hierarchyWillBecome'
+      'participantWillBecome',
+      'assistantWillBecome'
     ])
 
     const event = await Event.findOrFail(params.event_id)
@@ -95,27 +97,48 @@ class EntityHierarchyController {
       .with('participant')
       .fetch()
 
-    let count = 0
+    let countParticipant = 0
+    let countAssistant = 0
 
-    const approvedEntities = entitiesId.filter(entity => {
-      count = 0
+    const approvedParticipants = participantsId.filter(entity => {
+      countParticipant = 0
 
       attendances.toJSON().map(attendance => {
         if (attendance.participant.entity_id === entity) {
           if (!attendance.is_present) {
-            count += 1
+            countParticipant += 1
           }
         }
       })
 
-      if (count <= event.toJSON().defaultEvent.max_faults) {
+      if (countParticipant <= event.toJSON().defaultEvent.max_faults) {
         return entity
       }
     })
 
-    const entities = Entity.updateHierarchy(approvedEntities, hierarchyName, hierarchyWillBecome)
+    const approvedAssistants = assistantsId.filter(entity => {
+      countAssistant = 0
 
-    return entities
+      attendances.toJSON().map(attendance => {
+        if (attendance.participant.entity_id === entity) {
+          if (!attendance.is_present) {
+            countAssistant += 1
+          }
+        }
+      })
+
+      if (countAssistant <= event.toJSON().defaultEvent.max_faults) {
+        return entity
+      }
+    })
+
+    await Entity.updateHierarchy(approvedParticipants, hierarchyName, participantWillBecome)
+    await Entity.updateHierarchy(approvedAssistants, hierarchyName, assistantWillBecome)
+
+    return response.status(200).send({
+      title: 'Sucesso!',
+      message: 'Hierarquias atualizadas'
+    })
   }
 
   /**
