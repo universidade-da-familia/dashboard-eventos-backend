@@ -155,7 +155,7 @@ class EntityController {
    * @param {Response} ctx.response
    */
   async update_netsuite ({ params, request }) {
-    const entity = await Entity.findOrFail(params.netsuite_id)
+    const entity = await Entity.findByOrFail('netsuite_id', params.netsuite_id)
 
     const data = request.all()
 
