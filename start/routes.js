@@ -163,7 +163,8 @@ Route.delete('files/:id', 'FileController.destroy')
 
 Route.get('site_event/:id', 'SiteEventController.show')
 
-Route.resource('address', 'AddressController').except(['edit', 'create'])
+Route.resource('address', 'AddressController').except(['edit', 'create', 'destroy'])
+Route.delete('address/:id/:index/:netsuite_id', 'AddressController.destroy')
 
 Route.resource('category', 'CategoryController').except(['edit', 'create'])
 

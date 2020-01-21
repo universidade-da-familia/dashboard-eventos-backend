@@ -36,7 +36,7 @@ define(["N/record", "N/search"], function(record, search) {
           });
 
           customer.commitLine({
-            sublistId: 'addressbook'
+            sublistId: "addressbook"
           });
         }
       }
@@ -165,7 +165,58 @@ define(["N/record", "N/search"], function(record, search) {
     }
   }
 
+  /**
+   * DELETE.
+   *
+   * @param requestParams
+   */
+  function destroy(requestParams) {
+    log.debug({ "title": "params", "details": requestParams });
+    try {
+      log.debug({ "title": "params2", "details": requestParams.netsuite_id });
+
+      const customer = record.load({
+        type: record.Type.CUSTOMER,
+        id: requestParams.netsuite_id,
+        isDynamic: true
+      });
+
+      log.debug({ "title": "destroy", "details": customer });
+
+      customer.selectLine({
+        sublistId: "addressbook",
+        line: requestParams.index
+      });
+
+      customer.removeCurrentSublistSubrecord({
+        sublistId: "addressbook",
+        fieldId: "addressbookaddress"
+      });
+
+      customer.commitLine({
+        sublistId: 'addressbook'
+      });
+
+      customer.save({
+        ignoreMandatoryFields: false,
+        enableSourcing: false
+      });
+
+      return {
+        title: "Sucesso!",
+        message: "O registro foi removido."
+      };
+    } catch (err) {
+      return {
+        title: "Falha!",
+        message: "Houve um erro ao remover o registro",
+        erro: err
+      };
+    }
+  }
+
   return {
-    post: store
+    post: store,
+    delete: destroy
   };
 });

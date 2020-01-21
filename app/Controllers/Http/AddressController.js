@@ -55,7 +55,7 @@ class AddressController {
         'addressesPut'
       ])
 
-      const netsuiteAddresses = addressesPost.concat(addressesPut)
+      const netsuiteAddresses = addressesPut.concat(addressesPost)
 
       const trx = await Database.beginTransaction()
 
@@ -197,9 +197,13 @@ class AddressController {
    */
   async destroy ({ params, response }) {
     try {
-      const address = await Address.findOrFail(params.id)
+      const { id, index, netsuite_id } = params
+
+      const address = await Address.findOrFail(id)
 
       await address.delete()
+
+      await api.delete(`/restlet.nl?script=186&deploy=1&netsuite_id=${netsuite_id}&index=${index}`)
 
       return response.status(200).send({
         title: 'Sucesso!',
