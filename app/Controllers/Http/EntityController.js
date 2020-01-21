@@ -159,7 +159,7 @@ class EntityController {
 
     const data = request.all()
 
-    const organization = await Organization.findByOrFail('netsuite_id', data.organization_id)
+    const organization = await Organization.findBy('netsuite_id', data.organization_id)
 
     if (organization.id) {
       data.organization_id = organization.id
