@@ -161,7 +161,7 @@ class EntityController {
 
     const organization = await Organization.findBy('netsuite_id', data.organization_id)
 
-    if (organization.id !== null) {
+    if (organization !== null) {
       data.organization_id = organization.id
     } else {
       delete data.organization_id
