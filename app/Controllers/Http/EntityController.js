@@ -5,7 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Entity = use('App/Models/Entity')
-const Event = use('App/Models/Event')
+const Organization = use('App/Models/Organization')
 
 const Database = use('Database')
 
@@ -138,6 +138,34 @@ class EntityController {
     const entity = await Entity.findOrFail(params.id)
 
     const data = request.all()
+
+    entity.merge(data)
+
+    await entity.save()
+
+    return entity
+  }
+
+  /**
+   * Update user details.
+   * PUT or PATCH users/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async update_netsuite ({ params, request }) {
+    const entity = await Entity.findOrFail(params.netsuite_id)
+
+    const data = request.all()
+
+    const organization = await Organization.findByOrFail('netsuite_id', data.organization_id)
+
+    if (organization.id) {
+      data.organization_id = organization.id
+    } else {
+      delete data.organization_id
+    }
 
     entity.merge(data)
 

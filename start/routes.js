@@ -13,9 +13,11 @@ Route.get('sessions/:type', 'SessionController.show')
 Route.resource('entity', 'EntityController').except([
   'edit',
   'create',
-  'store'
+  'store',
+  'update_netsuite'
 ])
 Route.post('entity', 'EntityController.store').validator('Entity')
+Route.put('netsuite_entity/:netsuite_id', 'EntityController.update_netsuite')
 
 Route.put('entity_hierarchy/:event_id', 'EntityHierarchyController.update')
 
