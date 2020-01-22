@@ -8,6 +8,7 @@ Route.post('payment_confirmation', 'TransactionController.payu')
 Route.post('sessions', 'SessionController.store')
 Route.post('organization_sessions', 'SessionController.store_org')
 Route.get('sessions/:type', 'SessionController.show')
+Route.get('expired_titles/:cpf', 'SessionController.expired_titles')
 
 // CRUD usuário
 Route.resource('entity', 'EntityController').except([

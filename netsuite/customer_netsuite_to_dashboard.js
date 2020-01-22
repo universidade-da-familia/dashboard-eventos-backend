@@ -23,7 +23,7 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
       isDynamic: false
     });
 
-    const netsuite_id = data.getValue({ fieldId: "internalid" })
+    const netsuite_id = data.getValue({ fieldId: "id" })
 
     if (type === "create") {
       http.post({
@@ -54,7 +54,6 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
           alt_phone: data.getValue({ fieldId: "altphone" }),
           organization_id: data.getValue({ fieldId: "custentity_rsc_igreja" }),
           afl_id: data.getValue({ fieldId: "custentity_udf_cdentidade" }),
-          user_legacy: true
         }
       });
     }

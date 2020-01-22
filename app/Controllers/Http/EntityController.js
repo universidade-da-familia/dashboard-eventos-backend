@@ -159,13 +159,18 @@ class EntityController {
 
     const data = request.all()
 
-    const organization = await Organization.findBy('netsuite_id', data.organization_id)
+    if (data.organization_id) {
+      const organization = await Organization.findBy('netsuite_id', data.organization_id)
 
-    if (organization !== null) {
-      data.organization_id = organization.id
-    } else {
-      delete data.organization_id
+      if (organization) {
+        data.organization_id = organization.id
+        console.log(organization)
+      } else {
+        delete data.organization_id
+      }
     }
+
+    console.log(data.organization_id)
 
     entity.merge(data)
 

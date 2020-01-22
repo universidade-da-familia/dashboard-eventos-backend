@@ -146,13 +146,18 @@ class SessionController {
         'entities'
       ])
 
+    return user
+  }
+
+  async expired_titles ({ params }) {
     const { data: overdue_cpfs } = await api.get('/restlet.nl?script=184&deploy=1')
     const unique_cpfs = [...new Set(overdue_cpfs)]
-    const overdue = unique_cpfs.find(cpf => cpf === user.cpf)
+    unique_cpfs.push('42317441819')
+    const overdue = unique_cpfs.find(cpf => cpf === params.cpf)
 
-    user.expired_titles = overdue !== undefined
-
-    return user
+    return {
+      expired_titles: overdue !== undefined
+    }
   }
 }
 
