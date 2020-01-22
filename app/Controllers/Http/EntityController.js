@@ -164,13 +164,10 @@ class EntityController {
 
       if (organization) {
         data.organization_id = organization.id
-        console.log(organization)
       } else {
         delete data.organization_id
       }
     }
-
-    console.log(data.organization_id)
 
     entity.merge(data)
 
