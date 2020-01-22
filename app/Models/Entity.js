@@ -77,7 +77,7 @@ class Entity extends Model {
         lastname,
         email,
         cpf_cnpj: cpf,
-        new_birthday: new Date(moment(birthday).format('DD/MM/YYYY')),
+        new_birthday: new Date(moment(birthday).format('DD/MM/YYYY')) || '',
         sex,
         phone,
         alt_phone
