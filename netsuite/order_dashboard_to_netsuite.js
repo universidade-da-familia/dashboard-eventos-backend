@@ -190,11 +190,15 @@ define(["N/record"], function(record) {
     });
     shippingAddress.setValue({
       fieldId: "city",
-      value: context.shipping_city
+      value: 3901
+    });
+    shippingAddress.setValue({
+      fieldId: "custrecord_enl_city",
+      value: 3901
     });
     shippingAddress.setValue({
       fieldId: "state",
-      value: context.shipping_uf
+      value: context.shipping_uf + " - " + context.shipping_city
     });
     shippingAddress.setValue({
       fieldId: "zip",
