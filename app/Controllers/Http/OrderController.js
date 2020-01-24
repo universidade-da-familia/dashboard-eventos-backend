@@ -63,63 +63,13 @@ class OrderController {
         payu
       } = data
 
-      const responsePayu = await api.post(
-        '/payments-api/4.0/service.cgi',
-        payu
-      )
-
-      const { data: payuData } = responsePayu
-
-      if (
-        card !== null &&
-        payuData.transactionResponse.responseCode !== 'APPROVED'
-      ) {
-        return response.status(400).send({
-          title: 'Falha!',
-          message: 'Houve um problema com o pagamento.',
-          payu: payuData.transactionResponse.responseCode
-        })
-      }
-
-      const orderNetsuite = {
-        entity: user,
-        products,
-        card,
-        installments:
-          card !== null
-            ? payu.transactions.extraParameters.INSTALLMENTS_NUMBER
-            : 1,
-        payu_order_id: payu.transaction.order.referenceCode,
-        payu_json:
-          card === null
-            ? payuData.transactionResponse.extraParameters
-              .URL_PAYMENT_RECEIPT_HTML
-            : 'Pagamento aprovado com cartão de crédito',
-        shipping_cost: order_details.shipping_amount,
-        shipping_cep: shipping_address.cep,
-        shipping_uf: shipping_address.uf,
-        shipping_city: shipping_address.city,
-        shipping_street: shipping_address.street,
-        shipping_street_number: shipping_address.street_number,
-        shipping_neighborhood: shipping_address.neighborhood,
-        shipping_complement: shipping_address.complement,
-        shipping_receiver: shipping_address.receiver,
-        shipping_option
-      }
-
-      const responseNetsuite = await apiNetsuite.post(
-        '/restlet.nl?script=185&deploy=1',
-        orderNetsuite
-      )
-
       const order = await Order.create({
-        netsuite_id: responseNetsuite.data.id,
         status_id: card === null ? 1 : 2,
         entity_id: user.id,
         payment_name: card === null ? 'Boleto' : 'Cartão de crédito',
         shipping_name: shipping_option.delivery_method_name,
         delivery_estimate_days:
-          shipping_option.delivery_estimate_transit_time_business_days,
+          shipping_option.delivery_estimate_business_days,
         shipping_cost: order_details.shipping_amount,
         total: order_details.amount,
         shipping_cep: shipping_address.cep,
@@ -144,27 +94,85 @@ class OrderController {
         }
       )
 
-      const transaction = await order.transaction().create({
-        order_id: order.id,
-        transaction_id: payuData.transactionResponse.transactionId,
-        api_order_id: payuData.transactionResponse.orderId,
-        status: payuData.transactionResponse.state,
-        boleto_url:
+      const orderNetsuite = {
+        entity: user,
+        products,
+        card,
+        installments:
+            card !== null
+              ? payu.transactions.extraParameters.INSTALLMENTS_NUMBER
+              : 1,
+        payu_order_id: payu.transaction.order.referenceCode,
+        payu_json:
           card === null
-            ? payuData.transactionResponse.extraParameters
-              .URL_PAYMENT_RECEIPT_HTML
-            : null
-      })
+            ? 'Boleto gerado pelo portal do líder automaticamente.'
+            : 'Pagamento aprovado com cartão de crédito.',
+        shipping_cost: order_details.shipping_amount,
+        shipping_type: shipping_address.address_type,
+        shipping_cep: shipping_address.cep,
+        shipping_uf: shipping_address.uf,
+        shipping_city: shipping_address.city,
+        shipping_street: shipping_address.street,
+        shipping_street_number: shipping_address.street_number,
+        shipping_neighborhood: shipping_address.neighborhood,
+        shipping_complement: shipping_address.complement,
+        shipping_receiver: shipping_address.receiver,
+        shipping_option
+      }
 
-      order.products = await order.products().fetch()
-      order.transaction = transaction || order.transaction
+      const responseNetsuite = await apiNetsuite.post(
+        '/restlet.nl?script=185&deploy=1',
+        orderNetsuite
+      )
+
+      if (responseNetsuite.data.id) {
+        order.netsuite_id = responseNetsuite.data.id || order.netsuite_id
+
+        await order.save()
+
+        const { data: payuData } = await api.post(
+          '/payments-api/4.0/service.cgi',
+          payu
+        )
+
+        if (
+          card !== null &&
+            payuData.transactionResponse.responseCode !== 'APPROVED'
+        ) {
+          return response.status(400).send({
+            title: 'Falha!',
+            message: 'Houve um problema com o pagamento na Payu.',
+            payu: payuData.transactionResponse.responseCode
+          })
+        }
+
+        const transaction = await order.transaction().create({
+          order_id: order.id,
+          transaction_id: payuData.transactionResponse.transactionId,
+          api_order_id: payuData.transactionResponse.orderId,
+          status: payuData.transactionResponse.state,
+          boleto_url:
+              card === null
+                ? payuData.transactionResponse.extraParameters
+                  .URL_PAYMENT_RECEIPT_HTML
+                : null
+        })
+
+        order.products = await order.products().fetch()
+        order.transaction = transaction || order.transaction
+      } else {
+        response.status(400).send({
+          title: 'Falha!',
+          message: 'Houve um erro ao gerar o pedido no Netsuite.'
+        })
+      }
 
       return order
     } catch (err) {
       return response.status(err.status).send({
         error: {
           title: 'Falha!',
-          message: 'Erro ao criar o pedido'
+          message: 'Erro ao criar o pedido.'
         }
       })
     }
