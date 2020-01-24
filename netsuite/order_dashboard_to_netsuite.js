@@ -200,6 +200,11 @@ define(["N/record"], function(record) {
       fieldId: "zip",
       value: context.shipping_cep
     });
+    // avalara actualization
+    shippingAddress.setValue({
+      fieldId: "zipcode",
+      value: context.shipping_cep
+    });
     shippingAddress.setValue({
       fieldId: "addressee",
       value: context.shipping_receiver
