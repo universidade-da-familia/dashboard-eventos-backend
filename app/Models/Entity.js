@@ -56,10 +56,17 @@ class Entity extends Model {
         name,
         email,
         cpf,
-        birthday,
         sex,
         phone,
-        alt_phone
+        alt_phone,
+        cmn_hierarchy_id,
+        mu_hierarchy_id,
+        crown_hierarchy_id,
+        mp_hierarchy_id,
+        ffi_hierarchy_id,
+        gfi_hierarchy_id,
+        pg_hab_hierarchy_id,
+        pg_yes_hierarchy_id
       } = entityInstance
 
       const fullname = name.split(' ')
@@ -77,10 +84,17 @@ class Entity extends Model {
         lastname,
         email,
         cpf_cnpj: cpf,
-        new_birthday: new Date(moment(birthday).format('DD/MM/YYYY')) || '',
         sex,
         phone,
-        alt_phone
+        alt_phone,
+        cmn_hierarchy_id,
+        mu_hierarchy_id,
+        crown_hierarchy_id,
+        mp_hierarchy_id,
+        ffi_hierarchy_id,
+        gfi_hierarchy_id,
+        pg_hab_hierarchy_id,
+        pg_yes_hierarchy_id
       })
     })
   }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  *@author Lucas Alves
  *
@@ -15,7 +16,7 @@ define(["N/record"], function(record) {
       const customer = record.load({
         type: record.Type.CUSTOMER,
         id: context.netsuite_id,
-        isDynamic: false
+        isDynamic: true
       });
 
       if (context.is_business) {
@@ -51,10 +52,6 @@ define(["N/record"], function(record) {
         fieldId: "custentity_rsc_estadocivil",
         value: context.personal_state_id
       });
-      // customer.setValue({
-      //   fieldId: "custentity_rsc_dtnascimento",
-      //   value: context.new_birthday
-      // });
       if (context.sex === "F") {
         customer.setValue({ fieldId: "custentity_rsc_sexo", value: "1" });
       } else if (context.sex === "M") {
