@@ -68,8 +68,6 @@ class OrderController {
       if (shipping_address.type === 'other') {
         const entity = await Entity.findOrFail(user.id)
 
-        console.log(entity)
-
         address = await entity.addresses().create({
           entity_id: entity.id,
           type: shipping_address.address_type,
@@ -84,8 +82,6 @@ class OrderController {
           complement: shipping_address.complement,
           receiver: shipping_address.receiver
         })
-
-        console.log(address)
       }
 
       const order = await Order.create({
@@ -148,15 +144,10 @@ class OrderController {
         shipping_option
       }
 
-      console.log(orderNetsuite)
-      console.log('chamei')
-
       const responseNetsuite = await apiNetsuite.post(
-        '/restlet.nl?script=189&deploy=1',
+        '/restlet.nl?script=185&deploy=1',
         orderNetsuite
       )
-
-      console.log(responseNetsuite.data)
 
       if (responseNetsuite.data.id) {
         order.netsuite_id = responseNetsuite.data.id || order.netsuite_id
