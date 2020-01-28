@@ -6,6 +6,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Order = use('App/Models/Order')
+const Entity = use('App/Models/Entity')
 
 const axios = require('axios')
 
@@ -52,6 +53,7 @@ class OrderController {
    */
   async store ({ request, response }) {
     try {
+      let address = null
       const data = request.all()
       const {
         user,
@@ -63,8 +65,31 @@ class OrderController {
         payu
       } = data
 
+      if (shipping_address.type === 'other') {
+        const entity = await Entity.findOrFail(user.id)
+
+        console.log(entity)
+
+        address = await entity.addresses().create({
+          entity_id: entity.id,
+          type: shipping_address.address_type,
+          other_type_name: shipping_address.address_other_type_name,
+          cep: shipping_address.cep,
+          city: shipping_address.city,
+          uf: shipping_address.uf,
+          country: 'Brasil',
+          street: shipping_address.street,
+          street_number: shipping_address.street_number,
+          neighborhood: shipping_address.neighborhood,
+          complement: shipping_address.complement,
+          receiver: shipping_address.receiver
+        })
+
+        console.log(address)
+      }
+
       const order = await Order.create({
-        status_id: card === null ? 1 : 2,
+        status_id: 1,
         entity_id: user.id,
         payment_name: card === null ? 'Boleto' : 'Cartão de crédito',
         shipping_name: shipping_option.delivery_method_name,
@@ -100,7 +125,7 @@ class OrderController {
         card,
         installments:
             card !== null
-              ? payu.transactions.extraParameters.INSTALLMENTS_NUMBER
+              ? payu.transaction.extraParameters.INSTALLMENTS_NUMBER
               : 1,
         payu_order_id: payu.transaction.order.referenceCode,
         payu_json:
@@ -108,7 +133,10 @@ class OrderController {
             ? 'Boleto gerado pelo portal do líder automaticamente.'
             : 'Pagamento aprovado com cartão de crédito.',
         shipping_cost: order_details.shipping_amount,
+        is_new_address: shipping_address.type === 'other',
+        address_id: address ? address.id : shipping_address.type,
         shipping_type: shipping_address.address_type,
+        shipping_other_type_name: shipping_address.address_other_type_name,
         shipping_cep: shipping_address.cep,
         shipping_uf: shipping_address.uf,
         shipping_city: shipping_address.city,
@@ -120,10 +148,15 @@ class OrderController {
         shipping_option
       }
 
+      console.log(orderNetsuite)
+      console.log('chamei')
+
       const responseNetsuite = await apiNetsuite.post(
-        '/restlet.nl?script=185&deploy=1',
+        '/restlet.nl?script=189&deploy=1',
         orderNetsuite
       )
+
+      console.log(responseNetsuite.data)
 
       if (responseNetsuite.data.id) {
         order.netsuite_id = responseNetsuite.data.id || order.netsuite_id
