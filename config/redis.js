@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 /*
 |--------------------------------------------------------------------------
@@ -10,10 +10,10 @@
 |
 */
 
-const Env = use("Env");
+const Env = use('Env')
 
-const Url = require("url-parse");
-const REDIS_URL = new Url(Env.get("REDIS_URL"));
+const Url = require('url-parse')
+const REDIS_URL = new Url(Env.get('REDIS_URL'))
 
 module.exports = {
   /*
@@ -24,7 +24,7 @@ module.exports = {
   | Redis connection to be used by default.
   |
   */
-  connection: Env.get("REDIS_CONNECTION", "local"),
+  connection: Env.get('REDIS_CONNECTION', 'local'),
 
   /*
   |--------------------------------------------------------------------------
@@ -35,11 +35,11 @@ module.exports = {
   |
   */
   local: {
-    host: "127.0.0.1",
+    host: '127.0.0.1',
     port: 6379,
     password: null,
     db: 0,
-    keyPrefix: ""
+    keyPrefix: ''
   },
 
   /*
@@ -51,12 +51,12 @@ module.exports = {
   |
   */
   heroku: {
-    host: Env.get("REDIS_HOST", REDIS_URL.hostname),
-    port: Env.get("REDIS_PORT", REDIS_URL.port),
-    user: Env.get("REDIS_USER", REDIS_URL.username),
-    password: Env.get("REDIS_PASSWORD", REDIS_URL.password),
+    host: Env.get('REDIS_HOST', REDIS_URL.hostname),
+    port: Env.get('REDIS_PORT', REDIS_URL.port),
+    user: Env.get('REDIS_USER', REDIS_URL.username),
+    password: Env.get('REDIS_PASSWORD', REDIS_URL.password),
     db: 0,
-    keyPrefix: ""
+    keyPrefix: ''
   },
 
   /*
@@ -70,17 +70,17 @@ module.exports = {
   cluster: {
     clusters: [
       {
-        host: "127.0.0.1",
+        host: '127.0.0.1',
         port: 6379,
         password: null,
         db: 0
       },
       {
-        host: "127.0.0.1",
+        host: '127.0.0.1',
         port: 6380,
         password: null,
         db: 0
       }
     ]
   }
-};
+}
