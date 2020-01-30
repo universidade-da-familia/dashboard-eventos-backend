@@ -20,177 +20,75 @@ define(["N/record", "N/search"], function(record, search) {
         isDynamic: true
       });
 
-      const searchColumns = ["internalid"];
-      const ufIds = search.create({
-        type: "customlist_enl_state",
-        filters: [
-          ["name", "is", context.shipping_uf]
-        ],
-        columns: searchColumns
-      })
-        .run()
-        .getRange({
-          start: 0,
-          end: 1000
-        })
-        .map(function (result) {
-          const id = result.getValue({ name: "internalid" });
+      const numberOfAddresses = customer.getLineCount({
+        sublistId: "addressbook"
+      });
 
-          return id;
-        });
-
-      const cityIds = search.create({
-          type: "customrecord_enl_cities",
-          filters: [
-            ["name", "is", context.shipping_city]
-          ],
-          columns: searchColumns
-        })
-          .run()
-          .getRange({
-            start: 0,
-            end: 1000
-          })
-          .map(function (result) {
-            const id = result.getValue({ name: "internalid" });
-
-            return id;
+      if(numberOfAddresses > 0) {
+        for (var index = 0; index < numberOfAddresses; index += 1) {
+          customer.selectLine({
+            sublistId: "addressbook",
+            line: index
           });
 
-      if(context.is_new_address) {
-        customer.selectNewLine({ sublistId: "addressbook" });
-
-        const addressSubrecord = customer.getCurrentSublistSubrecord({
-          sublistId: 'addressbook',
-          fieldId: 'addressbookaddress'
-        });
-
-        customer.setCurrentSublistValue({
-          sublistId: "addressbook",
-          fieldId: "defaultbilling",
-          value: true
-        });
-        customer.setCurrentSublistValue({
-          sublistId: "addressbook",
-          fieldId: "defaultshipping",
-          value: true
-        });
-
-        if(context.shipping_type === "other") {
-          customer.setCurrentSublistValue({
+          customer.removeCurrentSublistSubrecord({
             sublistId: "addressbook",
-            fieldId: "label",
-            value: context.shipping_other_type_name || context.shipping_street
+            fieldId: "addressbookaddress"
           });
-        } else if(context.shipping_type === "home") {
-          customer.setCurrentSublistValue({
-            sublistId: "addressbook",
-            fieldId: "label",
-            value: "Minha casa"
-          });
-        } else {
-          customer.setCurrentSublistValue({
-            sublistId: "addressbook",
-            fieldId: "label",
-            value: "Meu trabalho"
+
+          customer.commitLine({
+            sublistId: "addressbook"
           });
         }
+      }
 
-        addressSubrecord.setValue({
-          fieldId: "country",
-          value: "BR"
-        });
-        addressSubrecord.setValue({
-          fieldId: "zip",
-          value: context.shipping_cep
-        });
-        addressSubrecord.setValue({
-          fieldId: "addr1",
-          value: context.shipping_street
-        });
-        addressSubrecord.setValue({
-          fieldId: "custrecord_enl_numero",
-          value: context.shipping_street_number
-        });
-        addressSubrecord.setValue({
-          fieldId: "addr2",
-          value: context.shipping_complement
-        });
-        addressSubrecord.setValue({
-          fieldId: "addr3",
-          value: context.shipping_neighborhood
-        });
-        addressSubrecord.setValue({
-          fieldId: "custrecord_enl_uf",
-          value: parseInt(ufIds[0]) || ""
-        });
-        addressSubrecord.setValue({
-          fieldId: "custrecord_enl_city",
-          value: parseInt(cityIds[0]) || ""
-        });
-        addressSubrecord.setValue({
-          fieldId: "addressee",
-          value: context.shipping_receiver
-        });
-        addressSubrecord.setValue({
-          fieldId: "custrecordudf_dashboard_address_id",
-          value: context.address_id
-        });
 
-        customer.commitLine({ sublistId: "addressbook" });
-      } else {
-        const numberOfAddresses = customer.getLineCount({
-          sublistId: "addressbook"
-        });
+      if(context.netsuiteAddresses && context.netsuiteAddresses.length > 0) {
+        customer.selectNewLine({ sublistId: "addressbook" });
 
-        if(numberOfAddresses > 0) {
-          var addressFound = false;
+        context.netsuiteAddresses.forEach(function(address, index) {
+          const searchColumns = ["internalid"]
+          const ufIds = search.create({
+            type: "customlist_enl_state",
+            filters: [
+              ["name", "is", address.uf]
+            ],
+            columns: searchColumns
+          })
+            .run()
+            .getRange({
+              start: 0,
+              end: 1000
+            })
+            .map(function (result) {
+              const id = result.getValue({ name: "internalid" });
 
-          for (var index = 0; index < numberOfAddresses; index += 1) {
-            customer.selectLine({
-              sublistId: "addressbook",
-              line: index
-            });
+              return id;
+            })
+          const cityIds = search.create({
+              type: "customrecord_enl_cities",
+              filters: [
+                ["name", "is", address.city]
+              ],
+              columns: searchColumns
+            })
+              .run()
+              .getRange({
+                start: 0,
+                end: 1000
+              })
+              .map(function (result) {
+                const id = result.getValue({ name: "internalid" });
 
-            const addressSubrecord2 = customer.getCurrentSublistSubrecord({
-              sublistId: 'addressbook',
-              fieldId: 'addressbookaddress'
-            });
+                return id;
+              })
 
-            log.debug({ "title": "subadress", "details": addressSubrecord2 });
+          const addressSubrecord = customer.getCurrentSublistSubrecord({
+            sublistId: 'addressbook',
+            fieldId: 'addressbookaddress'
+          });
 
-            const addressId = addressSubrecord2.getCurrentSublistValue({
-              sublistId: 'addressbook',
-              fieldId: 'custrecordudf_dashboard_address_id'
-            });
-
-            log.debug({ "title": "addressid", "details": addressId });
-
-            if(addressId === context.address_id) {
-              addressFound = true;
-
-              customer.setCurrentSublistValue({
-                sublistId: "addressbook",
-                fieldId: "defaultbilling",
-                value: true
-              });
-
-              customer.setCurrentSublistValue({
-                sublistId: "addressbook",
-                fieldId: "defaultshipping",
-                value: true
-              });
-            }
-          }
-
-          if(!addressFound) {
-            customer.selectNewLine({ sublistId: "addressbook" });
-
-            const addressSubrecord3 = customer.getCurrentSublistSubrecord({
-              sublistId: 'addressbook',
-              fieldId: 'addressbookaddress'
-            });
-
+          if(parseInt(context.address_id) === parseInt(address.id)) {
             customer.setCurrentSublistValue({
               sublistId: "addressbook",
               fieldId: "defaultbilling",
@@ -201,71 +99,71 @@ define(["N/record", "N/search"], function(record, search) {
               fieldId: "defaultshipping",
               value: true
             });
-
-            if(context.shipping_type === "other") {
-              customer.setCurrentSublistValue({
-                sublistId: "addressbook",
-                fieldId: "label",
-                value: context.shipping_other_type_name || context.shipping_street
-              });
-            } else if(context.shipping_type === "home") {
-              customer.setCurrentSublistValue({
-                sublistId: "addressbook",
-                fieldId: "label",
-                value: "Minha casa"
-              });
-            } else {
-              customer.setCurrentSublistValue({
-                sublistId: "addressbook",
-                fieldId: "label",
-                value: "Meu trabalho"
-              });
-            }
-
-            addressSubrecord3.setValue({
-              fieldId: "country",
-              value: "BR"
-            });
-            addressSubrecord3.setValue({
-              fieldId: "zip",
-              value: context.shipping_cep
-            });
-            addressSubrecord3.setValue({
-              fieldId: "addr1",
-              value: context.shipping_street
-            });
-            addressSubrecord3.setValue({
-              fieldId: "custrecord_enl_numero",
-              value: context.shipping_street_number
-            });
-            addressSubrecord3.setValue({
-              fieldId: "addr2",
-              value: context.shipping_complement
-            });
-            addressSubrecord3.setValue({
-              fieldId: "addr3",
-              value: context.shipping_neighborhood
-            });
-            addressSubrecord3.setValue({
-              fieldId: "custrecord_enl_uf",
-              value: parseInt(ufIds[0]) || ""
-            });
-            addressSubrecord3.setValue({
-              fieldId: "custrecord_enl_city",
-              value: parseInt(cityIds[0]) || ""
-            });
-            addressSubrecord3.setValue({
-              fieldId: "addressee",
-              value: context.shipping_receiver
-            });
-            addressSubrecord3.setValue({
-              fieldId: "custrecordudf_dashboard_address_id",
-              value: context.address_id
-            });
-
-            customer.commitLine({ sublistId: "addressbook" });
           }
-        }
+
+          if(address.type === "other") {
+            customer.setCurrentSublistValue({
+              sublistId: "addressbook",
+              fieldId: "label",
+              value: address.other_type_name || address.street
+            });
+          } else if(address.type === "home") {
+            customer.setCurrentSublistValue({
+              sublistId: "addressbook",
+              fieldId: "label",
+              value: "Minha casa"
+            });
+          } else {
+            customer.setCurrentSublistValue({
+              sublistId: "addressbook",
+              fieldId: "label",
+              value: "Meu trabalho"
+            });
+          }
+          addressSubrecord.setValue({
+            fieldId: "country",
+            value: "BR"
+          });
+          addressSubrecord.setValue({
+            fieldId: "zip",
+            value: address.cep
+          });
+          addressSubrecord.setValue({
+            fieldId: "addr1",
+            value: address.street
+          });
+          addressSubrecord.setValue({
+            fieldId: "custrecord_enl_numero",
+            value: address.street_number
+          });
+          addressSubrecord.setValue({
+            fieldId: "addr2",
+            value: address.complement
+          });
+          addressSubrecord.setValue({
+            fieldId: "addr3",
+            value: address.neighborhood
+          });
+          addressSubrecord.setValue({
+            fieldId: "custrecord_enl_uf",
+            value: parseInt(ufIds[0]) || ""
+          });
+          addressSubrecord.setValue({
+            fieldId: "custrecord_enl_city",
+            value: parseInt(cityIds[0]) || ""
+          });
+          addressSubrecord.setValue({
+            fieldId: "addressee",
+            value: address.receiver
+          });
+          addressSubrecord.setValue({
+            fieldId: "custrecordudf_dashboard_address_id",
+            value: address.id
+          });
+
+          customer.commitLine({ sublistId: "addressbook" });
+
+        });
       }
 
       customer.save({
@@ -462,11 +360,26 @@ define(["N/record", "N/search"], function(record, search) {
           fieldId: "shippingcost",
           value: 0
         });
+      } else {
+        salesOrder.setValue({
+          fieldId: "custbody_enl_trans_freightamount",
+          value: context.shipping_cost
+        });
+
+        salesOrder.setValue({
+          fieldId: "altshippingcost",
+          value: context.shipping_cost
+        });
+
+        salesOrder.setValue({
+          fieldId: "shippingcost",
+          value: context.shipping_cost
+        });
       }
 
-      // const shippingAddress = salesOrder.getSubrecord({
-      //   fieldId: "shippingaddress"
-      // });
+      const shippingAddress = salesOrder.getSubrecord({
+        fieldId: "shippingaddress"
+      });
 
       // shippingAddress.setValue({
       //   fieldId: "addr1",
@@ -488,11 +401,11 @@ define(["N/record", "N/search"], function(record, search) {
       //   fieldId: "zip",
       //   value: context.shipping_cep
       // });
-      // // avalara actualization
-      // shippingAddress.setValue({
-      //   fieldId: "zipcode",
-      //   value: context.shipping_cep
-      // });
+      // avalara actualization
+      shippingAddress.setValue({
+        fieldId: "zipcode",
+        value: context.shipping_cep
+      });
       // shippingAddress.setValue({
       //   fieldId: "addressee",
       //   value: context.shipping_receiver
