@@ -5,8 +5,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Database = use('Database')
+
 const Order = use('App/Models/Order')
 const Entity = use('App/Models/Entity')
+
+const Kue = use('Kue')
+const Job = use('App/Jobs/CreateOrder')
 
 const axios = require('axios')
 
@@ -15,15 +20,6 @@ const api = axios.default.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json'
-  }
-})
-
-const apiNetsuite = axios.default.create({
-  baseURL: 'https://5260046.restlets.api.netsuite.com/app/site/hosting',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization:
-      'NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=Shalom1234,nlauth_role=1077'
   }
 })
 
@@ -65,9 +61,11 @@ class OrderController {
         payu
       } = data
 
-      if (shipping_address.type === 'other') {
-        const entity = await Entity.findOrFail(user.id)
+      console.log('comecei a gerar o pedido')
 
+      const entity = await Entity.findOrFail(user.id)
+
+      if (shipping_address.type === 'other') {
         address = await entity.addresses().create({
           entity_id: entity.id,
           type: shipping_address.address_type,
@@ -83,6 +81,10 @@ class OrderController {
           receiver: shipping_address.receiver
         })
       }
+
+      await entity.load('addresses')
+
+      const trx = await Database.beginTransaction()
 
       const order = await Order.create({
         status_id: 1,
@@ -101,7 +103,7 @@ class OrderController {
         shipping_neighborhood: shipping_address.neighborhood,
         shipping_complement: shipping_address.complement,
         shipping_receiver: shipping_address.receiver
-      })
+      }, trx)
 
       await order.products().attach(
         products.map(product => product.id),
@@ -112,8 +114,43 @@ class OrderController {
 
           row.quantity = product.quantity
           row.total = product.cost_of_goods * product.quantity
-        }
+        }, trx
       )
+
+      const { data: payuData } = await api.post(
+        '/payments-api/4.0/service.cgi',
+        payu
+      )
+
+      if (
+        card !== null &&
+            payuData.transactionResponse.responseCode !== 'APPROVED'
+      ) {
+        return response.status(400).send({
+          title: 'Falha!',
+          message: 'Houve um problema com o pagamento na Payu.',
+          payu: payuData.transactionResponse.responseCode
+        })
+      }
+
+      const transaction = await order.transaction().create({
+        order_id: order.id,
+        transaction_id: payuData.transactionResponse.transactionId,
+        api_order_id: payuData.transactionResponse.orderId,
+        status: payuData.transactionResponse.state,
+        boleto_url:
+              card === null
+                ? payuData.transactionResponse.extraParameters
+                  .URL_PAYMENT_RECEIPT_HTML
+                : null
+      }, trx)
+
+      trx.commit()
+
+      order.products = await order.products().fetch()
+      order.transaction = transaction || order.transaction
+
+      console.log(entity.toJSON().addresses)
 
       const orderNetsuite = {
         entity: user,
@@ -129,6 +166,7 @@ class OrderController {
             ? 'Boleto gerado pelo portal do líder automaticamente.'
             : 'Pagamento aprovado com cartão de crédito.',
         shipping_cost: order_details.shipping_amount,
+        netsuiteAddresses: entity.toJSON().addresses,
         is_new_address: shipping_address.type === 'other',
         address_id: address ? address.id : shipping_address.type,
         shipping_type: shipping_address.address_type,
@@ -144,60 +182,18 @@ class OrderController {
         shipping_option
       }
 
-      const responseNetsuite = await apiNetsuite.post(
-        '/restlet.nl?script=185&deploy=1',
-        orderNetsuite
-      )
+      Kue.dispatch(Job.key, { orderNetsuite, order_id: order.id }, {
+        attempts: 5,
+        priority: 'high'
+      })
 
-      if (responseNetsuite.data.id) {
-        order.netsuite_id = responseNetsuite.data.id || order.netsuite_id
-
-        await order.save()
-
-        const { data: payuData } = await api.post(
-          '/payments-api/4.0/service.cgi',
-          payu
-        )
-
-        if (
-          card !== null &&
-            payuData.transactionResponse.responseCode !== 'APPROVED'
-        ) {
-          return response.status(400).send({
-            title: 'Falha!',
-            message: 'Houve um problema com o pagamento na Payu.',
-            payu: payuData.transactionResponse.responseCode
-          })
-        }
-
-        const transaction = await order.transaction().create({
-          order_id: order.id,
-          transaction_id: payuData.transactionResponse.transactionId,
-          api_order_id: payuData.transactionResponse.orderId,
-          status: payuData.transactionResponse.state,
-          boleto_url:
-              card === null
-                ? payuData.transactionResponse.extraParameters
-                  .URL_PAYMENT_RECEIPT_HTML
-                : null
-        })
-
-        order.products = await order.products().fetch()
-        order.transaction = transaction || order.transaction
-      } else {
-        response.status(400).send({
-          title: 'Falha!',
-          message: 'Houve um erro ao gerar o pedido no Netsuite.'
-        })
-      }
+      console.log('terminei de gerar o pedido')
 
       return order
     } catch (err) {
       return response.status(err.status).send({
-        error: {
-          title: 'Falha!',
-          message: 'Erro ao criar o pedido.'
-        }
+        title: 'Falha!',
+        message: 'Erro ao criar o pedido.'
       })
     }
   }
