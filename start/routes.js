@@ -4,8 +4,6 @@ const Route = use('Route')
 
 Route.post('payment_confirmation', 'TransactionController.payu')
 
-Route.post('test_mail', 'TestMailController.store')
-
 // Logando usuario
 Route.post('sessions', 'SessionController.store')
 Route.post('organization_sessions', 'SessionController.store_org')
