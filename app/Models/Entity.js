@@ -190,7 +190,7 @@ class Entity extends Model {
   }
 
   orders () {
-    return this.hasMany('App/Models/Order')
+    return this.hasMany('App/Models/Order').orderBy('created_at', 'desc')
   }
 
   relationships () {

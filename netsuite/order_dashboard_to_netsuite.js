@@ -20,6 +20,26 @@ define(["N/record", "N/search"], function(record, search) {
         isDynamic: true
       });
 
+      customer.setValue({
+        fieldId: "custentity_enl_legalname",
+        value: context.entity.name
+      });
+
+      customer.setValue({
+        fieldId: "custentity_enl_ienum",
+        value: "ISENTO"
+      });
+
+      customer.setValue({
+        fieldId: "custentity_enl_ent_activitysector",
+        value: 4
+      });
+
+      customer.setValue({
+        fieldId: "custentity_enl_enviarnota",
+        value: true
+      });
+
       const numberOfAddresses = customer.getLineCount({
         sublistId: "addressbook"
       });
