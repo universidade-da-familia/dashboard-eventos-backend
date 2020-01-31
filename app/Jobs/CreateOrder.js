@@ -31,7 +31,7 @@ class CreateOrder {
     console.log('antes netsuite')
 
     const response = await api.post(
-      '/restlet.nl?script=189&deploy=1',
+      '/restlet.nl?script=185&deploy=1',
       orderNetsuite
     )
 
