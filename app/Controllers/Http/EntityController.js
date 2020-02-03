@@ -162,9 +162,15 @@ class EntityController {
       }
     }
 
+    console.log('data antes de gravar')
+    console.log(data)
+
     entity.merge(data)
 
     await entity.save()
+
+    console.log('entity após gravar')
+    console.log(entity)
 
     return entity
   }

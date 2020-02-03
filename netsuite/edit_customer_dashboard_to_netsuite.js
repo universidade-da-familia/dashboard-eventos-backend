@@ -33,6 +33,16 @@ define(["N/record"], function(record) {
         customer.setValue({ fieldId: "firstname", value: context.firstname });
         customer.setValue({ fieldId: "lastname", value: context.lastname });
         customer.setValue({ fieldId: "custentity_enl_ienum", value: "ISENTO" });
+
+        customer.setValue({
+          fieldId: "custentity_enl_ent_activitysector",
+          value: 4
+        });
+
+        customer.setValue({
+          fieldId: "custentity_enl_enviarnota",
+          value: true
+        });
       }
 
       customer.setValue({
