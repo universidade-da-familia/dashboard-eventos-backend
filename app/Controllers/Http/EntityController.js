@@ -7,22 +7,11 @@
 const Entity = use('App/Models/Entity')
 const Organization = use('App/Models/Organization')
 
+const Kue = use('Kue')
+const JobCreate = use('App/Jobs/CreateEntity')
+const JobUpdate = use('App/Jobs/UpdateEntity')
+
 const Database = use('Database')
-
-// const Mail = use("Mail");
-
-// const moment = require("moment");
-
-// const axios = require("axios");
-
-// const api = axios.default.create({
-//   baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
-//   headers: {
-//     "Content-Type": "application/json",
-//     Authorization:
-//       "NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=Shalom1234,nlauth_role=1077"
-//   }
-// });
 
 class EntityController {
   /**
@@ -93,6 +82,8 @@ class EntityController {
 
     await trx.commit()
 
+    Kue.dispatch(JobCreate.key, entity, { attempts: 5 })
+
     return entity
   }
 
@@ -142,6 +133,8 @@ class EntityController {
     entity.merge(data)
 
     await entity.save()
+
+    Kue.dispatch(JobUpdate.key, entity, { attempts: 5 })
 
     return entity
   }

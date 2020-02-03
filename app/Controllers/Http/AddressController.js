@@ -9,6 +9,9 @@ const Address = use('App/Models/Address')
 const Entity = use('App/Models/Entity')
 const Organization = use('App/Models/Organization')
 
+const Kue = use('Kue')
+const Job = use('App/Jobs/Addresses')
+
 const axios = require('axios')
 
 const api = axios.default.create({
@@ -85,13 +88,9 @@ class AddressController {
 
       await user.load('addresses')
 
-      await api.post(
-        '/restlet.nl?script=186&deploy=1',
-        {
-          netsuite_id,
-          netsuiteAddresses: user.toJSON().addresses
-        }
-      )
+      const netsuiteAddresses = user.toJSON().addresses
+
+      Kue.dispatch(Job.key, { netsuite_id, netsuiteAddresses }, { attempts: 5 })
 
       return response.status(200).send({
         title: 'Sucesso!',
