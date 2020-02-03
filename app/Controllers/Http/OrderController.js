@@ -133,6 +133,15 @@ class OrderController {
         })
       }
 
+      if (
+        card !== null &&
+            payuData.transactionResponse.responseCode === 'APPROVED'
+      ) {
+        order.status_id = 2 || order.status_id
+
+        order.save()
+      }
+
       const transaction = await order.transaction().create({
         order_id: order.id,
         transaction_id: payuData.transactionResponse.transactionId,

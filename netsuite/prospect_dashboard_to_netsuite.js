@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  *@author Lucas Alves
  *
@@ -88,6 +89,13 @@ define(["N/search", "N/record"], function(search, record) {
         fieldId: "custrecord_udf_flag_integrado",
         value: true
       });
+
+      if (context.sex === "F") {
+        customer.setValue({ fieldId: "custentity_rsc_sexo", value: "1" });
+      }
+      if (context.sex === "M") {
+        customer.setValue({ fieldId: "custentity_rsc_sexo", value: "2" });
+      }
 
       const customerId = customer.save();
 

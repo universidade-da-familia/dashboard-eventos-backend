@@ -54,10 +54,9 @@ define(["N/record"], function(record) {
       });
       if (context.sex === "F") {
         customer.setValue({ fieldId: "custentity_rsc_sexo", value: "1" });
-      } else if (context.sex === "M") {
+      }
+      if (context.sex === "M") {
         customer.setValue({ fieldId: "custentity_rsc_sexo", value: "2" });
-      } else {
-        customer.setValue({ fieldId: "custentity_rsc_sexo", value: "3" });
       }
       customer.setValue({ fieldId: "phone", value: context.phone });
       customer.setValue({ fieldId: "altphone", value: context.alt_phone });
