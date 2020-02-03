@@ -29,7 +29,7 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
       http.post({
         url: "http://apieventos.udf.org.br/entity",
         body: {
-          name: data.getValue({ fieldId: "custentity_enl_legalname" }) || "",
+          name: data.getText({ fieldId: "custentity_enl_legalname" }) || "",
           email: data.getValue({ fieldId: "email" }) || "",
           cpf: data.getValue({ fieldId: "custentity_enl_cnpjcpf" }) || "",
           password: "udf123",
@@ -53,7 +53,7 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
       http.put({
         url: "http://apieventos.udf.org.br/netsuite_entity/" + netsuite_id,
         body: {
-          name: data.getValue({ fieldId: "custentity_enl_legalname" }) || "",
+          name: data.getText({ fieldId: "custentity_enl_legalname" }) || "",
           email: data.getValue({ fieldId: "email" }) || "",
           cpf: data.getValue({ fieldId: "custentity_enl_cnpjcpf" }) || "",
           sex: data.getText({ fieldId: "custentity_rsc_sexo" }) || "",
