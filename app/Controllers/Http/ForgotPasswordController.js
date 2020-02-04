@@ -4,7 +4,6 @@ const Entity = use('App/Models/Entity')
 const Mail = use('Mail')
 
 const ValidateEmail = use('App/Controllers/Http/Validations/ValidateEmail')
-const AsteriskEmail = use('App/Controllers/Http/Validations/AsteriskEmail')
 
 const moment = require('moment')
 const crypto = require('crypto')
@@ -13,7 +12,6 @@ class ForgotPasswordController {
   async store ({ request, response }) {
     try {
       const validateEmail = new ValidateEmail()
-      const asteriskEmail = new AsteriskEmail()
 
       const email_cpf_cnpj = request.input('email_cpf_cnpj')
 
@@ -42,7 +40,7 @@ class ForgotPasswordController {
       )
 
       return {
-        email: await asteriskEmail.validate(user.email)
+        email: user.email
       }
     } catch (err) {
       return response.status(err.status).send({
