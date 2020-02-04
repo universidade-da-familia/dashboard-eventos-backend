@@ -124,18 +124,18 @@ class OrderController {
 
       if (
         card !== null &&
-            payuData.transactionResponse.responseCode !== 'APPROVED'
+            payuData.transactionResponse.state !== 'APPROVED'
       ) {
         return response.status(400).send({
           title: 'Falha!',
           message: 'Houve um problema com o pagamento na Payu.',
-          payu: payuData.transactionResponse.responseCode
+          payu: payuData.transactionResponse.state
         })
       }
 
       if (
         card !== null &&
-            payuData.transactionResponse.responseCode === 'APPROVED'
+            payuData.transactionResponse.state === 'APPROVED'
       ) {
         order.status_id = 2 || order.status_id
 
