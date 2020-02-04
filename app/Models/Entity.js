@@ -121,6 +121,23 @@ class Entity extends Model {
 
     return entities
   }
+
+  static updateLeaderTrainingHierarchy (entityId, hierarchyName, assistantHierarchyId, type) {
+    if (type === 'delete') {
+      const entity = this.query()
+        .where('id', entityId)
+        .update({ [hierarchyName]: 1 })
+
+      return entity
+    }
+    if (type === 'add') {
+      const entity = this.query()
+        .where('id', entityId)
+        .update({ [hierarchyName]: assistantHierarchyId })
+
+      return entity
+    }
+  }
 }
 
 module.exports = Entity
