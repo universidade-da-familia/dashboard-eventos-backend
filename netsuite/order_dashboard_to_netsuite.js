@@ -174,7 +174,7 @@ define(["N/record", "N/search"], function(record, search) {
           });
           addressSubrecord.setValue({
             fieldId: "addressee",
-            value: address.receiver
+            value: address.receiver || context.entity.name
           });
           addressSubrecord.setValue({
             fieldId: "custrecordudf_dashboard_address_id",
@@ -260,12 +260,12 @@ define(["N/record", "N/search"], function(record, search) {
       ) {
         salesOrder.setValue({
           fieldId: "shipmethod",
-          value: 3651
+          value: 3670
         });
 
         salesOrder.setValue({
           fieldId: "custbody_enl_carrierid",
-          value: 5
+          value: 4
         });
       } else if (
         context.shipping_option.delivery_method_name === "Braspress Standard"
@@ -366,31 +366,37 @@ define(["N/record", "N/search"], function(record, search) {
       }
 
       if (context.shipping_cost === 0) {
-        salesOrder.setValue({
-          fieldId: "custbody_enl_trans_freightamount",
-          value: 0
-        });
-
+        // resumo do pedido - custo do frete
         salesOrder.setValue({
           fieldId: "altshippingcost",
           value: 0
         });
 
+        // valor frete aba informacoes fiscais
+        salesOrder.setValue({
+          fieldId: "custbody_enl_trans_freightamount",
+          value: context.shipping_option.final_shipping_cost || 0
+        });
+
+        // valor frete aba entrega
         salesOrder.setValue({
           fieldId: "shippingcost",
           value: 0
         });
       } else {
-        salesOrder.setValue({
-          fieldId: "custbody_enl_trans_freightamount",
-          value: context.shipping_cost
-        });
-
+        // resumo do pedido - custo do frete
         salesOrder.setValue({
           fieldId: "altshippingcost",
           value: context.shipping_cost
         });
 
+        // valor frete aba informacoes fiscais
+        salesOrder.setValue({
+          fieldId: "custbody_enl_trans_freightamount",
+          value: context.shipping_cost
+        });
+
+        // valor frete aba entrega
         salesOrder.setValue({
           fieldId: "shippingcost",
           value: context.shipping_cost

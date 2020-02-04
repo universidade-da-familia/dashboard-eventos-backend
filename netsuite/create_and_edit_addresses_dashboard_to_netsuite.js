@@ -19,8 +19,7 @@ define(["N/record", "N/search"], function(record, search) {
         isDynamic: true
       });
 
-      log.debug({ "title": "customer", "details": customer })
-      log.debug({ "title": "add", "details": context.netsuiteAddresses })
+      const name = data.getText({ fieldId: "custentity_enl_legalname" }) || ""
 
       const numberOfAddresses = customer.getLineCount({
         sublistId: "addressbook"
@@ -157,7 +156,7 @@ define(["N/record", "N/search"], function(record, search) {
           });
           addressSubrecord.setValue({
             fieldId: "addressee",
-            value: address.receiver
+            value: address.receiver || name
           });
           addressSubrecord.setValue({
             fieldId: "custrecordudf_dashboard_address_id",

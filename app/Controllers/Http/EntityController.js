@@ -163,7 +163,6 @@ class EntityController {
     }
 
     console.log('data antes de gravar')
-    console.log(data)
 
     entity.merge(data)
 
