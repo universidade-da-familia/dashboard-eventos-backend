@@ -121,15 +121,13 @@ Route.resource('event_participant', 'EventParticipantController').except([
   'index',
   'show',
   'edit',
-  'create',
-  'destroy'
+  'create'
 ])
 Route.get('event_participants/:event_id', 'EventParticipantController.index')
 Route.get(
   'event_participant/:cpf/:default_event_id',
   'EventParticipantController.show'
 )
-Route.delete('event_participant/:entity_id/:participant_id', 'EventParticipantController.destroy')
 
 // CRUD entity organizators
 Route.resource('entity_organizator', 'EntityOrganizatorController').except([
