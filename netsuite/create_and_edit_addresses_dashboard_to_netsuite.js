@@ -19,7 +19,7 @@ define(["N/record", "N/search"], function(record, search) {
         isDynamic: true
       });
 
-      const name = data.getText({ fieldId: "custentity_enl_legalname" }) || ""
+      const name = customer.getText({ fieldId: "custentity_enl_legalname" }) || ""
 
       const numberOfAddresses = customer.getLineCount({
         sublistId: "addressbook"

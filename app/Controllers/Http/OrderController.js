@@ -139,7 +139,7 @@ class OrderController {
       ) {
         order.status_id = 2 || order.status_id
 
-        order.save()
+        await order.save()
       }
 
       const transaction = await order.transaction().create({
@@ -158,8 +158,6 @@ class OrderController {
 
       order.products = await order.products().fetch()
       order.transaction = transaction || order.transaction
-
-      console.log(entity.toJSON().addresses)
 
       const orderNetsuite = {
         entity: user,

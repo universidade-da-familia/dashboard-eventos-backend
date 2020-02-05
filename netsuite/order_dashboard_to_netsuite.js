@@ -461,6 +461,13 @@ define(["N/record", "N/search"], function(record, search) {
           fieldId: "price",
           value: 3
         });
+        if (context.shipping_cost === 0) {
+          salesOrder.setCurrentSublistValue({
+            sublistId: "item",
+            fieldId: "custcol_enl_line_freightamount",
+            value: 0
+          });
+        }
 
         salesOrder.commitLine({ sublistId: "item" });
       });
@@ -474,11 +481,13 @@ define(["N/record", "N/search"], function(record, search) {
         id: salesOrderId
       };
     } catch (err) {
-      return {
-        title: "Falha!",
-        message: "Houve um erro ao criar o registro",
-        erro: err
-      };
+      // const dashboardError = error.create({
+      //   name: 'DASHBOARD_CREATE_ORDER_ERROR',
+      //   message: "Houve um erro ao criar o pedido no Netsuite",
+      //   notifyOff: false
+      // })
+
+      return err
     }
   }
 
