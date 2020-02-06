@@ -461,11 +461,18 @@ define(["N/record", "N/search"], function(record, search) {
           fieldId: "price",
           value: 3
         });
+
         if (context.shipping_cost === 0) {
           salesOrder.setCurrentSublistValue({
             sublistId: "item",
             fieldId: "custcol_enl_line_freightamount",
             value: 0
+          });
+        } else {
+          salesOrder.setCurrentSublistValue({
+            sublistId: "item",
+            fieldId: "custcol_enl_line_freightamount",
+            value: product.freight_per_item || 0
           });
         }
 
