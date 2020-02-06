@@ -161,7 +161,14 @@ class OrderController {
 
       const orderNetsuite = {
         entity: user,
-        products,
+        products: products.map(product => {
+          const product_subtotal = parseInt(product.quantity) * product.cost_of_goods
+          const product_subtotal_percent = product_subtotal / order_details.subtotal
+
+          product.freight_per_item = product_subtotal_percent * order_details.shipping_amount
+
+          return product
+        }),
         card,
         installments:
             card !== null
