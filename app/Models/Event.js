@@ -93,6 +93,11 @@ class Event extends Model {
       .with('organizators')
       .with('participants')
       .with('noQuitterParticipants')
+      .whereHas('organizators', builder => {
+        if (filterPrintData.cpf_print) {
+          builder.where('cpf', filterPrintData.cpf_print)
+        }
+      })
       .whereHas('defaultEvent', builder => {
         if (filterPrintData.event_type_print) {
           builder.where('event_type', filterPrintData.event_type_print)

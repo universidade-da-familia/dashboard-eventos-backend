@@ -50,6 +50,11 @@ class EventController {
       .with('organizators')
       .with('participants')
       .with('noQuitterParticipants')
+      .whereHas('organizators', builder => {
+        if (filterData.cpf) {
+          builder.where('cpf', filterData.cpf)
+        }
+      })
       .whereHas('defaultEvent', builder => {
         if (filterData.event_type) {
           builder.where('event_type', filterData.event_type)
