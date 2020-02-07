@@ -124,7 +124,8 @@ class OrderController {
 
       if (
         card !== null &&
-            payuData.transactionResponse.state !== 'APPROVED'
+        (payuData.transactionResponse.state !== 'APPROVED' ||
+          payuData.transactionResponse.state !== 'PENDING_TRANSACTION_CONFIRMATION')
       ) {
         return response.status(400).send({
           title: 'Falha!',
