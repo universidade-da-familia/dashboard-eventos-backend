@@ -25,6 +25,10 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
 
     const netsuite_id = data.getValue({ fieldId: "id" })
 
+    if (type === "delete") {
+      return true
+    }
+
     if (type === "create") {
       http.post({
         url: "http://apieventos.udf.org.br/entity",

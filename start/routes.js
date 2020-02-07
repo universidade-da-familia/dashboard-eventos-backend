@@ -4,6 +4,8 @@ const Route = use('Route')
 
 Route.post('payment_confirmation', 'TransactionController.payu')
 
+Route.post('generate_lesson_reports', 'GenerateLessonReportController.store')
+
 // Logando usuario
 Route.post('sessions', 'SessionController.store')
 Route.post('organization_sessions', 'SessionController.store_org')
