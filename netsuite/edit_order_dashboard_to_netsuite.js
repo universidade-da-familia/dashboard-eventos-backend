@@ -16,32 +16,38 @@ define(["N/record"], function(record) {
     try {
       const salesOrder = record.load({
         type: record.Type.SALES_ORDER,
-        id: context.netsuite_id,
+        id: context.order_id,
         isDynamic: true,
       });
 
-      // grava o pedido como pendente de aprovação (pagamento pendente na payu)
-      if (context.orderstatus) {
-        salesOrder.setValue({
-          fieldId: "orderstatus",
-          value: context.orderstatus
-        })
-      }
+      const orderStatus = salesOrder.getValue({
+        fieldId: "orderstatus",
+      })
 
-      // grava o pedido como pendente de aprovação (pagamento pendente na payu)
-      if (context.origstatus) {
-        salesOrder.setValue({
-          fieldId: "origstatus",
-          value: context.origstatus
-        })
-      }
+      if (orderStatus === "A") {
+        // grava o pedido como pendente de aprovação (pagamento pendente na payu)
+        if (context.orderstatus) {
+          salesOrder.setValue({
+            fieldId: "orderstatus",
+            value: context.orderstatus
+          })
+        }
 
-      // grava o pedido como pendente de aprovação (pagamento pendente na payu)
-      if (context.statusRef) {
-        salesOrder.setValue({
-          fieldId: "statusRef",
-          value: context.statusRef
-        })
+        // grava o pedido como pendente de aprovação (pagamento pendente na payu)
+        if (context.origstatus) {
+          salesOrder.setValue({
+            fieldId: "origstatus",
+            value: context.origstatus
+          })
+        }
+
+        // grava o pedido como pendente de aprovação (pagamento pendente na payu)
+        if (context.statusRef) {
+          salesOrder.setValue({
+            fieldId: "statusRef",
+            value: context.statusRef
+          })
+        }
       }
 
       const salesOrderId = salesOrder.save({

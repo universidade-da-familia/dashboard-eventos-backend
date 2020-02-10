@@ -1,0 +1,149 @@
+'use strict'
+
+const OrderTransaction = use('App/Models/OrderTransaction')
+const Order = use('App/Models/Order')
+
+const Kue = use('Kue')
+const Job = use('App/Jobs/ApproveOrder')
+
+/** @typedef {import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {import('@adonisjs/framework/src/Response')} Response */
+/** @typedef {import('@adonisjs/framework/src/View')} View */
+
+/**
+ * Resourceful controller for interacting with ordertransactions
+ */
+class OrderTransactionController {
+  /**
+   * Show a list of all ordertransactions.
+   * GET ordertransactions
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async index ({ request, response, view }) {
+  }
+
+  /**
+   * Render a form to be used for creating a new ordertransaction.
+   * GET ordertransactions/create
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async create ({ request, response, view }) {
+  }
+
+  /**
+   * Create/save a new ordertransaction.
+   * POST ordertransactions
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async store ({ request, response }) {
+  }
+
+  /**
+   * Display a single ordertransaction.
+   * GET ordertransactions/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async show ({ params, request, response, view }) {
+  }
+
+  /**
+   * Render a form to update an existing ordertransaction.
+   * GET ordertransactions/:id/edit
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async edit ({ params, request, response, view }) {
+  }
+
+  /**
+   * Update ordertransaction details.
+   * PUT or PATCH ordertransactions/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async update ({ request, response }) {
+    try {
+      const data = request.all()
+
+      const transaction = await OrderTransaction.findByOrFail('transaction_id', data.transaction_id)
+      const order = await Order.findOrFail(transaction.order_id)
+
+      transaction.status = data.response_message_pol || transaction.status
+      transaction.authorization_code = data.authorization_code || transaction.authorization_code
+
+      if (data.franchise) {
+        transaction.brand = data.franchise || transaction.brand
+      }
+
+      if (data.response_message_pol === 'APPROVED') {
+        transaction.authorized_amount = data.value || transaction.authorized_amount
+
+        order.status_id = 2 || order.status_id
+
+        await order.save()
+
+        if (data.franchise) {
+          const orderNetsuite = {
+            order_id: order.netsuite_id,
+            orderstatus: 'B',
+            origstatus: 'B',
+            statusRef: 'pendingFulfillment'
+          }
+
+          Kue.dispatch(Job.key, { orderNetsuite }, {
+            attempts: 5,
+            priority: 'high'
+          })
+        }
+      }
+
+      transaction.installments = data.installments_number || transaction.installments
+
+      await transaction.save()
+
+      console.log(`A transação order_id ${transaction.api_order_id} foi atualizada com sucesso para ${data.response_message_pol}`)
+      return response.status(200).send({
+        title: 'Sucesso!',
+        message: `A transação order_id ${transaction.api_order_id} foi atualizada com sucesso para ${data.response_message_pol}`
+      })
+    } catch (err) {
+      return response.status(err.status).send({
+        title: 'Falha!',
+        message: 'Houve um erro ao atualizar os dados da transação'
+      })
+    }
+  }
+
+  /**
+   * Delete a ordertransaction with id.
+   * DELETE ordertransactions/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async destroy ({ params, request, response }) {
+  }
+}
+
+module.exports = OrderTransactionController
