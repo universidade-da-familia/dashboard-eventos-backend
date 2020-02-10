@@ -61,7 +61,7 @@ class OrderController {
         payu
       } = data
 
-      console.log('comecei a gerar o pedido')
+      console.log('Comecei a gerar o pedido no portal')
 
       const entity = await Entity.findOrFail(user.id)
 
@@ -125,7 +125,8 @@ class OrderController {
       if (
         card !== null &&
         (payuData.transactionResponse.state !== 'APPROVED' ||
-          payuData.transactionResponse.state !== 'PENDING_TRANSACTION_CONFIRMATION')
+          payuData.transactionResponse.state !== 'PENDING_TRANSACTION_CONFIRMATION' ||
+          payuData.transactionResponse.state !== 'PENDING')
       ) {
         return response.status(400).send({
           title: 'Falha!',
@@ -197,12 +198,24 @@ class OrderController {
         shipping_option
       }
 
+      if (
+        card !== null &&
+        (payuData.transactionResponse.state === 'PENDING_TRANSACTION_CONFIRMATION' ||
+          payuData.transactionResponse.state === 'PENDING')
+      ) {
+        console.log('Pedido com cartão: pagamento pendente na payu.')
+
+        orderNetsuite.orderstatus = 'A'
+        orderNetsuite.origstatus = 'A'
+        orderNetsuite.statusRef = 'pendingApproval'
+      }
+
+      console.log('Terminei de gerar o pedido e enviei para a fila.')
+
       Kue.dispatch(Job.key, { orderNetsuite, order_id: order.id }, {
         attempts: 5,
         priority: 'high'
       })
-
-      console.log('terminei de gerar o pedido')
 
       return order
     } catch (err) {

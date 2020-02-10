@@ -1,7 +1,5 @@
 'use strict'
 
-const Order = use('App/Models/Order')
-
 const axios = require('axios')
 
 const api = axios.default.create({
@@ -13,7 +11,7 @@ const api = axios.default.create({
   }
 })
 
-class CreateOrder {
+class ApproveOrder {
   // If this getter isn't provided, it will default to 1.
   // Increase this number to increase processing concurrency.
   static get concurrency () {
@@ -22,15 +20,15 @@ class CreateOrder {
 
   // This is required. This is a unique key used to identify this job.
   static get key () {
-    return 'CreateOrder-job'
+    return 'ApproveOrder-job'
   }
 
   // This is where the work is done.
-  async handle ({ orderNetsuite, order_id }) {
-    console.log('CreateOrder-job started')
+  async handle ({ orderNetsuite }) {
+    console.log('ApproveOrder-job started')
 
     const response = await api.post(
-      '/restlet.nl?script=185&deploy=1',
+      '/restlet.nl?script=190&deploy=1',
       orderNetsuite
     )
 
@@ -38,19 +36,14 @@ class CreateOrder {
 
     if (response.data.id) {
       console.log('Chamada ao netsuite finalizada com sucesso.')
-      const order = await Order.findOrFail(order_id)
-
-      order.netsuite_id = response.data.id || order.netsuite_id
-
-      await order.save()
     } else {
       console.log('Chamada ao netsuite finalizada com falha.')
       throw new Error({
         title: 'Falha!',
-        message: 'Houve um erro ao gerar o pedido no Netsuite.'
+        message: 'Houve um erro ao atualizar o pedido no Netsuite.'
       })
     }
   }
 }
 
-module.exports = CreateOrder
+module.exports = ApproveOrder
