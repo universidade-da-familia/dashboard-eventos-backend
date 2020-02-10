@@ -27,7 +27,7 @@ class ApproveOrder {
   async handle ({ orderNetsuite }) {
     console.log('ApproveOrder-job started')
 
-    const response = await api.post(
+    const response = await api.put(
       '/restlet.nl?script=190&deploy=1',
       orderNetsuite
     )
