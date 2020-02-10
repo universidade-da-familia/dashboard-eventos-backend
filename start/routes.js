@@ -2,7 +2,7 @@
 
 const Route = use('Route')
 
-Route.post('payment_confirmation', 'TransactionController.payu')
+Route.post('payment_confirmation', 'TransactionController.update')
 
 Route.post('generate_lesson_reports', 'GenerateLessonReportController.store')
 

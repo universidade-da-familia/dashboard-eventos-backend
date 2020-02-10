@@ -218,6 +218,30 @@ define(["N/record", "N/search"], function(record, search) {
         if (context.installments === 3) {
           salesOrder.setValue({ fieldId: "terms", value: "16" });
         }
+
+        // grava o pedido como pendente de aprovação (pagamento pendente na payu)
+        if (context.orderstatus) {
+          salesOrder.setValue({
+            fieldId: "orderstatus",
+            value: context.orderstatus
+          })
+        }
+
+        // grava o pedido como pendente de aprovação (pagamento pendente na payu)
+        if (context.origstatus) {
+          salesOrder.setValue({
+            fieldId: "origstatus",
+            value: context.origstatus
+          })
+        }
+
+        // grava o pedido como pendente de aprovação (pagamento pendente na payu)
+        if (context.statusRef) {
+          salesOrder.setValue({
+            fieldId: "statusRef",
+            value: context.statusRef
+          })
+        }
       }
 
       salesOrder.setValue({

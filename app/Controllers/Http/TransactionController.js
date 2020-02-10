@@ -1,6 +1,12 @@
-"use strict";
+'use strict'
 
-const Mail = use("Mail");
+const Mail = use('Mail')
+
+const Transaction = use('App/Models/Transaction')
+const Order = use('App/Models/Order')
+
+const Kue = use('Kue')
+const Job = use('App/Jobs/ApproveOrder')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -19,21 +25,21 @@ class TransactionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async payu({ request, response, view }) {
-    const data = request.all();
+  async payu ({ request, response, view }) {
+    const data = request.all()
 
     await Mail.send(
-      ["emails.payu"],
+      ['emails.payu'],
       {
         response: JSON.stringify(data)
       },
       message => {
         message
-          .to("lucas.alves@udf.org.br")
-          .from("naoresponda@udf.org.br", "no-reply | Portal do Líder")
-          .subject("Post Payu");
+          .to('lucas.alves@udf.org.br')
+          .from('naoresponda@udf.org.br', 'no-reply | Portal do Líder')
+          .subject('Post Payu')
       }
-    );
+    )
   }
 
   /**
@@ -45,7 +51,7 @@ class TransactionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response, view }) {}
+  async index ({ request, response, view }) {}
 
   /**
    * Render a form to be used for creating a new transaction.
@@ -56,7 +62,7 @@ class TransactionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create({ request, response, view }) {}
+  async create ({ request, response, view }) {}
 
   /**
    * Create/save a new transaction.
@@ -66,7 +72,7 @@ class TransactionController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {}
+  async store ({ request, response }) {}
 
   /**
    * Display a single transaction.
@@ -77,7 +83,7 @@ class TransactionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response, view }) {}
+  async show ({ params, request, response, view }) {}
 
   /**
    * Render a form to update an existing transaction.
@@ -88,7 +94,7 @@ class TransactionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit({ params, request, response, view }) {}
+  async edit ({ params, request, response, view }) {}
 
   /**
    * Update transaction details.
@@ -98,7 +104,57 @@ class TransactionController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {}
+  async update ({ params, request, response }) {
+    try {
+      const data = request.all()
+
+      const transaction = await Transaction.findByOrFail('transaction_id', data.transaction_id)
+      const order = await Order.findOrFail(transaction.order_id)
+
+      transaction.status = data.response_message_pol || transaction.status
+      transaction.authorization_code = data.authorization_code || transaction.authorization_code
+
+      if (data.franchise) {
+        transaction.brand = data.franchise || transaction.brand
+      }
+
+      if (data.response_message_pol === 'APPROVED') {
+        transaction.authorization_amount = data.value || transaction.authorization_amount
+
+        order.status_id = 2 || order.status_id
+
+        await order.save()
+
+        const orderNetsuite = {
+          order_id: order.netsuite_id,
+          orderstatus: 'B',
+          origstatus: 'B',
+          statusRef: 'pendingFulfillment'
+        }
+
+        Kue.dispatch(Job.key, { orderNetsuite }, {
+          attempts: 5,
+          priority: 'high'
+        })
+      }
+
+      transaction.installments = data.installments_number || transaction.installments
+
+      await transaction.save()
+
+      console.log(`A transação order_id ${transaction.api_order_id} foi atualizada com sucesso para ${data.response_message_pol}`)
+      return response.status(200).send({
+        title: 'Sucesso!',
+        message: `A transação order_id ${transaction.api_order_id} foi atualizada com sucesso para ${data.response_message_pol}`
+      })
+    } catch (err) {
+      console.log('Houve problema ao atualizar um pagamento ou o pagamento não foi realizado pelo portal.')
+      return response.status(err.status).send({
+        title: 'Falha!',
+        message: 'Houve problema ao atualizar um pagamento ou o pagamento não foi realizado pelo portal.'
+      })
+    }
+  }
 
   /**
    * Delete a transaction with id.
@@ -108,7 +164,7 @@ class TransactionController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy ({ params, request, response }) {}
 }
 
-module.exports = TransactionController;
+module.exports = TransactionController
