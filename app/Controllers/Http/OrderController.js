@@ -129,6 +129,8 @@ class OrderController {
         if (payuData.transactionResponse.state !== 'APPROVED' ||
             payuData.transactionResponse.state !== 'PENDING_TRANSACTION_CONFIRMATION' ||
             payuData.transactionResponse.state !== 'PENDING') {
+          console.log('--------PAGAMENTO COM ERRO 400---------')
+
           return response.status(400).send({
             title: 'Falha!',
             message: 'Houve um problema com o pagamento na Payu.',
@@ -218,6 +220,7 @@ class OrderController {
 
       return order
     } catch (err) {
+      console.log('entrei no catch do pedido')
       return response.status(err.status).send({
         title: 'Falha!',
         message: 'Erro ao criar o pedido.'
