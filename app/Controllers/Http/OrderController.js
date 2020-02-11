@@ -126,8 +126,8 @@ class OrderController {
       console.log(payuData.transactionResponse)
 
       if (card !== null) {
-        if (payuData.transactionResponse.state !== 'APPROVED' ||
-            payuData.transactionResponse.state !== 'PENDING_TRANSACTION_CONFIRMATION' ||
+        if (payuData.transactionResponse.state !== 'APPROVED' &&
+            payuData.transactionResponse.state !== 'PENDING_TRANSACTION_CONFIRMATION' &&
             payuData.transactionResponse.state !== 'PENDING') {
           console.log('--------PAGAMENTO COM ERRO 400---------')
           console.log(payuData.transactionResponse.state)
