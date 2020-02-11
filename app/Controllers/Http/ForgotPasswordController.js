@@ -35,7 +35,7 @@ class ForgotPasswordController {
           message
             .to(user.email)
             .from('naoresponda@udf.org.br', 'no-reply | Portal do Líder')
-            .subject(`Recuperação de senha ${user.token}`)
+            .subject(`Recuperação de senha Portal do líder - UDF ${user.token}`)
         }
       )
 
