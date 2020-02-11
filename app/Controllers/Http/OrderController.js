@@ -122,26 +122,25 @@ class OrderController {
         payu
       )
 
-      if (
-        card !== null &&
-        (payuData.transactionResponse.state !== 'APPROVED' ||
-          payuData.transactionResponse.state !== 'PENDING_TRANSACTION_CONFIRMATION' ||
-          payuData.transactionResponse.state !== 'PENDING')
-      ) {
-        return response.status(400).send({
-          title: 'Falha!',
-          message: 'Houve um problema com o pagamento na Payu.',
-          payu: payuData.transactionResponse.state
-        })
-      }
+      console.log('--------PAGAMENTO---------')
+      console.log(payuData.transactionResponse)
 
-      if (
-        card !== null &&
-            payuData.transactionResponse.state === 'APPROVED'
-      ) {
-        order.status_id = 2 || order.status_id
+      if (card !== null) {
+        if (payuData.transactionResponse.state !== 'APPROVED' ||
+            payuData.transactionResponse.state !== 'PENDING_TRANSACTION_CONFIRMATION' ||
+            payuData.transactionResponse.state !== 'PENDING') {
+          return response.status(400).send({
+            title: 'Falha!',
+            message: 'Houve um problema com o pagamento na Payu.',
+            payu: payuData.transactionResponse.state
+          })
+        }
 
-        await order.save()
+        if (payuData.transactionResponse.state === 'APPROVED') {
+          order.status_id = 2 || order.status_id
+
+          await order.save()
+        }
       }
 
       const transaction = await order.transaction().create({
