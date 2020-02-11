@@ -87,6 +87,13 @@ class EventController {
           this.where('start_date', '<=', currentDate)
           this.where('is_finished', false)
         }
+        if (filterData.is_printed === 'false') {
+          this.where('is_inscription_finished', true)
+          this.where('is_admin_printed', false)
+        }
+        if (filterData.is_printed === 'true') {
+          this.where('is_admin_printed', true)
+        }
 
         if (start_date) {
           this.where('start_date', '>=', start_date)
@@ -179,6 +186,7 @@ class EventController {
         'defaultEvent.lessons',
         'organization',
         'organizators.file',
+        'organizators.addresses',
         'noQuitterParticipants',
         'participants.file',
         'invites',
