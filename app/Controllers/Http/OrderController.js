@@ -130,6 +130,8 @@ class OrderController {
             payuData.transactionResponse.state !== 'PENDING_TRANSACTION_CONFIRMATION' ||
             payuData.transactionResponse.state !== 'PENDING') {
           console.log('--------PAGAMENTO COM ERRO 400---------')
+          console.log(payuData.transactionResponse.state)
+          console.log(typeof payuData.transactionResponse.state)
 
           return response.status(400).send({
             title: 'Falha!',
