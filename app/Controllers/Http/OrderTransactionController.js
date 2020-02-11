@@ -107,12 +107,13 @@ class OrderTransactionController {
             order_id: order.netsuite_id,
             orderstatus: 'B',
             origstatus: 'B',
-            statusRef: 'pendingFulfillment'
+            statusRef: 'pendingFulfillment',
+            payu_json: 'Pagamento aprovado: cartão de crédito.'
           }
 
           Kue.dispatch(Job.key, { orderNetsuite }, {
             attempts: 5,
-            priority: 'high'
+            priority: 'normal'
           })
         }
       }

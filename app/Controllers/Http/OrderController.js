@@ -183,7 +183,7 @@ class OrderController {
         payu_json:
           card === null
             ? 'Boleto gerado pelo portal do líder automaticamente.'
-            : 'Pagamento aprovado com cartão de crédito.',
+            : 'Pagamento aprovado: cartão de crédito.',
         shipping_cost: order_details.shipping_amount,
         netsuiteAddresses: entity.toJSON().addresses,
         is_new_address: shipping_address.type === 'other',
@@ -211,6 +211,7 @@ class OrderController {
         orderNetsuite.orderstatus = 'A'
         orderNetsuite.origstatus = 'A'
         orderNetsuite.statusRef = 'pendingApproval'
+        orderNetsuite.payu_json = 'Pagamento pendente: cartão de crédito.'
       }
 
       console.log('Terminei de gerar o pedido e enviei para a fila.')
