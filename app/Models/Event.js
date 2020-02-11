@@ -45,6 +45,7 @@ class Event extends Model {
     return this.belongsToMany('App/Models/Entity')
       .pivotTable('organizators')
       .withTimestamps()
+      .orderBy('organizators.id')
   }
 
   noQuitterParticipants () {
