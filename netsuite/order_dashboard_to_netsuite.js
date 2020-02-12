@@ -389,41 +389,28 @@ define(["N/record", "N/search"], function(record, search) {
         });
       }
 
-      if (context.shipping_cost === 0) {
-        // resumo do pedido - custo do frete
-        salesOrder.setValue({
-          fieldId: "altshippingcost",
-          value: 0
-        });
+      // resumo do pedido - custo do frete
+      salesOrder.setValue({
+        fieldId: "altshippingcost",
+        value: 0
+      });
+      // valor frete aba entrega
+      salesOrder.setValue({
+        fieldId: "shippingcost",
+        value: 0
+      });
 
+      if (context.shipping_cost === 0) {
         // valor frete aba informacoes fiscais
         salesOrder.setValue({
           fieldId: "custbody_enl_trans_freightamount",
           value: context.shipping_option.final_shipping_cost || 0
         });
-
-        // valor frete aba entrega
-        salesOrder.setValue({
-          fieldId: "shippingcost",
-          value: 0
-        });
       } else {
-        // resumo do pedido - custo do frete
-        salesOrder.setValue({
-          fieldId: "altshippingcost",
-          value: context.shipping_cost
-        });
-
         // valor frete aba informacoes fiscais
         salesOrder.setValue({
           fieldId: "custbody_enl_trans_freightamount",
-          value: context.shipping_cost
-        });
-
-        // valor frete aba entrega
-        salesOrder.setValue({
-          fieldId: "shippingcost",
-          value: context.shipping_cost
+          value: context.shipping_cost || 0
         });
       }
 
@@ -431,40 +418,11 @@ define(["N/record", "N/search"], function(record, search) {
         fieldId: "shippingaddress"
       });
 
-      // shippingAddress.setValue({
-      //   fieldId: "addr1",
-      //   value: context.shipping_street + ", " + context.shipping_street_number
-      // });
-      // shippingAddress.setValue({
-      //   fieldId: "city",
-      //   value: 3901
-      // });
-      // shippingAddress.setValue({
-      //   fieldId: "custrecord_enl_city",
-      //   value: 3901
-      // });
-      // shippingAddress.setValue({
-      //   fieldId: "state",
-      //   value: context.shipping_uf + " - " + context.shipping_city
-      // });
-      // shippingAddress.setValue({
-      //   fieldId: "zip",
-      //   value: context.shipping_cep
-      // });
       // avalara actualization
       shippingAddress.setValue({
         fieldId: "zipcode",
         value: context.shipping_cep
       });
-      // shippingAddress.setValue({
-      //   fieldId: "addressee",
-      //   value: context.shipping_receiver
-      // });
-
-      // shippingAddress.setValue({
-      //   fieldId: "attention",
-      //   value: context.shipping_receiver
-      // });
 
       salesOrder.selectNewLine({ sublistId: "item" });
 
@@ -512,12 +470,6 @@ define(["N/record", "N/search"], function(record, search) {
         id: salesOrderId
       };
     } catch (err) {
-      // const dashboardError = error.create({
-      //   name: 'DASHBOARD_CREATE_ORDER_ERROR',
-      //   message: "Houve um erro ao criar o pedido no Netsuite",
-      //   notifyOff: false
-      // })
-
       return err
     }
   }
