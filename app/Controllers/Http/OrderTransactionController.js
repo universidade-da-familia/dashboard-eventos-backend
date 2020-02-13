@@ -102,7 +102,7 @@ class OrderTransactionController {
 
         await order.save()
 
-        if (data.franchise) {
+        if (data.franchise && order.status_id === 1) {
           const orderNetsuite = {
             order_id: order.netsuite_id,
             orderstatus: 'B',
