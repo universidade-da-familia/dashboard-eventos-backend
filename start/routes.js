@@ -181,6 +181,8 @@ Route.resource('coupon', 'CouponController').except(['edit', 'create'])
 
 Route.resource('order', 'OrderController').except(['edit', 'create'])
 
+Route.post('shipping_tag', 'ShippingTagController.index')
+
 Route.group(() => {
   // Busca o Líder solicitado pelo CPF
   Route.get('leader/:cpf', 'LeaderController.show')
