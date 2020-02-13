@@ -45,6 +45,8 @@ class EventController {
   async indexPaginate ({ request }) {
     const { page, filterData } = request.only(['page', 'filterData'])
 
+    const { perPage } = filterData
+
     const events = await Event.query()
       .with('defaultEvent.ministery')
       .with('organizators')
@@ -103,7 +105,7 @@ class EventController {
         }
       })
       .orderBy('start_date', 'desc')
-      .paginate(page, 10)
+      .paginate(page, perPage)
 
     return events
   }
