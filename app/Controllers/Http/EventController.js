@@ -58,16 +58,15 @@ class EventController {
         }
       })
       .whereHas('defaultEvent', builder => {
-        if (filterData.event_type) {
-          builder.where('event_type', filterData.event_type)
-        }
         if (filterData.ministery) {
           builder.where('ministery_id', filterData.ministery)
         }
-        builder.whereRaw(
-          "LOWER(name) like '%' || LOWER(?) || '%'",
-          filterData.event_description
-        )
+        if (filterData.default_event_id) {
+          builder.where(
+            'id',
+            filterData.default_event_id
+          )
+        }
       })
       .where(function () {
         const currentDate = new Date()
