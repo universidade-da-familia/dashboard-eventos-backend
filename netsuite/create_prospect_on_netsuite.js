@@ -83,7 +83,7 @@ define(["N/search", "N/record"], function(search, record) {
         fieldId: "custentity_enl_cnpjcpf",
         value: context.cpf_cnpj
       });
-      customer.setValue({ fieldId: "email", value: context.email });
+      customer.setValue({ fieldId: "email", value: context.email || "" });
       customer.setValue({ fieldId: "subsidiary", value: 2 });
       customer.setValue({
         fieldId: "custrecord_udf_flag_integrado",
