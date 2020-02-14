@@ -1,24 +1,24 @@
-"use strict";
+'use strict'
 
-const Antl = use("Antl");
+const Antl = use('Antl')
 
 class Entity {
-  get validateAll() {
-    return true;
+  get validateAll () {
+    return true
   }
 
-  get rules() {
+  get rules () {
     return {
-      name: "required",
-      email: "required|email|unique:entities",
-      cpf: "required|unique:entities",
-      password: "min:6"
-    };
+      name: 'required',
+      email: 'email|unique:entities',
+      cpf: 'required|unique:entities',
+      password: 'min:6'
+    }
   }
 
-  get messages() {
-    return Antl.list("validation");
+  get messages () {
+    return Antl.list('validation')
   }
 }
 
-module.exports = Entity;
+module.exports = Entity
