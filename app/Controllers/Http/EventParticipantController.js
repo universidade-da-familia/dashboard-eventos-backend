@@ -37,9 +37,9 @@ class EventParticipantController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const { event_id, entity_id, assistant } = request.only([
-      'event_id',
+    const { entity_id, event_id, assistant } = request.only([
       'entity_id',
+      'event_id',
       'assistant'
     ])
 
@@ -91,13 +91,15 @@ class EventParticipantController {
           })
         }
       } else {
-        if (parseInt(entity[event.toJSON().defaultEvent.ministery.tag]) < parseInt(event.toJSON().defaultEvent.assistant_current_event_id)) {
-          await Entity.updateLeaderTrainingHierarchy(
-            entity_id,
-            event.toJSON().defaultEvent.ministery.tag,
-            parseInt(event.toJSON().defaultEvent.assistant_current_event_id),
-            'add'
-          )
+        if (assistant) {
+          if (parseInt(entity[event.toJSON().defaultEvent.ministery.tag]) < parseInt(event.toJSON().defaultEvent.assistant_current_event_id)) {
+            await Entity.updateLeaderTrainingHierarchy(
+              entity_id,
+              event.toJSON().defaultEvent.ministery.tag,
+              parseInt(event.toJSON().defaultEvent.assistant_current_event_id),
+              'add'
+            )
+          }
         }
 
         await event.participants().attach([entity_id], row => {
