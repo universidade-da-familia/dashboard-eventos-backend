@@ -98,10 +98,6 @@ class OrderTransactionController {
       if (data.response_message_pol === 'APPROVED') {
         transaction.authorized_amount = data.value || transaction.authorized_amount
 
-        order.status_id = 2 || order.status_id
-
-        await order.save()
-
         if (data.franchise && order.status_id === 1) {
           const orderNetsuite = {
             order_id: order.netsuite_id,
@@ -116,6 +112,10 @@ class OrderTransactionController {
             priority: 'normal'
           })
         }
+
+        order.status_id = 2 || order.status_id
+
+        await order.save()
       }
 
       transaction.installments = data.installments_number || transaction.installments
