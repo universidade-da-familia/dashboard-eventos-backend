@@ -147,31 +147,42 @@ class EntityController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update_netsuite ({ params, request }) {
-    const entity = await Entity.findByOrFail('netsuite_id', params.netsuite_id)
+  async update_netsuite ({ params, request, response }) {
+    try {
+      const data = request.all()
 
-    const data = request.all()
+      data.netsuite_id = params.netsuite_id
 
-    if (data.organization_id) {
-      const organization = await Organization.findBy('netsuite_id', data.organization_id)
+      if (data.organization_id) {
+        const organization = await Organization.findBy('netsuite_id', data.organization_id)
 
-      if (organization) {
-        data.organization_id = organization.id
-      } else {
-        delete data.organization_id
+        if (organization) {
+          data.organization_id = organization.id
+        } else {
+          delete data.organization_id
+        }
       }
+
+      console.log('iniciando atualizacao')
+
+      const entity = await Entity.findOrCreate({
+        netsuite_id: params.netsuite_id
+      }, data)
+
+      entity.merge(data)
+
+      await entity.save()
+
+      console.log('entidade criada ou atualizada com sucesso')
+
+      return entity
+    } catch (error) {
+      console.log(error)
+      return response.status(error.status).send({
+        title: 'Falha!',
+        message: 'Erro ao criar entidade'
+      })
     }
-
-    console.log('data antes de gravar')
-
-    entity.merge(data)
-
-    await entity.save()
-
-    console.log('entity após gravar')
-    console.log(entity)
-
-    return entity
   }
 
   /**
