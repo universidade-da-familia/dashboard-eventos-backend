@@ -171,7 +171,7 @@ class DefaultEventController {
       })
       .orWhere(function () {
         this
-          .where('organizator_hierarchy_id', '<=', gfi_hierarchy_id)
+          .where('organizator_hierarchy_id', '<=', pg_yes_hierarchy_id)
           .andWhere('ministery_id', 8)
           .andWhere('sex_type', 'A')
       })
