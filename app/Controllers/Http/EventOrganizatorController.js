@@ -318,7 +318,7 @@ class EventOrganizatorController {
       return response.status(err.status).send({
         error: {
           title: 'Falha!',
-          message: 'Nenhum líder foi encontrado com este cpf'
+          message: 'Nenhum líder ou líder em treinamento foi encontrado com este CPF.'
         }
       })
     }

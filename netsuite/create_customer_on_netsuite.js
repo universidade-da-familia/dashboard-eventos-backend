@@ -44,7 +44,7 @@ define(["N/search", "N/record"], function(search, record) {
         id: customers[0].id
       };
     } else {
-      const customer = record.create({ type: record.Type.PROSPECT });
+      const customer = record.create({ type: record.Type.CUSTOMER });
 
       if (context.is_business) {
         customer.setValue({
