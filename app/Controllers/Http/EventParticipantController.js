@@ -287,7 +287,7 @@ class EventParticipantController {
    */
   async update ({ params, request, response }) {
     try {
-      const { is_quitter } = request.only(['is_quitter'])
+      const { is_quitter, assistant } = request.only(['is_quitter', 'assistant'])
 
       const participant = await Participant.findOrFail(params.id)
       // const event = await Event.findOrFail(participant.event_id)
@@ -303,6 +303,7 @@ class EventParticipantController {
       // }
 
       participant.is_quitter = is_quitter
+      participant.assistant = assistant
 
       await participant.save()
 
