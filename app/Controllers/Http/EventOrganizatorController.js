@@ -54,10 +54,8 @@ class EventOrganizatorController {
       await event.organizators().fetch()
     } else {
       return response.status(404).send({
-        error: {
-          title: 'Falha!',
-          message: 'O CPF é de um participante inscrito'
-        }
+        title: 'Falha!',
+        message: 'O CPF é de um participante inscrito'
       })
     }
 
