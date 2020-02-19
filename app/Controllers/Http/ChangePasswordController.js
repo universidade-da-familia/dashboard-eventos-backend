@@ -1,7 +1,6 @@
 'use strict'
 
 const Entity = use('App/Models/Entity')
-const Hash = use('Hash')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
