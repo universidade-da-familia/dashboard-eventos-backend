@@ -180,7 +180,7 @@ class OrderController {
               ? payu.transaction.extraParameters.INSTALLMENTS_NUMBER
               : 1,
         payu_order_id: payuData.transactionResponse.orderId,
-        payu_json: payuData,
+        payu_json: JSON.stringify([payuData]),
         shipping_cost: order_details.shipping_amount,
         netsuiteAddresses: entity.toJSON().addresses,
         is_new_address: shipping_address.type === 'other',
