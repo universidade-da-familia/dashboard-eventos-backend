@@ -179,8 +179,10 @@ class OrderController {
             card !== null
               ? payu.transaction.extraParameters.INSTALLMENTS_NUMBER
               : 1,
-        payu_order_id: payuData.transactionResponse.orderId,
         payu_json: JSON.stringify([payuData]),
+        payu_order_id: payuData.transactionResponse.orderId,
+        payu_link_payment: payuData.transactionResponse.extraParameters
+          .URL_PAYMENT_RECEIPT_HTML,
         shipping_cost: order_details.shipping_amount,
         netsuiteAddresses: entity.toJSON().addresses,
         is_new_address: shipping_address.type === 'other',
