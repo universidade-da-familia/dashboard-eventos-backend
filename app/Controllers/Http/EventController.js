@@ -7,6 +7,9 @@
 const Database = use('Database')
 const Event = use('App/Models/Event')
 
+const Kue = use('Kue')
+const Job = use('App/Jobs/FinishInscriptions')
+
 /**
  * Resourceful controller for interacting with events
  */
@@ -219,10 +222,15 @@ class EventController {
       const data = request.all()
 
       const event = await Event.findOrFail(params.id)
+      await event.loadMany(['defaultEvent.ministery', 'noQuitterParticipants', 'organizators'])
 
       event.merge(data)
 
       await event.save()
+
+      if (data.is_inscription_finished) {
+        Kue.dispatch(Job.key, event, { attempts: 5 })
+      }
 
       return event
     } catch (err) {
