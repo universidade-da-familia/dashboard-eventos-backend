@@ -179,11 +179,8 @@ class OrderController {
             card !== null
               ? payu.transaction.extraParameters.INSTALLMENTS_NUMBER
               : 1,
-        payu_order_id: payu.transaction.order.referenceCode,
-        payu_json:
-          card === null
-            ? 'Boleto gerado pelo portal do líder automaticamente.'
-            : 'Pagamento aprovado: cartão de crédito.',
+        payu_order_id: payuData.transactionResponse.orderId,
+        payu_json: payuData,
         shipping_cost: order_details.shipping_amount,
         netsuiteAddresses: entity.toJSON().addresses,
         is_new_address: shipping_address.type === 'other',
