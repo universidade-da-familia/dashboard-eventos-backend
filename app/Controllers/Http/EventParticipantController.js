@@ -8,6 +8,7 @@ const Event = use('App/Models/Event')
 const Entity = use('App/Models/Entity')
 const DefaultEvent = use('App/Models/DefaultEvent')
 const Participant = use('App/Models/Participant')
+
 /**
  * Resourceful controller for interacting with participants
  */
