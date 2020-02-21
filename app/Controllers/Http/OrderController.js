@@ -181,6 +181,7 @@ class OrderController {
               : 1,
         payu_json: JSON.stringify([payuData]),
         payu_order_id: payuData.transactionResponse.orderId,
+        payu_order_status: payuData.transactionResponse.state,
         payu_link_payment: payuData.transactionResponse.extraParameters
           .URL_PAYMENT_RECEIPT_HTML,
         shipping_cost: order_details.shipping_amount,

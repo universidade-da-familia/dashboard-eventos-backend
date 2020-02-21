@@ -269,6 +269,10 @@ define(["N/record", "N/search"], function(record, search) {
         fieldId: "custbody_rsc_payu_link_payment",
         value: context.payu_link_payment
       });
+      salesOrder.setValue({
+        fieldId: "custbody_rsc_status_payu",
+        value: context.payu_order_status
+      });
 
       salesOrder.setValue({ fieldId: "custbody_enl_freighttype", value: "1" });
 
