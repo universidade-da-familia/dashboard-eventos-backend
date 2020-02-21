@@ -78,7 +78,8 @@ const jobs = [
   'App/Jobs/CreateEntity',
   'App/Jobs/Addresses',
   'App/Jobs/ApproveOrder',
-  'App/Jobs/FinishInscriptions'
+  'App/Jobs/FinishInscriptions',
+  'App/Jobs/SendLessonReport'
 ]
 
 module.exports = { providers, aceProviders, aliases, commands, jobs }

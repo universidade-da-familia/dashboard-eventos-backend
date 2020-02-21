@@ -6,6 +6,9 @@
 
 const LessonReport = use('App/Models/LessonReport')
 
+const Kue = use('Kue')
+const Job = use('App/Jobs/SendLessonReport')
+
 /**
  * Resourceful controller for interacting with lessons
  */
@@ -66,6 +69,11 @@ class LessonReportController {
       const { participants, offer, date, testimony, doubts } = data
 
       const lessonReport = await LessonReport.findOrFail(params.id)
+      await lessonReport.loadMany([
+        'event.defaultEvent.ministery',
+        'lesson',
+        'event.organizators'
+      ])
 
       lessonReport.date = date || lessonReport.date
       lessonReport.offer = offer
@@ -74,6 +82,8 @@ class LessonReportController {
       lessonReport.is_finished = true
 
       await lessonReport.save()
+
+      Kue.dispatch(Job.key, lessonReport, { attempts: 5 })
 
       if (participants && participants.length > 0) {
         participants.map(async participant => {

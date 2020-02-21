@@ -1,6 +1,8 @@
 'use strict'
 
 const Mail = use('Mail')
+const moment = require('moment')
+moment.locale('pt-br')
 
 class FinishInscriptions {
   // If this getter isn't provided, it will default to 1.
@@ -27,7 +29,7 @@ class FinishInscriptions {
         id: data.id,
         event_name: data.defaultEvent.name,
         participants: data.noQuitterParticipants.length,
-        initial_date: data.start_date,
+        initial_date: moment(data.start_date).format('LLL'),
         organizator_name: organizator.name,
         organizator_cpf: organizator.cpf || 'sem CPF'
       },
