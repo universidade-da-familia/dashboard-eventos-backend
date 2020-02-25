@@ -20,6 +20,7 @@ Route.resource('entity', 'EntityController').except([
   'update_netsuite'
 ])
 Route.post('entity', 'EntityController.store').validator('Entity')
+Route.post('entity_paginate', 'EntityController.indexPaginate')
 
 Route.put('change_password/:id', 'ChangePasswordController.update')
 
