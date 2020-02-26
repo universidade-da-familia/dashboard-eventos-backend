@@ -273,17 +273,15 @@ class EntityController {
 
     await entity.loadMany([
       'file',
-      'families',
+      'addresses',
       'organizators.defaultEvent.ministery',
       'organizators.organization',
       'organizators.noQuitterParticipants',
       'participants.noQuitterParticipants',
       'participants.defaultEvent.ministery',
       'creditCards',
-      'addresses',
-      'checkouts',
-      'checkoutItems',
-      'orders'
+      'orders.status',
+      'orders.transaction'
     ])
 
     return entity
