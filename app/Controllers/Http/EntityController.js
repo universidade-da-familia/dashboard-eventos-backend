@@ -33,6 +33,178 @@ class EntityController {
   }
 
   /**
+   * Show a list of all events.
+   * GET events
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async indexPaginate ({ request }) {
+    const { page, filterData } = request.only(['page', 'filterData'])
+
+    const { perPage } = filterData
+
+    const entities = await Entity.query()
+      .with('addresses')
+      .with('orders')
+      .with('organizators.defaultEvent.ministery')
+      .with('participants.defaultEvent.ministery')
+      .where(function () {
+        const currentDate = new Date()
+        const [start_date] = filterData.start_date.split('T')
+        const [end_date] = filterData.end_date.split('T')
+        const [ministery_name, ministery_id] = filterData.ministery.split('/')
+
+        if (filterData.id !== '') {
+          this.where('id', filterData.id)
+        }
+        if (filterData.cpf !== '') {
+          this.where('cpf', filterData.cpf)
+        }
+        if (filterData.email !== '') {
+          this.where('email', filterData.email)
+        }
+
+        // busca dados endereço entidade
+        if (filterData.cep !== '') {
+          this.whereHas('addresses', builder => {
+            builder.where('cep', filterData.cep)
+          })
+        }
+        if (filterData.uf !== '') {
+          this.whereHas('addresses', builder => {
+            builder.where('uf', filterData.uf)
+          })
+        }
+        if (filterData.city !== '') {
+          this.whereHas('addresses', builder => {
+            builder.where('city', filterData.city)
+          })
+        }
+
+        if (filterData.hierarchy !== '0' && filterData.ministery === '') {
+          this.where(builder => {
+            builder.where('cmn_hierarchy_id', '>=', filterData.hierarchy)
+            builder.orWhere('mu_hierarchy_id', '>=', filterData.hierarchy)
+            builder.orWhere('crown_hierarchy_id', '>=', filterData.hierarchy)
+            builder.orWhere('mp_hierarchy_id', '>=', filterData.hierarchy)
+            builder.orWhere('ffi_hierarchy_id', '>=', filterData.hierarchy)
+            builder.orWhere('gfi_hierarchy_id', '>=', filterData.hierarchy)
+            builder.orWhere('pg_hab_hierarchy_id', '>=', filterData.hierarchy)
+            builder.orWhere('pg_yes_hierarchy_id', '>=', filterData.hierarchy)
+          })
+        }
+
+        if (filterData.hierarchy !== '0' && filterData.ministery !== '') {
+          this.where(ministery_name, '>=', filterData.hierarchy)
+        }
+
+        if (filterData.only_organizators !== '') {
+          this.whereHas(filterData.only_organizators)
+
+          if (filterData.ministery !== '') {
+            this.whereHas(`${filterData.only_organizators}.defaultEvent`, builder => {
+              builder.where('ministery_id', ministery_id)
+            })
+          }
+          if (filterData.default_event_id) {
+            this.whereHas(filterData.only_organizators, builder => {
+              builder.where('default_event_id', filterData.default_event_id)
+            })
+          }
+          if (filterData.status === 'Finalizado') {
+            this.whereHas(filterData.only_organizators, builder => {
+              builder.where('is_finished', true)
+            })
+          }
+          if (filterData.status === 'Não iniciado') {
+            this.whereHas(filterData.only_organizators, builder => {
+              builder.where('start_date', '>', currentDate)
+              builder.where('is_finished', false)
+            })
+          }
+          if (filterData.status === 'Em andamento') {
+            this.whereHas(filterData.only_organizators, builder => {
+              builder.where('start_date', '<=', currentDate)
+              builder.where('is_finished', false)
+            })
+          }
+          if (start_date) {
+            this.whereHas(filterData.only_organizators, builder => {
+              builder.where('start_date', '>=', start_date)
+            })
+          }
+          if (end_date) {
+            this.whereHas(filterData.only_organizators, builder => {
+              builder.where('start_date', '<=', end_date)
+            })
+          }
+        } else {
+          if (filterData.status === 'Finalizado') {
+            this.where(builder => {
+              builder.whereHas('organizators', builder => {
+                builder.where('is_finished', true)
+              })
+              builder.orWhereHas('participants', builder => {
+                builder.where('is_finished', true)
+              })
+            })
+          }
+          if (filterData.status === 'Não iniciado') {
+            this.where(builder => {
+              builder.whereHas('organizators', builder => {
+                builder.where('start_date', '>', currentDate)
+                builder.where('is_finished', false)
+              })
+              builder.orWhereHas('participants', builder => {
+                builder.where('start_date', '>', currentDate)
+                builder.where('is_finished', false)
+              })
+            })
+          }
+          if (filterData.status === 'Em andamento') {
+            this.where(builder => {
+              builder.whereHas('organizators', builder => {
+                builder.where('start_date', '<=', currentDate)
+                builder.where('is_finished', false)
+              })
+              builder.orWhereHas('participants', builder => {
+                builder.where('start_date', '<=', currentDate)
+                builder.where('is_finished', false)
+              })
+            })
+          }
+          if (start_date) {
+            this.where(builder => {
+              builder.whereHas('organizators', builder => {
+                builder.where('start_date', '>=', start_date)
+              })
+              builder.orWhereHas('participants', builder => {
+                builder.where('start_date', '>=', start_date)
+              })
+            })
+          }
+          if (end_date) {
+            this.where(builder => {
+              builder.whereHas('organizators', builder => {
+                builder.where('start_date', '<=', end_date)
+              })
+              builder.orWhereHas('participants', builder => {
+                builder.where('start_date', '<=', end_date)
+              })
+            })
+          }
+        }
+      })
+      .orderBy('id', 'asc')
+      .paginate(page, perPage)
+
+    return entities
+  }
+
+  /**
    * Create/save a new user.
    * POST users
    *
@@ -102,16 +274,15 @@ class EntityController {
     await entity.loadMany([
       'file',
       'relationships.relationshipEntity',
+      'addresses',
       'organizators.defaultEvent.ministery',
       'organizators.organization',
       'organizators.noQuitterParticipants',
       'participants.noQuitterParticipants',
       'participants.defaultEvent.ministery',
       'creditCards',
-      'addresses',
-      'checkouts',
-      'checkoutItems',
-      'orders'
+      'orders.status',
+      'orders.transaction'
     ])
 
     return entity
