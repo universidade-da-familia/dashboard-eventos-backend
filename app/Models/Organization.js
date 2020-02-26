@@ -1,18 +1,18 @@
-"use strict";
+'use strict'
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Model = use("Model");
-const Hash = use("Hash");
+const Model = use('Model')
+const Hash = use('Hash')
 
 class Organization extends Model {
-  static boot() {
-    super.boot();
+  static boot () {
+    super.boot()
 
-    this.addHook("beforeSave", async userInstance => {
+    this.addHook('beforeSave', async userInstance => {
       if (userInstance.dirty.password) {
-        userInstance.password = await Hash.make(userInstance.password);
+        userInstance.password = await Hash.make(userInstance.password)
       }
-    });
+    })
 
     // this.addHook("afterCreate", async userInstance => {
     //   userInstance.smart_id = await `A${userInstance.id}`;
@@ -20,44 +20,44 @@ class Organization extends Model {
     // });
   }
 
-  file() {
-    return this.belongsTo("App/Models/File");
+  file () {
+    return this.belongsTo('App/Models/File')
   }
 
-  addresses() {
-    return this.hasMany("App/Models/Address");
+  addresses () {
+    return this.hasMany('App/Models/Address')
   }
 
-  creditCards() {
-    return this.hasMany("App/Models/CreditCard");
+  creditCards () {
+    return this.hasMany('App/Models/CreditCard')
   }
 
-  entityOrganizations() {
-    return this.belongsToMany("App/Models/Entity")
-      .pivotTable("entity_organizations")
-      .withPivot(["role", "can_checkout"])
-      .withTimestamps();
+  entityOrganizations () {
+    return this.belongsToMany('App/Models/Entity')
+      .pivotTable('entity_organizations')
+      .withPivot(['role', 'can_checkout'])
+      .withTimestamps()
   }
 
-  events() {
+  events () {
     return this.hasMany(
-      "App/Models/Event",
-      "id",
-      "responsible_organization_id"
-    );
+      'App/Models/Event',
+      'id',
+      'responsible_organization_id'
+    )
   }
 
-  checkouts() {
-    return this.hasMany("App/Models/Checkout");
+  checkouts () {
+    return this.hasMany('App/Models/Checkout')
   }
 
-  orders() {
-    return this.hasMany("App/Models/Order");
+  orders () {
+    return this.hasMany('App/Models/Order')
   }
 
-  entities() {
-    return this.hasMany("App/Models/Entity");
+  entities () {
+    return this.hasMany('App/Models/Entity')
   }
 }
 
-module.exports = Organization;
+module.exports = Organization

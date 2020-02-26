@@ -4,52 +4,45 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Event = use('App/Models/Event')
+const Relationship = use('App/Models/Relationship')
 
 /**
- * Resourceful controller for interacting with shippingtags
+ * Resourceful controller for interacting with relationships
  */
-class ShippingTagController {
+class RelationshipController {
   /**
-   * Show a list of all shippingtags.
-   * GET shippingtags
+   * Show a list of all relationships.
+   * GET relationships
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request }) {
-    const data = request.all()
-
-    const events = Object.values(data).map(event => {
-      return event.event_id
-    })
-
-    const unique_events = [...new Set(events)]
-
-    const eventsQuery = await Event.query()
-      .with('organizators.addresses')
-      .whereIn('id', unique_events)
-      .orderBy('start_date', 'desc')
-      .fetch()
-
-    const allEntities = eventsQuery.toJSON().map(event => {
-      return event.organizators[0]
-    })
-
-    const unique_entities = allEntities.filter((obj, index, self) =>
-      index === self.findIndex((el) => (
-        el.id === obj.id
-      ))
-    )
-
-    return unique_entities
+  async index ({ request, response, view }) {
   }
 
   /**
-   * Render a form to be used for creating a new shippingtag.
-   * GET shippingtags/create
+   * Show a list of all entity relationships.
+   * GET relationships
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async indexEntity ({ params, request, response }) {
+    const relationships = await Relationship.query()
+      .where('entity_id', params.entity_id)
+      .with('entity')
+      .fetch()
+
+    return relationships
+  }
+
+  /**
+   * Render a form to be used for creating a new relationship.
+   * GET relationships/create
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -60,8 +53,8 @@ class ShippingTagController {
   }
 
   /**
-   * Create/save a new shippingtag.
-   * POST shippingtags
+   * Create/save a new relationship.
+   * POST relationships
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -71,8 +64,8 @@ class ShippingTagController {
   }
 
   /**
-   * Display a single shippingtag.
-   * GET shippingtags/:id
+   * Display a single relationship.
+   * GET relationships/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -83,8 +76,8 @@ class ShippingTagController {
   }
 
   /**
-   * Render a form to update an existing shippingtag.
-   * GET shippingtags/:id/edit
+   * Render a form to update an existing relationship.
+   * GET relationships/:id/edit
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -95,19 +88,28 @@ class ShippingTagController {
   }
 
   /**
-   * Update shippingtag details.
-   * PUT or PATCH shippingtags/:id
+   * Update relationship details.
+   * PUT or PATCH relationships/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    const relationship = await Relationship.findOrFail(params.id)
+
+    const data = request.all()
+
+    relationship.merge(data)
+
+    await relationship.save()
+
+    return relationship
   }
 
   /**
-   * Delete a shippingtag with id.
-   * DELETE shippingtags/:id
+   * Delete a relationship with id.
+   * DELETE relationships/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -117,4 +119,4 @@ class ShippingTagController {
   }
 }
 
-module.exports = ShippingTagController
+module.exports = RelationshipController

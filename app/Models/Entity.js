@@ -111,7 +111,7 @@ class Entity extends Model {
   }
 
   relationships () {
-    return this.hasMany('App/Models/Relationship')
+    return this.hasMany('App/Models/Relationship').orderBy('id', 'asc')
   }
 
   static updateHierarchy (ids, hierarchyName, hierarchyWillBecome) {

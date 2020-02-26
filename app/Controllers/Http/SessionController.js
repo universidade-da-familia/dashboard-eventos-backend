@@ -123,6 +123,7 @@ class SessionController {
     params.type === 'entity'
       ? await user.loadMany([
         'file',
+        'relationships.relationshipEntity.file',
         'addresses',
         'creditCards',
         'checkouts',

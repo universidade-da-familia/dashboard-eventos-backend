@@ -101,7 +101,7 @@ class EntityController {
 
     await entity.loadMany([
       'file',
-      'families',
+      'relationships.relationshipEntity',
       'organizators.defaultEvent.ministery',
       'organizators.organization',
       'organizators.noQuitterParticipants',

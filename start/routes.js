@@ -186,6 +186,9 @@ Route.resource('order', 'OrderController').except(['edit', 'create'])
 
 Route.post('shipping_tag', 'ShippingTagController.index')
 
+Route.resource('relationship', 'RelationshipController')
+Route.get('relationship/entity/:entity_id', 'RelationshipController.indexEntity')
+
 Route.group(() => {
   // Busca o Líder solicitado pelo CPF
   Route.get('leader/:cpf', 'LeaderController.show')
