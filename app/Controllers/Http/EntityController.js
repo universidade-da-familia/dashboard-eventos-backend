@@ -289,6 +289,43 @@ class EntityController {
   }
 
   /**
+   * Display a single user.
+   * GET users/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async showCpf ({ params, response }) {
+    try {
+      const entity = await Entity.findByOrFail('cpf', params.cpf)
+
+      await entity.loadMany([
+        'file',
+        'relationships.relationshipEntity',
+        'addresses',
+        'organizators.defaultEvent.ministery',
+        'organizators.organization',
+        'organizators.noQuitterParticipants',
+        'participants.noQuitterParticipants',
+        'participants.defaultEvent.ministery',
+        'creditCards',
+        'orders.status',
+        'orders.transaction'
+      ])
+
+      return entity
+    } catch (err) {
+      return response.status(err.status).send({
+        title: 'Falha!',
+        message: 'Nenhuma entidade foi encontrada com este CPF',
+        type: 'not_found'
+      })
+    }
+  }
+
+  /**
    * Update user details.
    * PUT or PATCH users/:id
    *
