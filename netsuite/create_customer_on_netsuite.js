@@ -19,88 +19,98 @@ define(["N/search", "N/record"], function(search, record) {
    * @param context
    */
   function store(context) {
-    const customers = search
-      .create({
-        type: search.Type.CUSTOMER,
-        filters: [["custentity_enl_cnpjcpf", "is", context.cpf_cnpj]],
-        columns: searchColumns
-      })
-      .run()
-      .getRange({
-        start: 0,
-        end: 1000
-      })
-      .map(function(result) {
+    try {
+      log.debug({ title: "createEntity", details: context })
+
+      const customers = search
+        .create({
+          type: search.Type.CUSTOMER,
+          filters: [["custentity_enl_cnpjcpf", "is", context.cpf_cnpj]],
+          columns: searchColumns
+        })
+        .run()
+        .getRange({
+          start: 0,
+          end: 1000
+        })
+        .map(function(result) {
+          return {
+            id: result.getValue({ name: "internalid" }),
+            cpf_cnpj: result.getValue({ name: "custentity_enl_cnpjcpf" })
+          };
+        });
+
+      if (customers.length > 0) {
         return {
-          id: result.getValue({ name: "internalid" }),
-          cpf_cnpj: result.getValue({ name: "custentity_enl_cnpjcpf" })
+          title: "Aviso!",
+          message: "O participante informado já possui cadastro ativo.",
+          id: customers[0].id
         };
-      });
-
-    if (customers.length > 0) {
-      return {
-        title: "Aviso!",
-        message: "O participante informado já possui cadastro ativo.",
-        id: customers[0].id
-      };
-    } else {
-      const customer = record.create({ type: record.Type.CUSTOMER });
-
-      if (context.is_business) {
-        customer.setValue({
-          fieldId: "companyname",
-          value: context.company_name
-        });
-        customer.setValue({
-          fieldId: "custentity_rsc_nomefantasia",
-          value: context.fantasy_name
-        });
-        customer.setValue({ fieldId: "isperson", value: "F" });
       } else {
-        customer.setValue({ fieldId: "firstname", value: context.firstname });
-        customer.setValue({ fieldId: "lastname", value: context.lastname });
-        customer.setValue({ fieldId: "isperson", value: "T" });
-        customer.setValue({ fieldId: "custentity_enl_ienum", value: "ISENTO" });
+        const customer = record.create({ type: record.Type.CUSTOMER });
+
+        if (context.is_business) {
+          customer.setValue({
+            fieldId: "companyname",
+            value: context.company_name
+          });
+          customer.setValue({
+            fieldId: "custentity_rsc_nomefantasia",
+            value: context.fantasy_name
+          });
+          customer.setValue({ fieldId: "isperson", value: "F" });
+        } else {
+          customer.setValue({ fieldId: "firstname", value: context.firstname });
+          customer.setValue({ fieldId: "lastname", value: context.lastname });
+          customer.setValue({ fieldId: "isperson", value: "T" });
+          customer.setValue({ fieldId: "custentity_enl_ienum", value: "ISENTO" });
+        }
+
+        customer.setValue({
+          fieldId: "custentity_enl_enviarnota",
+          value: true
+        });
+        customer.setValue({
+          fieldId: "custentity_enl_legalname",
+          value: context.name
+        });
+        customer.setValue({
+          fieldId: "custentity_enl_ent_activitysector",
+          value: 4
+        });
+        customer.setValue({
+          fieldId: "custentityid_dashboard_cliente",
+          value: context.id
+        });
+        customer.setValue({
+          fieldId: "custentity_enl_cnpjcpf",
+          value: context.cpf_cnpj
+        });
+        customer.setValue({ fieldId: "email", value: context.email || "" });
+        customer.setValue({ fieldId: "subsidiary", value: 2 });
+        customer.setValue({
+          fieldId: "custrecord_udf_flag_integrado",
+          value: true
+        });
+
+        if (context.sex === "F") {
+          customer.setValue({ fieldId: "custentity_rsc_sexo", value: "1" });
+        }
+        if (context.sex === "M") {
+          customer.setValue({ fieldId: "custentity_rsc_sexo", value: "2" });
+        }
+
+        const customerId = customer.save();
+
+        return {
+          id: customerId
+        };
       }
-
-      customer.setValue({
-        fieldId: "custentity_enl_enviarnota",
-        value: true
-      });
-      customer.setValue({
-        fieldId: "custentity_enl_legalname",
-        value: context.name
-      });
-      customer.setValue({
-        fieldId: "custentity_enl_ent_activitysector",
-        value: 4
-      });
-      customer.setValue({
-        fieldId: "custentityid_dashboard_cliente",
-        value: context.id
-      });
-      customer.setValue({
-        fieldId: "custentity_enl_cnpjcpf",
-        value: context.cpf_cnpj
-      });
-      customer.setValue({ fieldId: "email", value: context.email || "" });
-      customer.setValue({ fieldId: "subsidiary", value: 2 });
-      customer.setValue({
-        fieldId: "custrecord_udf_flag_integrado",
-        value: true
-      });
-
-      if (context.sex === "F") {
-        customer.setValue({ fieldId: "custentity_rsc_sexo", value: "1" });
-      }
-      if (context.sex === "M") {
-        customer.setValue({ fieldId: "custentity_rsc_sexo", value: "2" });
-      }
-
-      const customerId = customer.save();
-
+    } catch (err) {
       return {
-        id: customerId
+        title: "Falha!",
+        message: "Houve um erro ao criar o registro",
+        erro: err
       };
     }
   }
