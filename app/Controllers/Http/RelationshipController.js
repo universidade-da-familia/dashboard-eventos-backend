@@ -11,18 +11,6 @@ const Relationship = use('App/Models/Relationship')
  */
 class RelationshipController {
   /**
-   * Show a list of all relationships.
-   * GET relationships
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
-  }
-
-  /**
    * Show a list of all entity relationships.
    * GET relationships
    *
@@ -41,18 +29,6 @@ class RelationshipController {
   }
 
   /**
-   * Render a form to be used for creating a new relationship.
-   * GET relationships/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
    * Create/save a new relationship.
    * POST relationships
    *
@@ -61,30 +37,42 @@ class RelationshipController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-  }
+    try {
+      const { entity_id, relationship_id, relationship_type, relationship_sex } = request.all()
 
-  /**
-   * Display a single relationship.
-   * GET relationships/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
-  }
+      const relationship = await Relationship.create({
+        entity_id, relationship_id, relationship_type
+      })
 
-  /**
-   * Render a form to update an existing relationship.
-   * GET relationships/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+      if (relationship_type === 'Esposa') {
+        await Relationship.create({
+          entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Marido'
+        })
+      } else if (relationship_type === 'Marido') {
+        await Relationship.create({
+          entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Esposa'
+        })
+      } else if (relationship_type === 'Pai' || relationship_type === 'Mãe') {
+        await Relationship.create({
+          entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Filho'
+        })
+      } else if (relationship_type === 'Filho' && relationship_sex === 'M') {
+        await Relationship.create({
+          entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Pai'
+        })
+      } else if (relationship_type === 'Filho' && relationship_sex === 'F') {
+        await Relationship.create({
+          entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Mãe'
+        })
+      }
+
+      return relationship
+    } catch (err) {
+      return response.status(err.status).send({
+        title: 'Falha',
+        message: 'Houve um erro ao adicionar o familiar'
+      })
+    }
   }
 
   /**
@@ -96,15 +84,23 @@ class RelationshipController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const relationship = await Relationship.findOrFail(params.id)
+    try {
+      const relationship = await Relationship.findOrFail(params.id)
 
-    const data = request.all()
+      const data = request.all()
 
-    relationship.merge(data)
+      relationship.merge(data)
 
-    await relationship.save()
+      await relationship.save()
 
-    return relationship
+      return relationship
+    } catch (error) {
+      console.log(error)
+      return response.status(error.status).send({
+        title: 'Falha!',
+        message: 'Erro ao editar familiar'
+      })
+    }
   }
 
   /**
@@ -115,7 +111,30 @@ class RelationshipController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
+    try {
+      const relationship = await Relationship.findOrFail(params.id)
+
+      const relative = await Relationship.query()
+        .where('entity_id', relationship.relationship_id)
+        .andWhere('relationship_id', relationship.entity_id)
+        .first()
+
+      await relationship.delete()
+
+      await relative.delete()
+
+      return response.status(200).send({
+        title: 'Sucesso!',
+        message: 'Familiar removido'
+      })
+    } catch (error) {
+      console.log(error)
+      return response.status(error.status).send({
+        title: 'Falha!',
+        message: 'Erro ao remover familiar'
+      })
+    }
   }
 }
 

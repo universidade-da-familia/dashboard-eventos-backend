@@ -23,7 +23,7 @@ Route.resource('entity', 'EntityController').except([
 Route.post('entity', 'EntityController.store').validator('Entity')
 Route.put('entity/:id', 'EntityController.update').validator('EntityUpdate')
 Route.post('entity_paginate', 'EntityController.indexPaginate')
-Route.get('entity/cpf/:cpf', 'EntityController.showCpf')
+Route.get('entity/cpf/:cpf/:profile_id', 'EntityController.showCpf')
 
 Route.put('change_password/:id', 'ChangePasswordController.update')
 

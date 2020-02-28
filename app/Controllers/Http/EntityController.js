@@ -297,9 +297,12 @@ class EntityController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async showCpf ({ params, response }) {
+  async showCpf ({ params, response, request }) {
     try {
+      const { profile_id } = params
       const entity = await Entity.findByOrFail('cpf', params.cpf)
+
+      console.log(typeof profile_id)
 
       await entity.loadMany([
         'file',
@@ -314,6 +317,17 @@ class EntityController {
         'orders.status',
         'orders.transaction'
       ])
+
+      entity.toJSON().relationships.map(relation => {
+        console.log(relation.relationship_id)
+        if (relation.relationship_id === parseInt(profile_id)) {
+          return response.status(401).send({
+            title: 'Falha!',
+            message: 'Esta entidade ja é um familiar',
+            type: 'not_authorized'
+          })
+        }
+      })
 
       return entity
     } catch (err) {
