@@ -302,8 +302,6 @@ class EntityController {
       const { profile_id } = params
       const entity = await Entity.findByOrFail('cpf', params.cpf)
 
-      console.log(typeof profile_id)
-
       await entity.loadMany([
         'file',
         'relationships.relationshipEntity',
@@ -319,7 +317,6 @@ class EntityController {
       ])
 
       entity.toJSON().relationships.map(relation => {
-        console.log(relation.relationship_id)
         if (relation.relationship_id === parseInt(profile_id)) {
           return response.status(401).send({
             title: 'Falha!',
