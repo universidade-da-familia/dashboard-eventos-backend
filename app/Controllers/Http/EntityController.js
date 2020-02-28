@@ -273,7 +273,7 @@ class EntityController {
 
     await entity.loadMany([
       'file',
-      'relationships.relationshipEntity',
+      'relationships.relationshipEntity.file',
       'addresses',
       'organizators.defaultEvent.ministery',
       'organizators.organization',
@@ -312,7 +312,7 @@ class EntityController {
 
       await entity.loadMany([
         'file',
-        'relationships.relationshipEntity',
+        'relationships.relationshipEntity.file',
         'addresses',
         'organizators.defaultEvent.ministery',
         'organizators.organization',
