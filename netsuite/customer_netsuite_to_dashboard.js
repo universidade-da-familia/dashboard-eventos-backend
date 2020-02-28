@@ -24,7 +24,7 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
     });
 
     const netsuite_id = data.getValue({ fieldId: "id" })
-    const is_person = customer.getValue({ fieldId: "isperson" });
+    const is_person = data.getValue({ fieldId: "isperson" });
 
     if (type === "delete") {
       return true
