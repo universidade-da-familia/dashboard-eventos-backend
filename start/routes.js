@@ -94,9 +94,12 @@ Route.post(
 Route.resource('organization', 'OrganizationController').except([
   'show',
   'edit',
-  'create'
+  'create',
+  'indexParams'
 ])
 Route.get('organization/:id', 'OrganizationController.show')
+Route.post('organization_params', 'OrganizationController.indexParams')
+Route.put('netsuite_organization/:netsuite_id', 'OrganizationController.update_netsuite')
 
 // CRUD invite
 Route.resource('invite', 'InviteController').except([
