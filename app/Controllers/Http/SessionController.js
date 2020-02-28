@@ -130,8 +130,11 @@ class SessionController {
         'checkoutItems',
         'families',
         'entityOrganizations',
-        'organizators',
-        'participants',
+        'organizators.defaultEvent.ministery',
+        'organizators.organization',
+        'organizators.noQuitterParticipants',
+        'participants.noQuitterParticipants',
+        'participants.defaultEvent.ministery',
         'orders.status',
         'orders.transaction',
         'church'
