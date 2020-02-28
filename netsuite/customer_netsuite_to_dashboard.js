@@ -27,7 +27,7 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
     const is_person = data.getValue({ fieldId: "isperson" });
 
     if (type === "delete") {
-      return true
+      return
     }
 
     if (type === "create") {
