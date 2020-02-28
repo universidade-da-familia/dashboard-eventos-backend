@@ -302,6 +302,14 @@ class EntityController {
       const { profile_id } = params
       const entity = await Entity.findByOrFail('cpf', params.cpf)
 
+      if (parseInt(profile_id) === entity.id) {
+        return response.status(401).send({
+          title: 'Falha!',
+          message: 'Você não pode ser o seu próprio familiar.',
+          type: 'not_authorized'
+        })
+      }
+
       await entity.loadMany([
         'file',
         'relationships.relationshipEntity',
