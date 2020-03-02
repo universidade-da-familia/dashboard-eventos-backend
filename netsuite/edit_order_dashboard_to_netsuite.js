@@ -48,6 +48,13 @@ define(["N/record"], function(record) {
             value: context.statusRef
           })
         }
+
+        if (context.payu_order_status) {
+          salesOrder.setValue({
+            fieldId: "custbody_rsc_status_payu",
+            value: context.payu_order_status
+          })
+        }
       }
 
       const salesOrderId = salesOrder.save({

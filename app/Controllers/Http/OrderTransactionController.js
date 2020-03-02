@@ -88,6 +88,8 @@ class OrderTransactionController {
       const transaction = await OrderTransaction.findByOrFail('transaction_id', data.transaction_id)
       const order = await Order.findOrFail(transaction.order_id)
 
+      await order.load('status')
+
       transaction.status = data.response_message_pol || transaction.status
       transaction.authorization_code = data.authorization_code || transaction.authorization_code
 
@@ -98,13 +100,13 @@ class OrderTransactionController {
       if (data.response_message_pol === 'APPROVED') {
         transaction.authorized_amount = data.value || transaction.authorized_amount
 
-        if (data.franchise && order.status_id === 1) {
+        if (data.franchise && order.netsuite_id && order.status_id === 1) {
           const orderNetsuite = {
             order_id: order.netsuite_id,
             orderstatus: 'B',
             origstatus: 'B',
             statusRef: 'pendingFulfillment',
-            payu_json: 'Pagamento aprovado: cartão de crédito.'
+            payu_order_status: data.response_message_pol
           }
 
           Kue.dispatch(Job.key, { orderNetsuite }, {
