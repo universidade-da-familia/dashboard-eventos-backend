@@ -387,12 +387,12 @@ define(["N/record", "N/search"], function(record, search) {
 
         salesOrder.setValue({
           fieldId: "shipmethod",
-          value: ""
+          value: 3686
         });
 
         salesOrder.setValue({
           fieldId: "custbody_enl_carrierid",
-          value: ""
+          value: 12
         });
       }
 
