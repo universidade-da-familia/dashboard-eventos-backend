@@ -323,6 +323,18 @@ define(["N/record", "N/search"], function(record, search) {
           value: 3
         });
       } else if (
+        context.shipping_option.delivery_method_name === "Correios Sedex 10"
+      ) {
+        salesOrder.setValue({
+          fieldId: "shipmethod",
+          value: 3651
+        });
+
+        salesOrder.setValue({
+          fieldId: "custbody_enl_carrierid",
+          value: 4
+        });
+      } else if (
         context.shipping_option.delivery_method_name === "Braspress Aéreo"
       ) {
         salesOrder.setValue({
@@ -374,7 +386,7 @@ define(["N/record", "N/search"], function(record, search) {
         context.shipping_option.delivery_method_name === "Retirar na UDF"
       ) {
         salesOrder.setValue({
-          fieldId: "memo",
+          fieldId: "custbody_udf_obs_envio",
           value: "O líder irá retirar na UDF"
         });
 
