@@ -11,7 +11,7 @@ class Entity {
     return {
       name: 'required',
       email: 'email|unique:entities',
-      cpf: 'required|unique:entities',
+      cpf: 'unique:entities',
       password: 'min:6'
     }
   }
