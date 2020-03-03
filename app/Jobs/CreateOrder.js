@@ -37,14 +37,14 @@ class CreateOrder {
     console.log(response.data)
 
     if (response.data.id) {
-      console.log('Chamada ao netsuite finalizada com sucesso.')
+      console.log('Chamada ao netsuite finalizada com sucesso (CreateOrder).')
       const order = await Order.findOrFail(order_id)
 
       order.netsuite_id = response.data.id || order.netsuite_id
 
       await order.save()
     } else {
-      console.log('Chamada ao netsuite finalizada com falha.')
+      console.log('Chamada ao netsuite finalizada com falha (CreateOrder).')
       throw new Error({
         title: 'Falha!',
         message: 'Houve um erro ao gerar o pedido no Netsuite.'

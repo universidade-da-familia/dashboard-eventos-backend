@@ -35,9 +35,9 @@ class ApproveOrder {
     console.log(response.data)
 
     if (response.data.id) {
-      console.log('Chamada ao netsuite finalizada com sucesso.')
+      console.log('Chamada ao netsuite finalizada com sucesso (ApproveOrder).')
     } else {
-      console.log('Chamada ao netsuite finalizada com falha.')
+      console.log('Chamada ao netsuite finalizada com falha (ApproveOrder).')
       throw new Error({
         title: 'Falha!',
         message: 'Houve um erro ao atualizar o pedido no Netsuite.'

@@ -130,6 +130,8 @@ class OrderTransactionController {
         message: `A transação order_id ${transaction.api_order_id} foi atualizada com sucesso para ${data.response_message_pol}`
       })
     } catch (err) {
+      console.log('Houve um erro ao atualizar uma transação')
+      console.log(err)
       return response.status(err.status).send({
         title: 'Falha!',
         message: 'Houve um erro ao atualizar os dados da transação'

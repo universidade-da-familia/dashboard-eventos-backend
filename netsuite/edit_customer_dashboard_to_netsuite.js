@@ -71,11 +71,12 @@ define(["N/record"], function(record) {
       customer.setValue({ fieldId: "phone", value: context.phone });
       customer.setValue({ fieldId: "altphone", value: context.alt_phone });
 
-      customer.save();
+      const customerId = customer.save();
 
       return {
         title: "Sucesso!",
-        message: "O registro foi atualizado."
+        message: "O registro foi atualizado.",
+        id: customerId
       };
     } catch (err) {
       return {

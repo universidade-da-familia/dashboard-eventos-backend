@@ -49,11 +49,21 @@ class CreateEntity {
 
     console.log(response.data)
 
-    const entity = await Entity.findOrFail(id)
+    if (response.data.id) {
+      const entity = await Entity.findOrFail(id)
 
-    entity.netsuite_id = response.data.id || entity.netsuite_id
+      entity.netsuite_id = response.data.id || entity.netsuite_id
 
-    await entity.save()
+      await entity.save()
+
+      console.log('Chamada ao netsuite finalizada com sucesso (CreateEntity).')
+    } else {
+      console.log('Chamada ao netsuite finalizada com falha (CreateEntity).')
+      throw new Error({
+        title: 'Falha!',
+        message: 'Houve um erro ao criar a entidade no Netsuite.'
+      })
+    }
   }
 }
 

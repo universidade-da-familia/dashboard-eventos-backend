@@ -390,7 +390,7 @@ class EntityController {
         }
       }
 
-      console.log('iniciando atualizacao')
+      console.log('Iniciando atualizacao de entidade')
 
       const entity = await Entity.findOrCreate({
         netsuite_id: params.netsuite_id
@@ -400,12 +400,13 @@ class EntityController {
 
       await entity.save()
 
-      console.log('entidade criada ou atualizada com sucesso')
+      console.log('Entidade criada ou atualizada com sucesso')
 
       return entity
-    } catch (error) {
-      console.log(error)
-      return response.status(error.status).send({
+    } catch (err) {
+      console.log('Falha ao atualizar uma entidade do netsuite para o portal.')
+      console.log(err)
+      return response.status(err.status).send({
         title: 'Falha!',
         message: 'Erro ao criar entidade'
       })

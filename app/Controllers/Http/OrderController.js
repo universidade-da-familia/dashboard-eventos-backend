@@ -223,7 +223,8 @@ class OrderController {
 
       return order
     } catch (err) {
-      console.log('entrei no catch do pedido')
+      console.log('Falha ao gerar um pedido')
+      console.log(err)
       return response.status(err.status).send({
         title: 'Falha!',
         message: 'Erro ao criar o pedido.'
