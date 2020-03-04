@@ -122,7 +122,7 @@ class OrderController {
         payu
       )
 
-      console.log('--------PAGAMENTO---------')
+      console.log(`--------ENTIDADE: ${entity.id} PAGAMENTO---------`)
       console.log(payuData.transactionResponse)
 
       if (card !== null) {
