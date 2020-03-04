@@ -8,6 +8,7 @@ const moment = require('moment')
 class Entity extends Model {
   static boot () {
     super.boot()
+    // this.addTrait('Log', { model: 'Entity' })
 
     this.addHook('beforeSave', async entityInstance => {
       if (entityInstance.dirty.password) {
@@ -120,6 +121,10 @@ class Entity extends Model {
       .update({ [hierarchyName]: hierarchyWillBecome })
 
     return entities
+  }
+
+  logs () {
+    return this.hasMany('App/Models/Log')
   }
 
   static updateLeaderTrainingHierarchy (entityId, hierarchyName, assistantHierarchyId, type) {

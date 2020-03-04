@@ -38,7 +38,8 @@
     "axios": "^0.19.2",
     "pg": "^7.18.2",
     "raven": "^2.6.4",
-    "url-parse": "^1.4.7"
+    "url-parse": "^1.4.7",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
