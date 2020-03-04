@@ -39,7 +39,9 @@ class OrganizationController {
       const { uf, city, name } = request.only(['uf', 'city', 'name'])
 
       const organizations = await Organization.query()
+        .with('file')
         .with('addresses')
+        .with('events.defaultEvent.ministery')
         .where(function () {
           if (name) {
             this.whereRaw("LOWER(corporate_name) like '%' || LOWER(?) || '%'", name)
@@ -58,12 +60,6 @@ class OrganizationController {
           }
         })
         .fetch()
-
-      // await organizations.loadMany([
-      //   'file',
-      //   'addresses',
-      //   'events.defaultEvent.ministery'
-      // ])
 
       return organizations
     } catch (err) {

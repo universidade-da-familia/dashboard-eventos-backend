@@ -273,6 +273,7 @@ class EntityController {
 
     await entity.loadMany([
       'file',
+      'church',
       'relationships.relationshipEntity.file',
       'addresses',
       'organizators.defaultEvent.ministery',
