@@ -49,13 +49,13 @@ class OrganizationController {
 
           if (uf) {
             this.whereHas('addresses', builder => {
-              builder.where('uf', uf)
+              builder.whereRaw("LOWER(uf) like '%' || LOWER(?) || '%'", uf)
             })
           }
 
           if (city) {
             this.whereHas('addresses', builder => {
-              builder.where('city', city)
+              builder.whereRaw("LOWER(city) like '%' || LOWER(?) || '%'", city)
             })
           }
         })
