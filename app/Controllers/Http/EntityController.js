@@ -313,6 +313,7 @@ class EntityController {
 
       await entity.loadMany([
         'file',
+        'church',
         'relationships.relationshipEntity.file',
         'addresses',
         'organizators.defaultEvent.ministery',
@@ -361,6 +362,8 @@ class EntityController {
     entity.merge(data)
 
     await entity.save()
+
+    await entity.load('church')
 
     Kue.dispatch(JobUpdate.key, entity, { attempts: 5 })
 

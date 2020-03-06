@@ -70,7 +70,7 @@ define(["N/record"], function(record) {
       }
       customer.setValue({ fieldId: "phone", value: context.phone || "" });
       customer.setValue({ fieldId: "altphone", value: context.alt_phone || "" });
-      customer.setValue({ fieldId: "custentity_rsc_igreja", value: context.organization_id || "" });
+      customer.setValue({ fieldId: "custentity_rsc_igreja", value: context.church_netsuite_id || "" });
 
       const customerId = customer.save();
 
