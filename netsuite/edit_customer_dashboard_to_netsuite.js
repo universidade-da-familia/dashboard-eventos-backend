@@ -22,11 +22,11 @@ define(["N/record"], function(record) {
       if (context.is_business) {
         customer.setValue({
           fieldId: "companyname",
-          value: context.company_name
+          value: context.company_name || ""
         });
         customer.setValue({
           fieldId: "custentity_rsc_nomefantasia",
-          value: context.fantasy_name
+          value: context.fantasy_name || ""
         });
         customer.setValue({ fieldId: "isperson", value: "F" });
       } else {
@@ -57,7 +57,7 @@ define(["N/record"], function(record) {
         fieldId: "custentity_enl_cnpjcpf",
         value: context.cpf_cnpj
       });
-      customer.setValue({ fieldId: "email", value: context.email });
+      customer.setValue({ fieldId: "email", value: context.email || "" });
       customer.setValue({
         fieldId: "custentity_rsc_estadocivil",
         value: context.personal_state_id
@@ -68,8 +68,9 @@ define(["N/record"], function(record) {
       if (context.sex === "M") {
         customer.setValue({ fieldId: "custentity_rsc_sexo", value: "2" });
       }
-      customer.setValue({ fieldId: "phone", value: context.phone });
-      customer.setValue({ fieldId: "altphone", value: context.alt_phone });
+      customer.setValue({ fieldId: "phone", value: context.phone || "" });
+      customer.setValue({ fieldId: "altphone", value: context.alt_phone || "" });
+      customer.setValue({ fieldId: "custentity_rsc_igreja", value: context.organization_id || "" });
 
       const customerId = customer.save();
 
