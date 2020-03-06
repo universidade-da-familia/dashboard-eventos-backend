@@ -105,6 +105,17 @@ class EventController {
         if (end_date) {
           this.where('start_date', '<=', end_date)
         }
+
+        // busca dados endereço entidade
+        if (filterData.cep !== '') {
+          this.where('cep', filterData.cep)
+        }
+        if (filterData.uf !== '') {
+          this.where('uf', filterData.uf)
+        }
+        if (filterData.city !== '') {
+          this.where('city', filterData.city)
+        }
       })
       .orderBy('start_date', 'desc')
       .paginate(page, perPage)
