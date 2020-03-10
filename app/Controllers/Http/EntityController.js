@@ -75,12 +75,12 @@ class EntityController {
         }
         if (filterData.uf !== '') {
           this.whereHas('addresses', builder => {
-            builder.where('uf', filterData.uf)
+            builder.whereRaw("LOWER(uf) like '%' || LOWER(?) || '%'", filterData.uf)
           })
         }
         if (filterData.city !== '') {
           this.whereHas('addresses', builder => {
-            builder.where('city', filterData.city)
+            builder.whereRaw("LOWER(city) like '%' || LOWER(?) || '%'", filterData.city)
           })
         }
 

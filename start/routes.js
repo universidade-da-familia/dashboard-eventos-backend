@@ -98,6 +98,7 @@ Route.resource('organization', 'OrganizationController').except([
   'indexParams'
 ])
 Route.get('organization/:id', 'OrganizationController.show')
+Route.post('organization_paginate', 'OrganizationController.indexPaginate')
 Route.post('organization_params', 'OrganizationController.indexParams')
 Route.put('netsuite_organization/:netsuite_id', 'OrganizationController.update_netsuite')
 
