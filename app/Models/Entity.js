@@ -83,7 +83,8 @@ class Entity extends Model {
         'assistant',
         'attendance_status',
         'is_quitter',
-        'event_authorization'
+        'event_authorization',
+        'print_date'
       ])
       .withTimestamps()
       .where('is_quitter', false)
@@ -98,7 +99,8 @@ class Entity extends Model {
         'assistant',
         'attendance_status',
         'is_quitter',
-        'event_authorization'
+        'event_authorization',
+        'print_date'
       ])
       .withTimestamps()
   }
