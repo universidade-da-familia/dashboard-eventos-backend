@@ -143,6 +143,7 @@ Route.get(
   'EventParticipantController.show'
 )
 Route.delete('event_participant/:entity_id/:participant_id', 'EventParticipantController.destroy')
+Route.put('participant_print_date', 'EventParticipantController.updatePrintDate')
 
 // CRUD entity organizators
 Route.resource('entity_organizator', 'EntityOrganizatorController').except([

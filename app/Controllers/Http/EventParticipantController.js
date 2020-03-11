@@ -288,27 +288,44 @@ class EventParticipantController {
    */
   async update ({ params, request, response }) {
     try {
-      const { is_quitter, assistant } = request.only(['is_quitter', 'assistant'])
+      const { is_quitter, assistant, print_date } = request.only(['is_quitter', 'assistant', 'print_date'])
 
       const participant = await Participant.findOrFail(params.id)
-      // const event = await Event.findOrFail(participant.event_id)
-
-      // if (is_quitter) {
-      //   event.participants_count = event.participants_count - 1;
-      //   await event.save();
-      // }
-
-      // if (!is_quitter) {
-      //   event.participants_count = event.participants_count + 1;
-      //   await event.save();
-      // }
 
       participant.is_quitter = is_quitter
       participant.assistant = assistant
+      participant.print_date = print_date
 
       await participant.save()
 
       return participant
+    } catch (err) {
+      return response.status(err.status).send({
+        error: {
+          title: 'Falha!',
+          message: 'Erro ao atualizar o participante'
+        }
+      })
+    }
+  }
+
+  /**
+   * Update participant details.
+   * PUT or PATCH participants/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async updatePrintDate ({ request, response }) {
+    try {
+      const { participants_id } = request.only(['participants_id'])
+
+      const current_date = new Date()
+
+      const participants = await Participant.query().whereIn('id', participants_id).update({ print_date: current_date })
+
+      return participants
     } catch (err) {
       return response.status(err.status).send({
         error: {
