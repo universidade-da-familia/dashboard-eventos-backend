@@ -1,7 +1,7 @@
-"use strict";
+'use strict'
 
 /** @type {import('@adonisjs/framework/src/Env')} */
-const Env = use("Env");
+const Env = use('Env')
 
 module.exports = {
   /*
@@ -16,7 +16,7 @@ module.exports = {
   | Available Serializers - lucid, database
   |
   */
-  authenticator: "jwt",
+  authenticator: 'jwt',
 
   /*
   |--------------------------------------------------------------------------
@@ -28,11 +28,11 @@ module.exports = {
   |
   */
   session: {
-    serializer: "lucid",
-    model: "App/Models/Entity",
-    scheme: "session",
-    uid: "email",
-    password: "password"
+    serializer: 'lucid',
+    model: 'App/Models/Entity',
+    scheme: 'session',
+    uid: 'email',
+    password: 'password'
   },
 
   /*
@@ -49,11 +49,11 @@ module.exports = {
   |
   */
   basic: {
-    serializer: "lucid",
-    model: "App/Models/Entity",
-    scheme: "basic",
-    uid: "email",
-    password: "password"
+    serializer: 'lucid',
+    model: 'App/Models/Entity',
+    scheme: 'basic',
+    uid: 'email',
+    password: 'password'
   },
 
   /*
@@ -66,62 +66,62 @@ module.exports = {
   |
   */
   jwt: {
-    serializer: "lucid",
-    model: "App/Models/Entity",
-    scheme: "jwt",
-    uid: "email",
-    password: "password",
+    serializer: 'lucid',
+    model: 'App/Models/Entity',
+    scheme: 'jwt',
+    uid: 'email',
+    password: 'password',
     options: {
-      secret: Env.get("APP_KEY"),
-      expiresIn: "5h"
+      secret: Env.get('APP_KEY'),
+      expiresIn: '5h'
     }
   },
 
   jwt_entity: {
-    serializer: "lucid",
-    model: "App/Models/Entity",
-    scheme: "jwt",
-    uid: "email",
-    password: "password",
+    serializer: 'lucid',
+    model: 'App/Models/Entity',
+    scheme: 'jwt',
+    uid: 'email',
+    password: 'password',
     options: {
-      secret: Env.get("APP_KEY"),
-      expiresIn: "5h"
+      secret: Env.get('APP_KEY'),
+      expiresIn: '5h'
     }
   },
 
   jwt_cpf: {
-    serializer: "lucid",
-    model: "App/Models/Entity",
-    scheme: "jwt",
-    uid: "cpf",
-    password: "password",
+    serializer: 'lucid',
+    model: 'App/Models/Entity',
+    scheme: 'jwt',
+    uid: 'cpf',
+    password: 'password',
     options: {
-      secret: Env.get("APP_KEY"),
-      expiresIn: "5h"
+      secret: Env.get('APP_KEY'),
+      expiresIn: '5h'
     }
   },
 
   jwt_organization: {
-    serializer: "lucid",
-    model: "App/Models/Organization",
-    scheme: "jwt",
-    uid: "email",
-    password: "password",
+    serializer: 'lucid',
+    model: 'App/Models/Organization',
+    scheme: 'jwt',
+    uid: 'email',
+    password: 'password',
     options: {
-      secret: Env.get("APP_KEY"),
-      expiresIn: "5h"
+      secret: Env.get('APP_KEY'),
+      expiresIn: '5h'
     }
   },
 
   jwt_cnpj: {
-    serializer: "lucid",
-    model: "App/Models/Organization",
-    scheme: "jwt",
-    uid: "cnpj",
-    password: "password",
+    serializer: 'lucid',
+    model: 'App/Models/Organization',
+    scheme: 'jwt',
+    uid: 'cnpj',
+    password: 'password',
     options: {
-      secret: Env.get("APP_KEY"),
-      expiresIn: "5h"
+      secret: Env.get('APP_KEY'),
+      expiresIn: '5h'
     }
   },
 
@@ -134,10 +134,10 @@ module.exports = {
   |
   */
   api: {
-    serializer: "lucid",
-    model: "App/Models/Entity",
-    scheme: "api",
-    uid: "email",
-    password: "password"
+    serializer: 'lucid',
+    model: 'App/Models/Entity',
+    scheme: 'api',
+    uid: 'email',
+    password: 'password'
   }
-};
+}

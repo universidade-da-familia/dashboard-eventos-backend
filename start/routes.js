@@ -25,7 +25,7 @@ Route.put('entity/:id', 'EntityController.update').validator('EntityUpdate')
 Route.post('entity_paginate', 'EntityController.indexPaginate')
 Route.get('entity/cpf/:cpf/:profile_id', 'EntityController.showCpf')
 
-Route.put('change_password/:id', 'ChangePasswordController.update')
+Route.put('change_password/:id/:user_type', 'ChangePasswordController.update')
 
 Route.put('netsuite_entity/:netsuite_id', 'EntityController.update_netsuite')
 
@@ -95,9 +95,11 @@ Route.resource('organization', 'OrganizationController').except([
   'show',
   'edit',
   'create',
+  'update',
   'indexParams'
 ])
 Route.get('organization/:id', 'OrganizationController.show')
+Route.put('organization/:id', 'OrganizationController.update').validator('Organization')
 Route.post('organization_paginate', 'OrganizationController.indexPaginate')
 Route.post('organization_params', 'OrganizationController.indexParams')
 Route.put('netsuite_organization/:netsuite_id', 'OrganizationController.update_netsuite')

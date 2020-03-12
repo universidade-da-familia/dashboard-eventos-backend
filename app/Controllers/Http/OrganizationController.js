@@ -208,11 +208,10 @@ class OrganizationController {
 
       await organization.loadMany([
         'file',
-        'creditCards',
         'addresses',
-        'checkouts',
         'events.defaultEvent.ministery',
-        'entityOrganizations'
+        'entities',
+        'orders'
       ])
 
       return organization
