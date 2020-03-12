@@ -1,6 +1,7 @@
 'use strict'
 
 const Entity = use('App/Models/Entity')
+const Organization = use('App/Models/Organization')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -20,21 +21,31 @@ class ChangePasswordController {
    */
   async update ({ params, request, response, auth }) {
     try {
+      let user
+      let token
       const data = request.only(['password', 'newPassword'])
 
-      const entity = await Entity.findOrFail(params.id)
+      if (params.user_type === 'entity') {
+        user = await Entity.findOrFail(params.id)
 
-      const token = await auth
-        .authenticator('jwt_entity')
-        .attempt(entity.email, data.password)
+        token = await auth
+          .authenticator('jwt_entity')
+          .attempt(user.email, data.password)
+      } else {
+        user = await Organization.findOrFail(params.id)
 
-      if (token) {
-        entity.password = data.newPassword
+        token = await auth
+          .authenticator('jwt_organization')
+          .attempt(user.email, data.password)
       }
 
-      await entity.save()
+      if (token) {
+        user.password = data.newPassword
+      }
 
-      return entity
+      await user.save()
+
+      return user
     } catch (err) {
       return response.status(err.status).send({
         title: 'Falha!',

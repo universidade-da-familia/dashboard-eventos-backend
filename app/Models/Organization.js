@@ -58,34 +58,6 @@ class Organization extends Model {
   entities () {
     return this.hasMany('App/Models/Entity')
   }
-
-  static findByUfCityName (uf, city, name) {
-    const organizations = this.query()
-      .with('addresses')
-      .where(function () {
-        console.log(uf)
-        console.log(city)
-        console.log(name)
-        if (uf !== '') {
-          this.whereHas('addresses', builder => {
-            builder.where('uf', uf)
-          })
-        }
-
-        if (city !== '') {
-          this.whereHas('addresses', builder => {
-            builder.where('city', city)
-          })
-        }
-
-        // if (name) {
-        //   this.whereRaw("LOWER(name) like '%' || LOWER(?) || '%'", name)
-        // }
-      })
-      .fetch()
-
-    return organizations
-  }
 }
 
 module.exports = Organization
