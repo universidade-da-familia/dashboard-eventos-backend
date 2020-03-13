@@ -23,6 +23,7 @@ Route.resource('entity', 'EntityController').except([
 Route.post('entity', 'EntityController.store').validator('Entity')
 Route.put('entity/:id', 'EntityController.update').validator('EntityUpdate')
 Route.post('entity_paginate', 'EntityController.indexPaginate')
+Route.post('entity_export_excel', 'EntityController.exportExcel')
 Route.get('entity/cpf/:cpf/:profile_id', 'EntityController.showCpf')
 
 Route.put('change_password/:id/:user_type', 'ChangePasswordController.update')
@@ -84,6 +85,7 @@ Route.resource('programation', 'ProgramationController').except([
 
 // CRUD event
 Route.resource('event', 'EventController').except(['edit', 'create'])
+Route.post('event_export_excel', 'EventController.exportExcel')
 Route.post('event_paginate', 'EventController.indexPaginate')
 Route.post(
   'event_for_print_certificate',
@@ -101,6 +103,7 @@ Route.resource('organization', 'OrganizationController').except([
 Route.get('organization/:id', 'OrganizationController.show')
 Route.put('organization/:id', 'OrganizationController.update').validator('Organization')
 Route.post('organization_paginate', 'OrganizationController.indexPaginate')
+Route.post('organization_export_excel', 'OrganizationController.exportExcel')
 Route.post('organization_params', 'OrganizationController.indexParams')
 Route.put('netsuite_organization/:netsuite_id', 'OrganizationController.update_netsuite')
 
