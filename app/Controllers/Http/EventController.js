@@ -91,14 +91,6 @@ class EventController {
           this.where('start_date', '<=', currentDate)
           this.where('is_finished', false)
         }
-        // if (filterData.is_printed === 'false') {
-        //   this.where('is_inscription_finished', true)
-        //   this.where('is_admin_printed', false)
-        // }
-        // if (filterData.is_printed === 'true') {
-        //   this.where('is_admin_printed', true)
-        // }
-
         if (start_date) {
           this.where('start_date', '>=', start_date)
         }
@@ -131,6 +123,100 @@ class EventController {
       .paginate(page, perPage)
 
     return events
+  }
+
+  /**
+   * Show a list of all events.
+   * GET events
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async exportExcel ({ request }) {
+    const { lastPage, filterData } = request.only(['lastPage', 'filterData'])
+
+    const { perPage } = filterData
+    const allData = []
+
+    for (let index = 1; index <= lastPage; index++) {
+      const event = await Event.query()
+        .with('defaultEvent.ministery')
+        .with('organizators')
+        .with('participants')
+        .with('noQuitterParticipants')
+        .whereHas('organizators', builder => {
+          if (filterData.cpf) {
+            builder.where('cpf', filterData.cpf)
+          }
+        })
+        .whereHas('defaultEvent', builder => {
+          if (filterData.ministery) {
+            builder.where('ministery_id', filterData.ministery)
+          }
+          if (filterData.default_event_id) {
+            builder.where(
+              'id',
+              filterData.default_event_id
+            )
+          }
+        })
+        .where(function () {
+          const currentDate = new Date()
+          const [start_date] = filterData.start_date.split('T')
+          const [end_date] = filterData.end_date.split('T')
+
+          if (filterData.id) {
+            this.where('id', filterData.id)
+          }
+
+          if (filterData.status === 'Finalizado') {
+            this.where('is_finished', true)
+          }
+          if (filterData.status === 'Não iniciado') {
+            this.where('start_date', '>', currentDate)
+            this.where('is_finished', false)
+          }
+          if (filterData.status === 'Em andamento') {
+            this.where('start_date', '<=', currentDate)
+            this.where('is_finished', false)
+          }
+          if (start_date) {
+            this.where('start_date', '>=', start_date)
+          }
+          if (end_date) {
+            this.where('start_date', '<=', end_date)
+          }
+
+          // busca dados endereço entidade
+          if (filterData.cep !== '') {
+            this.where('cep', filterData.cep)
+          }
+          if (filterData.uf !== '') {
+            this.where('uf', filterData.uf)
+          }
+          if (filterData.city !== '') {
+            this.where('city', filterData.city)
+          }
+          if (filterData.is_printed === 'false') {
+            this.whereHas('participants', builder => {
+              builder.whereNull('print_date').andWhere('is_quitter', false)
+            })
+          }
+          if (filterData.is_printed === 'true') {
+            this.whereHas('participants', builder => {
+              builder.whereNotNull('print_date').andWhere('is_quitter', false)
+            })
+          }
+        })
+        .orderBy('start_date', 'desc')
+        .paginate(index, perPage)
+
+      allData.push(...event.toJSON().data)
+    }
+
+    return allData
   }
 
   async waitingForAdminPrintCertificates ({ request }) {
