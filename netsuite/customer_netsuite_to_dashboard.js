@@ -59,6 +59,7 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
           url: "http://apieventos.udf.org.br/organization",
           body: {
             netsuite_id: netsuite_id,
+            type: data.getText({ fieldId: "custentity_rsc_categoriacliente" }) || "",
             corporate_name: data.getText({ fieldId: "custentity_enl_legalname" }) || "",
             fantasy_name: data.getText({ fieldId: "custentity_enl_legalname" }) || "",
             email: data.getValue({ fieldId: "email" }) || "",
@@ -67,7 +68,6 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
             password: "udf123",
             phone: data.getValue({ fieldId: "phone" }) || "",
             alt_phone: data.getValue({ fieldId: "altphone" }) || "",
-            user_legacy: true
           }
         });
       }
@@ -99,6 +99,7 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
         http.put({
           url: "http://apieventos.udf.org.br/netsuite_organization/" + netsuite_id,
           body: {
+            type: data.getText({ fieldId: "custentity_rsc_categoriacliente" }) || "",
             corporate_name: data.getText({ fieldId: "custentity_enl_legalname" }) || "",
             fantasy_name: data.getText({ fieldId: "custentity_enl_legalname" }) || "",
             email: data.getValue({ fieldId: "email" }) || "",
