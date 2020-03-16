@@ -591,7 +591,7 @@ class EntityController {
 
       const convertUnicode = new ConvertUnicode()
 
-      data.name = convertUnicode.convert(data.name)
+      data.name = await convertUnicode.convert(data.name)
 
       console.log('-----------')
       console.log(data.name)
