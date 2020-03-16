@@ -585,7 +585,7 @@ class EntityController {
     try {
       const data = request.all()
 
-      data.name = JSON.parse(data.name)
+      data.name = JSON.parse(JSON.stringify(data.name))
 
       data.netsuite_id = params.netsuite_id
 
