@@ -585,7 +585,9 @@ class EntityController {
     try {
       const data = request.all()
 
-      data.name = JSON.parse(JSON.stringify(data.name))
+      data.name = data.name.replace(/[\u00A0-\uffff]/gu, function (c) {
+        return '\\u' + ('000' + c.charCodeAt().toString(16)).slice(-4)
+      })
 
       data.netsuite_id = params.netsuite_id
 
