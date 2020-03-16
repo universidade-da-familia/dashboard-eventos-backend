@@ -583,7 +583,9 @@ class EntityController {
    */
   async update_netsuite ({ params, request, response }) {
     try {
-      const data = JSON.parse(request.all())
+      const data = request.all()
+
+      data.name = JSON.parse(data.name)
 
       data.netsuite_id = params.netsuite_id
 
