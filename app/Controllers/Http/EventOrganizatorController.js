@@ -7,6 +7,7 @@
 const Event = use('App/Models/Event')
 const Entity = use('App/Models/Entity')
 const DefaultEvent = use('App/Models/DefaultEvent')
+const Log = use('App/Models/Log')
 
 /**
  * Resourceful controller for interacting with organizators
@@ -39,6 +40,9 @@ class EventOrganizatorController {
   async store ({ request, response }) {
     const { event_id, entity_id } = request.only(['event_id', 'entity_id'])
 
+    const user_logged_id = parseInt(request.header('user_logged_id'))
+    const user_logged_type = request.header('user_logged_type')
+
     const event = await Event.findOrFail(event_id)
     const entity = await Entity.findOrFail(entity_id)
 
@@ -53,9 +57,21 @@ class EventOrganizatorController {
 
       await event.organizators().fetch()
     } else {
-      return response.status(404).send({
+      return response.status(401).send({
         title: 'Falha!',
         message: 'O CPF é de um participante inscrito'
+      })
+    }
+
+    if (user_logged_id && user_logged_type) {
+      await Log.create({
+        action: 'create',
+        model: 'organizator',
+        new_data: {
+          event_id,
+          entity_id
+        },
+        [`${user_logged_type}_id`]: user_logged_id
       })
     }
 
@@ -359,10 +375,25 @@ class EventOrganizatorController {
       const entity_id = params.entity_id
       const event_id = params.event_id
 
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const event = await Event.findOrFail(event_id)
 
       await event.organizators().detach(entity_id)
       await event.organizators().fetch()
+
+      if (user_logged_id && user_logged_type) {
+        await Log.create({
+          action: 'delete',
+          model: 'organizator',
+          old_data: {
+            event_id,
+            entity_id
+          },
+          [`${user_logged_type}_id`]: user_logged_id
+        })
+      }
 
       return response.status(200).send({
         title: 'Sucesso!',

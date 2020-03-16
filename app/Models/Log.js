@@ -7,6 +7,10 @@ class Log extends Model {
   entity () {
     return this.belongsTo('App/Models/Entity')
   }
+
+  organization () {
+    return this.belongsTo('App/Models/Organization')
+  }
 }
 
 module.exports = Log

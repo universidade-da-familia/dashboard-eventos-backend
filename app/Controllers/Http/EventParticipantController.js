@@ -8,6 +8,7 @@ const Event = use('App/Models/Event')
 const Entity = use('App/Models/Entity')
 const DefaultEvent = use('App/Models/DefaultEvent')
 const Participant = use('App/Models/Participant')
+const Log = use('App/Models/Log')
 
 /**
  * Resourceful controller for interacting with participants
@@ -44,6 +45,9 @@ class EventParticipantController {
       'assistant'
     ])
 
+    const user_logged_id = parseInt(request.header('user_logged_id'))
+    const user_logged_type = request.header('user_logged_type')
+
     const event = await Event.findOrFail(event_id)
     await event.load('defaultEvent.ministery')
 
@@ -70,6 +74,24 @@ class EventParticipantController {
           await event.participants().attach([entity_id], row => {
             row.assistant = assistant
           })
+
+          if (user_logged_id && user_logged_type) {
+            await Log.create({
+              action: 'update',
+              model: 'participant',
+              old_data: {
+                event_id,
+                entity_id,
+                assistant: event_participant.pivot.assistant
+              },
+              new_data: {
+                event_id,
+                entity_id,
+                assistant
+              },
+              [`${user_logged_type}_id`]: user_logged_id
+            })
+          }
         } else if (event_participant.pivot.assistant && assistant) {
           return response.status(200).send({
             error: {
@@ -81,7 +103,7 @@ class EventParticipantController {
           return response.status(200).send({
             error: {
               title: 'Aviso!',
-              message: 'O cpf informado já é um participante'
+              message: 'O CPF informado já é um participante'
             }
           })
         } else if (event_participant.pivot.assistant && !assistant) {
@@ -90,6 +112,24 @@ class EventParticipantController {
           await event.participants().attach([entity_id], row => {
             row.assistant = assistant
           })
+
+          if (user_logged_id && user_logged_type) {
+            await Log.create({
+              action: 'update',
+              model: 'participant',
+              old_data: {
+                event_id,
+                entity_id,
+                assistant: event_participant.pivot.assistant
+              },
+              new_data: {
+                event_id,
+                entity_id,
+                assistant
+              },
+              [`${user_logged_type}_id`]: user_logged_id
+            })
+          }
         }
       } else {
         if (assistant) {
@@ -106,6 +146,19 @@ class EventParticipantController {
         await event.participants().attach([entity_id], row => {
           row.assistant = assistant
         })
+
+        if (user_logged_id && user_logged_type) {
+          await Log.create({
+            action: 'create',
+            model: 'participant',
+            new_data: {
+              event_id,
+              entity_id,
+              assistant
+            },
+            [`${user_logged_type}_id`]: user_logged_id
+          })
+        }
       }
 
       await event.participants().fetch()
@@ -290,7 +343,31 @@ class EventParticipantController {
     try {
       const { is_quitter, assistant, print_date } = request.only(['is_quitter', 'assistant', 'print_date'])
 
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const participant = await Participant.findOrFail(params.id)
+
+      if (user_logged_id && user_logged_type) {
+        await Log.create({
+          action: 'update',
+          model: 'participant',
+          old_data: {
+            id: participant.id,
+            entity_id: participant.entity_id,
+            event_id: participant.event_id,
+            is_quitter: participant.is_quitter,
+            assistant: participant.assistant,
+            print_date: participant.print_date
+          },
+          new_data: {
+            is_quitter,
+            assistant,
+            print_date
+          },
+          [`${user_logged_type}_id`]: user_logged_id
+        })
+      }
 
       participant.is_quitter = is_quitter
       participant.assistant = assistant
@@ -321,9 +398,30 @@ class EventParticipantController {
     try {
       const { participants_id } = request.only(['participants_id'])
 
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const current_date = new Date()
 
       const participants = await Participant.query().whereIn('id', participants_id).update({ print_date: current_date })
+
+      if (user_logged_id && user_logged_type) {
+        await Log.create({
+          action: 'update',
+          model: 'participant',
+          old_data: participants.toJSON().map(participant => {
+            return {
+              participant_id: participant.id,
+              print_date: participant.print_date
+            }
+          }),
+          new_data: {
+            participants: participants_id,
+            current_date
+          },
+          [`${user_logged_type}_id`]: user_logged_id
+        })
+      }
 
       return participants
     } catch (err) {
@@ -344,8 +442,11 @@ class EventParticipantController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, response }) {
+  async destroy ({ request, params, response }) {
     try {
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const entity = await Entity.findOrFail(params.entity_id)
       const participant = await Participant.findOrFail(params.participant_id)
       const event = await Event.findOrFail(participant.event_id)
@@ -365,6 +466,27 @@ class EventParticipantController {
           'delete'
         )
       }
+
+      console.log('cheguei aqui')
+      console.log(user_logged_type)
+      console.log(user_logged_id)
+
+      if (user_logged_id && user_logged_type) {
+        console.log('cheguei aqui dentro')
+
+        await Log.create({
+          action: 'delete',
+          model: 'participant',
+          old_data: {
+            entity_id: entity.id,
+            participant_id: participant.id,
+            event_id: event.id
+          },
+          [`${user_logged_type}_id`]: user_logged_id
+        })
+      }
+
+      console.log('cheguei aqui2')
 
       return response.status(200).send({
         title: 'Sucesso!',

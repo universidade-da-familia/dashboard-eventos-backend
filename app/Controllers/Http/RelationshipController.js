@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Relationship = use('App/Models/Relationship')
+const Log = use('App/Models/Log')
 
 /**
  * Resourceful controller for interacting with relationships
@@ -40,6 +41,9 @@ class RelationshipController {
     try {
       const { entity_id, relationship_id, relationship_type, relationship_sex } = request.all()
 
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const relationship = await Relationship.create({
         entity_id, relationship_id, relationship_type
       })
@@ -66,6 +70,18 @@ class RelationshipController {
         })
       }
 
+      await Log.create({
+        action: 'create',
+        model: 'relatioship',
+        new_data: {
+          entity_id,
+          relationship_id,
+          relationship_type,
+          relationship_sex
+        },
+        [`${user_logged_type}_id`]: user_logged_id
+      })
+
       return relationship
     } catch (err) {
       return response.status(err.status).send({
@@ -85,9 +101,20 @@ class RelationshipController {
    */
   async update ({ params, request, response }) {
     try {
+      const data = request.all()
+
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const relationship = await Relationship.findOrFail(params.id)
 
-      const data = request.all()
+      await Log.create({
+        action: 'update',
+        model: 'relatioship',
+        old_data: relationship.toJSON(),
+        new_data: data,
+        [`${user_logged_type}_id`]: user_logged_id
+      })
 
       relationship.merge(data)
 
@@ -111,8 +138,11 @@ class RelationshipController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, response }) {
+  async destroy ({ request, response, params }) {
     try {
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const relationship = await Relationship.findOrFail(params.id)
 
       const relative = await Relationship.query()
@@ -120,13 +150,20 @@ class RelationshipController {
         .andWhere('relationship_id', relationship.entity_id)
         .first()
 
+      await Log.create({
+        action: 'delete',
+        model: 'relatioship',
+        old_data: relationship.toJSON(),
+        [`${user_logged_type}_id`]: user_logged_id
+      })
+
       await relationship.delete()
 
       await relative.delete()
 
       return response.status(200).send({
         title: 'Sucesso!',
-        message: 'Familiar removido'
+        message: 'Familiar removido.'
       })
     } catch (error) {
       console.log(error)

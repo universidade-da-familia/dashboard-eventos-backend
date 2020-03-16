@@ -6,6 +6,7 @@
 
 const Database = use('Database')
 const Event = use('App/Models/Event')
+const Log = use('App/Models/Log')
 
 const Kue = use('Kue')
 const Job = use('App/Jobs/FinishInscriptions')
@@ -156,6 +157,9 @@ class EventController {
     try {
       const data = request.all()
 
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const trx = await Database.beginTransaction()
 
       const event = await Event.create(data, trx)
@@ -179,6 +183,15 @@ class EventController {
       await trx.commit()
 
       await event.load('lessonReports')
+
+      if (user_logged_id && user_logged_type) {
+        await Log.create({
+          action: 'create',
+          model: 'event',
+          new_data: event.toJSON(),
+          [`${user_logged_type}_id`]: user_logged_id
+        })
+      }
 
       return event
     } catch (err) {
@@ -242,8 +255,21 @@ class EventController {
     try {
       const data = request.all()
 
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const event = await Event.findOrFail(params.id)
       await event.loadMany(['defaultEvent.ministery', 'noQuitterParticipants', 'organizators'])
+
+      if (user_logged_id && user_logged_type) {
+        await Log.create({
+          action: 'update',
+          model: 'event',
+          old_data: event.toJSON(),
+          new_data: data,
+          [`${user_logged_type}_id`]: user_logged_id
+        })
+      }
 
       event.merge(data)
 
@@ -272,9 +298,21 @@ class EventController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, response }) {
+  async destroy ({ request, params, response }) {
     try {
       const event = await Event.findOrFail(params.id)
+
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
+      if (user_logged_id && user_logged_type) {
+        await Log.create({
+          action: 'update',
+          model: 'event',
+          old_data: event.toJSON(),
+          [`${user_logged_type}_id`]: user_logged_id
+        })
+      }
 
       await event.delete()
 

@@ -42,9 +42,9 @@ class CreateEntity {
       name,
       firstname,
       lastname,
-      email,
-      cpf_cnpj: cpf,
-      sex
+      email: email || '',
+      cpf_cnpj: cpf || '',
+      sex: sex || ''
     })
 
     console.log(response.data)

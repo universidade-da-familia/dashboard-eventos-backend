@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const LessonReport = use('App/Models/LessonReport')
+const Log = use('App/Models/Log')
 
 const Kue = use('Kue')
 const Job = use('App/Jobs/SendLessonReport')
@@ -68,6 +69,9 @@ class LessonReportController {
 
       const { participants, offer, date, testimony, doubts } = data
 
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const lessonReport = await LessonReport.findOrFail(params.id)
       await lessonReport.loadMany([
         'event.defaultEvent.ministery',
@@ -92,6 +96,33 @@ class LessonReportController {
           await lessonReport.attendances().attach([participant.id], row => {
             row.is_present = participant.is_present
           })
+        })
+      }
+
+      if (user_logged_id && user_logged_type) {
+        await Log.create({
+          action: 'update',
+          model: 'lesson_report',
+          old_data: {
+            id: lessonReport.id,
+            event_id: lessonReport.event_id,
+            lesson_id: lessonReport.lesson_id,
+            offer: lessonReport.offer,
+            date: lessonReport.date,
+            testimony: lessonReport.testimony,
+            doubts: lessonReport.doubts,
+            is_finished: lessonReport.is_finished
+          },
+          new_data: {
+            id: lessonReport.id,
+            event_id: lessonReport.event_id,
+            date,
+            offer,
+            testimony,
+            doubts,
+            participants
+          },
+          [`${user_logged_type}_id`]: user_logged_id
         })
       }
 

@@ -8,7 +8,6 @@ const moment = require('moment')
 class Entity extends Model {
   static boot () {
     super.boot()
-    // this.addTrait('Log', { model: 'Entity' })
 
     this.addHook('beforeSave', async entityInstance => {
       if (entityInstance.dirty.password) {
