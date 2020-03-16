@@ -62,9 +62,6 @@ class OrderController {
         payu
       } = data
 
-      const user_logged_id = parseInt(request.header('user_logged_id'))
-      const user_logged_type = request.header('user_logged_type')
-
       console.log('Comecei a gerar o pedido no portal')
 
       const entity = await Entity.findOrFail(user.id)
@@ -223,13 +220,6 @@ class OrderController {
       Kue.dispatch(Job.key, { orderNetsuite, order_id: order.id }, {
         attempts: 5,
         priority: 'high'
-      })
-
-      await Log.create({
-        action: 'create',
-        model: 'order',
-        new_data: order.id,
-        [`${user_logged_type}_id`]: user_logged_id
       })
 
       return order
