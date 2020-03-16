@@ -587,14 +587,9 @@ class EntityController {
     try {
       const data = request.all()
 
-      console.log(data.name)
-
       const convertUnicode = new ConvertUnicode()
 
       data.name = await convertUnicode.convert(data.name)
-
-      console.log('-----------')
-      console.log(data.name)
 
       data.netsuite_id = params.netsuite_id
 
