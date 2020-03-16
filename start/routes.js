@@ -207,9 +207,6 @@ Route.group(() => {
   // Busca o Líder solicitado pelo CPF
   Route.get('leader/:cpf', 'LeaderController.show')
 
-  // Busca a igreja pela parte do nome, uf e cidade
-  Route.get('churchs/:uf/:city/:name', 'ChurchController.show')
-
   // Busca evento/eventos
   // Route.get("events/:id", "EventController.index");
   // Route.get("event/:id", "EventController.show");

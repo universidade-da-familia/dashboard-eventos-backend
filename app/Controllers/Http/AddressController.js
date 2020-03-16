@@ -8,6 +8,7 @@ const Database = use('Database')
 const Address = use('App/Models/Address')
 const Entity = use('App/Models/Entity')
 const Organization = use('App/Models/Organization')
+const Log = use('App/Models/Log')
 
 const Kue = use('Kue')
 const Job = use('App/Jobs/Addresses')
@@ -52,7 +53,7 @@ class AddressController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response, params }) {
+  async store ({ request, response, auth }) {
     try {
       let user
       const { netsuite_id, user_type, addressesPost, addressesPut } = request.only([
@@ -61,6 +62,9 @@ class AddressController {
         'addressesPost',
         'addressesPut'
       ])
+
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
 
       const trx = await Database.beginTransaction()
 
@@ -91,6 +95,15 @@ class AddressController {
       const netsuiteAddresses = user.toJSON().addresses
 
       Kue.dispatch(Job.key, { netsuite_id, netsuiteAddresses }, { attempts: 5 })
+
+      if (user_logged_id && user_logged_type) {
+        await Log.create({
+          action: 'create',
+          model: 'address',
+          new_data: user.toJSON().addresses,
+          [`${user_logged_type}_id`]: user_logged_id
+        })
+      }
 
       return response.status(200).send({
         title: 'Sucesso!',

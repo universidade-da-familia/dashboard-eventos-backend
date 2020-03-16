@@ -6,6 +6,7 @@
 
 const Entity = use('App/Models/Entity')
 const Organization = use('App/Models/Organization')
+const Log = use('App/Models/Log')
 
 const Kue = use('Kue')
 const JobCreate = use('App/Jobs/CreateEntity')
@@ -393,6 +394,9 @@ class EntityController {
     const data = request.all()
     const addresses = request.input('addresses')
 
+    const user_logged_id = parseInt(request.header('user_logged_id'))
+    const user_logged_type = request.header('user_logged_type')
+
     const {
       family_id,
       relationship,
@@ -432,6 +436,15 @@ class EntityController {
     await trx.commit()
 
     Kue.dispatch(JobCreate.key, entity, { attempts: 5 })
+
+    if (user_logged_id && user_logged_type) {
+      await Log.create({
+        action: 'create',
+        model: 'entity',
+        new_data: entity.toJSON(),
+        [`${user_logged_type}_id`]: user_logged_id
+      })
+    }
 
     return entity
   }
@@ -532,9 +545,22 @@ class EntityController {
    * @param {Response} ctx.response
    */
   async update ({ params, request }) {
+    const data = request.all()
+
+    const user_logged_id = parseInt(request.header('user_logged_id'))
+    const user_logged_type = request.header('user_logged_type')
+
     const entity = await Entity.findOrFail(params.id)
 
-    const data = request.all()
+    if (user_logged_id && user_logged_type) {
+      await Log.create({
+        action: 'update',
+        model: 'entity',
+        old_data: entity.toJSON(),
+        new_data: data,
+        [`${user_logged_type}_id`]: user_logged_id
+      })
+    }
 
     entity.merge(data)
 
@@ -557,7 +583,7 @@ class EntityController {
    */
   async update_netsuite ({ params, request, response }) {
     try {
-      const data = request.all()
+      const data = JSON.parse(request.all())
 
       data.netsuite_id = params.netsuite_id
 
@@ -602,8 +628,20 @@ class EntityController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params }) {
+  async destroy ({ request, params }) {
     const entity = await Entity.findOrFail(params.id)
+
+    const user_logged_id = parseInt(request.header('user_logged_id'))
+    const user_logged_type = request.header('user_logged_type')
+
+    if (user_logged_id && user_logged_type) {
+      await Log.create({
+        action: 'delete',
+        model: 'entity',
+        old_data: entity.toJSON(),
+        [`${user_logged_type}_id`]: user_logged_id
+      })
+    }
 
     await entity.delete()
   }

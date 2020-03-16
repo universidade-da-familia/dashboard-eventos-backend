@@ -31,7 +31,7 @@ class LogsSchema extends Schema {
         .inTable('organizations')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-      table.timestamp('created_at').defaultTo(this.fn.now())
+      table.timestamps()
     })
   }
 

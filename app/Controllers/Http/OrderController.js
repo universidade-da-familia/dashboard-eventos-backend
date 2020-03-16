@@ -9,6 +9,7 @@ const Database = use('Database')
 
 const Order = use('App/Models/Order')
 const Entity = use('App/Models/Entity')
+const Log = use('App/Models/Log')
 
 const Kue = use('Kue')
 const Job = use('App/Jobs/CreateOrder')
@@ -60,6 +61,9 @@ class OrderController {
         order_details,
         payu
       } = data
+
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
 
       console.log('Comecei a gerar o pedido no portal')
 
@@ -221,6 +225,13 @@ class OrderController {
         priority: 'high'
       })
 
+      await Log.create({
+        action: 'create',
+        model: 'order',
+        new_data: order.id,
+        [`${user_logged_type}_id`]: user_logged_id
+      })
+
       return order
     } catch (err) {
       console.log('Falha ao gerar um pedido')
@@ -276,7 +287,18 @@ class OrderController {
     try {
       const data = request.all()
 
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const order = await Order.findOrFail(params.id)
+
+      await Log.create({
+        action: 'update',
+        model: 'order',
+        old_data: order.toJSON(),
+        new_data: data,
+        [`${user_logged_type}_id`]: user_logged_id
+      })
 
       order.merge(data)
 
@@ -303,7 +325,17 @@ class OrderController {
    */
   async destroy ({ params, request, response }) {
     try {
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
       const order = await Order.findOrFail(params.id)
+
+      await Log.create({
+        action: 'delete',
+        model: 'order',
+        old_data: order.id,
+        [`${user_logged_type}_id`]: user_logged_id
+      })
 
       await order.delete()
 

@@ -58,6 +58,10 @@ class Organization extends Model {
   entities () {
     return this.hasMany('App/Models/Entity')
   }
+
+  logs () {
+    return this.hasMany('App/Models/Log')
+  }
 }
 
 module.exports = Organization
