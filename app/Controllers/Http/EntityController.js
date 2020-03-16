@@ -589,6 +589,12 @@ class EntityController {
         return '\\u' + ('000' + c.charCodeAt().toString(16)).slice(-4)
       })
 
+      console.log(data.name)
+      console.log('-----------')
+      console.log(data.name.replace(/[\u00A0-\uffff]/gu, function (c) {
+        return '\\u' + ('000' + c.charCodeAt().toString(16)).slice(-4)
+      }))
+
       data.netsuite_id = params.netsuite_id
 
       if (data.organization_id) {
