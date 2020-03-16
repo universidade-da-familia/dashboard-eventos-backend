@@ -80,6 +80,16 @@ class UpdateEntity {
     })
 
     console.log(response.data)
+
+    if (response.data.id) {
+      console.log('Chamada ao netsuite finalizada com sucesso (UpdateEntity).')
+    } else {
+      console.log('Chamada ao netsuite finalizada com falha (UpdateEntity).')
+      throw new Error({
+        title: 'Falha!',
+        message: 'Houve um erro ao editar a entidade no Netsuite.'
+      })
+    }
   }
 }
 
