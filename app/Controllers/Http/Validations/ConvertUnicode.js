@@ -1,0 +1,72 @@
+'use strict'
+
+class ConvertUnicode {
+  async convert (str) {
+    // Replace accented characters
+    str.replace('%u00c0', 'À')
+    str.replace('%u00c1', 'Á')
+    str.replace('%u00c2', 'Â')
+    str.replace('%u00c3', 'Ã')
+    str.replace('%u00c4', 'Ä')
+    str.replace('%u00c5', 'Å')
+    str.replace('%u00c6', 'Æ')
+    str.replace('%u00c7', 'Ç')
+    str.replace('%u00c8', 'È')
+    str.replace('%u00c9', 'É')
+    str.replace('%u00ca', 'Ê')
+    str.replace('%u00cb', 'Ë')
+    str.replace('%u00cc', 'Ì')
+    str.replace('%u00cd', 'Í')
+    str.replace('%u00ce', 'Î')
+    str.replace('%u00cf', 'Ï')
+    str.replace('%u00d1', 'Ñ')
+    str.replace('%u00d2', 'Ò')
+    str.replace('%u00d3', 'Ó')
+    str.replace('%u00d4', 'Ô')
+    str.replace('%u00d5', 'Õ')
+    str.replace('%u00d6', 'Ö')
+    str.replace('%u00d8', 'Ø')
+    str.replace('%u00d9', 'Ù')
+    str.replace('%u00da', 'Ú')
+    str.replace('%u00db', 'Û')
+    str.replace('%u00dc', 'Ü')
+    str.replace('%u00dd', 'Ý')
+
+    // Now lower case accents
+    str.replace('%u00df', 'ß')
+    str.replace('%u00e0', 'à')
+    str.replace('%u00e1', 'á')
+    str.replace('%u00e2', 'â')
+    str.replace('%u00e3', 'ã')
+    str.replace('%u00e4', 'ä')
+    str.replace('%u00e5', 'å')
+    str.replace('%u00e6', 'æ')
+    str.replace('%u00e7', 'ç')
+    str.replace('%u00e8', 'è')
+    str.replace('%u00e9', 'é')
+    str.replace('%u00ea', 'ê')
+    str.replace('%u00eb', 'ë')
+    str.replace('%u00ec', 'ì')
+    str.replace('%u00ed', 'í')
+    str.replace('%u00ee', 'î')
+    str.replace('%u00ef', 'ï')
+    str.replace('%u00f0', 'ð')
+    str.replace('%u00f1', 'ñ')
+    str.replace('%u00f2', 'ò')
+    str.replace('%u00f3', 'ó')
+    str.replace('%u00f4', 'ô')
+    str.replace('%u00f5', 'õ')
+    str.replace('%u00f6', 'ö')
+    str.replace('%u00f8', 'ø')
+    str.replace('%u00f9', 'ù')
+    str.replace('%u00fa', 'ú')
+    str.replace('%u00fb', 'û')
+    str.replace('%u00fc', 'ü')
+    str.replace('%u00fd', 'ý')
+    str.replace('%u00ff', 'ÿ')
+
+    return str
+  }
+}
+
+module.exports = ConvertUnicode

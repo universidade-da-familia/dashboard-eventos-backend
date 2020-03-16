@@ -14,6 +14,8 @@ const JobUpdate = use('App/Jobs/UpdateEntity')
 
 const Database = use('Database')
 
+const ConvertUnicode = use('App/Controllers/Http/Validations/ConvertUnicode')
+
 class EntityController {
   /**
    * Show a list of all users.
@@ -585,15 +587,14 @@ class EntityController {
     try {
       const data = request.all()
 
-      data.name = data.name.replace(/[\u00A0-\uffff]/gu, function (c) {
-        return '\\u' + ('000' + c.charCodeAt().toString(16)).slice(-4)
-      })
-
       console.log(data.name)
+
+      const convertUnicode = new ConvertUnicode()
+
+      data.name = convertUnicode.convert(data.name)
+
       console.log('-----------')
-      console.log(data.name.replace(/[\u00A0-\uffff]/gu, function (c) {
-        return '\\u' + ('000' + c.charCodeAt().toString(16)).slice(-4)
-      }))
+      console.log(data.name)
 
       data.netsuite_id = params.netsuite_id
 
