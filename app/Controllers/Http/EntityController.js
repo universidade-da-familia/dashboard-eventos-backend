@@ -396,6 +396,10 @@ class EntityController {
     const data = request.all()
     const addresses = request.input('addresses')
 
+    const convertUnicode = new ConvertUnicode()
+
+    data.name = await convertUnicode.convert(data.name)
+
     const user_logged_id = parseInt(request.header('user_logged_id'))
     const user_logged_type = request.header('user_logged_type')
 
