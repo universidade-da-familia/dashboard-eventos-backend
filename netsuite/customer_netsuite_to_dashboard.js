@@ -17,6 +17,10 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
     const type = scriptContext.type;
     const newRecord = scriptContext.newRecord;
 
+    if (type === "delete") {
+      return
+    }
+
     const data = record.load({
       type: newRecord.type,
       id: newRecord.id,
@@ -25,10 +29,6 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
 
     const netsuite_id = data.getValue({ fieldId: "id" })
     const is_person = data.getValue({ fieldId: "isperson" });
-
-    if (type === "delete") {
-      return
-    }
 
     if (type === "create") {
       if (is_person === 'T') {

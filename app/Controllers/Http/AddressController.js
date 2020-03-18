@@ -96,11 +96,16 @@ class AddressController {
 
       Kue.dispatch(Job.key, { netsuite_id, netsuiteAddresses }, { attempts: 5 })
 
+      const ceps = user.toJSON().addresses.map(address => {
+        return address.cep
+      })
+
       if (user_logged_id && user_logged_type) {
         await Log.create({
           action: 'create',
           model: 'address',
-          new_data: user.toJSON().addresses,
+          model_id: user.id,
+          description: `Os endereços de CEP ${ceps.join(', ')} foram criados`,
           [`${user_logged_type}_id`]: user_logged_id
         })
       }

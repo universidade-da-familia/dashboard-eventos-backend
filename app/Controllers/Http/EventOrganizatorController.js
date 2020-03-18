@@ -67,10 +67,8 @@ class EventOrganizatorController {
       await Log.create({
         action: 'create',
         model: 'organizator',
-        new_data: {
-          event_id,
-          entity_id
-        },
+        model_id: event_id,
+        description: `O organizador id ${entity_id} foi inserido no evento id ${event_id}.`,
         [`${user_logged_type}_id`]: user_logged_id
       })
     }
@@ -387,10 +385,8 @@ class EventOrganizatorController {
         await Log.create({
           action: 'delete',
           model: 'organizator',
-          old_data: {
-            event_id,
-            entity_id
-          },
+          model_id: event_id,
+          description: `O organizador id ${entity_id} foi removido do evento id ${event_id}.`,
           [`${user_logged_type}_id`]: user_logged_id
         })
       }

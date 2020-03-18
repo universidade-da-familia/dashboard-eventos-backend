@@ -103,16 +103,8 @@ class LessonReportController {
         await Log.create({
           action: 'update',
           model: 'lesson_report',
-          old_data: {
-            id: lessonReport.id,
-            event_id: lessonReport.event_id,
-            lesson_id: lessonReport.lesson_id,
-            offer: lessonReport.offer,
-            date: lessonReport.date,
-            testimony: lessonReport.testimony,
-            doubts: lessonReport.doubts,
-            is_finished: lessonReport.is_finished
-          },
+          model_id: lessonReport.event_id,
+          description: `O relatório id ${lessonReport.lesson_id} foi atualizado no evento id ${lessonReport.event_id}.`,
           new_data: {
             id: lessonReport.id,
             event_id: lessonReport.event_id,

@@ -14,7 +14,7 @@ class PayuStatusesSchema extends Schema {
   }
 
   down () {
-    this.drop('payu_statuses')
+    this.dropColumn('payu_statuses')
   }
 }
 

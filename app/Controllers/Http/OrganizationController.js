@@ -6,6 +6,8 @@
 
 const Organization = use('App/Models/Organization')
 
+const ConvertUnicode = use('App/Controllers/Http/Validations/ConvertUnicode')
+
 /**
  * Resourceful controller for interacting with organizations
  */
@@ -368,6 +370,11 @@ class OrganizationController {
   async update_netsuite ({ params, request, response }) {
     try {
       const data = request.all()
+
+      const convertUnicode = new ConvertUnicode()
+
+      data.corporate_name = await convertUnicode.convert(data.corporate_name)
+      data.fantasy_name = await convertUnicode.convert(data.fantasy_name)
 
       data.netsuite_id = params.netsuite_id
 

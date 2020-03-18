@@ -447,7 +447,8 @@ class EntityController {
       await Log.create({
         action: 'create',
         model: 'entity',
-        new_data: entity.toJSON(),
+        model_id: entity.id,
+        description: `A entidade id ${entity.id} foi criada.`,
         [`${user_logged_type}_id`]: user_logged_id
       })
     }
@@ -562,7 +563,8 @@ class EntityController {
       await Log.create({
         action: 'update',
         model: 'entity',
-        old_data: entity.toJSON(),
+        model_id: entity.id,
+        description: `A entidade ${entity.id} foi atualizada.`,
         new_data: data,
         [`${user_logged_type}_id`]: user_logged_id
       })
@@ -648,7 +650,8 @@ class EntityController {
       await Log.create({
         action: 'delete',
         model: 'entity',
-        old_data: entity.toJSON(),
+        model_id: entity.id,
+        description: `A entidade id ${entity.id} foi deletada.`,
         [`${user_logged_type}_id`]: user_logged_id
       })
     }
