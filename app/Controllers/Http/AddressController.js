@@ -105,7 +105,7 @@ class AddressController {
           action: 'create',
           model: 'address',
           model_id: user.id,
-          description: `Os endereços de CEP ${ceps.join(', ')} foram criados`,
+          description: `Os endereços de CEP ${ceps.join(', ')} foram criados/atualizados`,
           [`${user_logged_type}_id`]: user_logged_id
         })
       }

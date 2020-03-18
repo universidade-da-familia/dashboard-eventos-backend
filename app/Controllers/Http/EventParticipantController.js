@@ -412,7 +412,7 @@ class EventParticipantController {
           action: 'update',
           model: 'participant',
           model_id: event_id,
-          description: `Vários participantes foram atualizados no evento id ${event_id}.`,
+          description: `Certificados impressos para vários participantes no evento id ${event_id}.`,
           new_data: {
             participants: participants_id,
             current_date
