@@ -468,13 +468,7 @@ class EventParticipantController {
         )
       }
 
-      console.log('cheguei aqui')
-      console.log(user_logged_type)
-      console.log(user_logged_id)
-
       if (user_logged_id && user_logged_type) {
-        console.log('cheguei aqui dentro')
-
         await Log.create({
           action: 'delete',
           model: 'participant',
@@ -483,8 +477,6 @@ class EventParticipantController {
           [`${user_logged_type}_id`]: user_logged_id
         })
       }
-
-      console.log('cheguei aqui2')
 
       return response.status(200).send({
         title: 'Sucesso!',
