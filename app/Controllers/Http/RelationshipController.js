@@ -52,33 +52,69 @@ class RelationshipController {
         await Relationship.create({
           entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Marido'
         })
+
+        await Log.create({
+          action: 'create',
+          model: 'relatioship',
+          model_id: relationship_id,
+          description: `O relacionamento entre o id ${relationship_id} com o id ${entity_id} foi criado (Marido).`,
+          [`${user_logged_type}_id`]: user_logged_id
+        })
       } else if (relationship_type === 'Marido') {
         await Relationship.create({
           entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Esposa'
+        })
+
+        await Log.create({
+          action: 'create',
+          model: 'relatioship',
+          model_id: relationship_id,
+          description: `O relacionamento entre o id ${relationship_id} com o id ${entity_id} foi criado (Esposa).`,
+          [`${user_logged_type}_id`]: user_logged_id
         })
       } else if (relationship_type === 'Pai' || relationship_type === 'Mãe') {
         await Relationship.create({
           entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Filho'
         })
+
+        await Log.create({
+          action: 'create',
+          model: 'relatioship',
+          model_id: relationship_id,
+          description: `O relacionamento entre o id ${relationship_id} com o id ${entity_id} foi criado (Filho).`,
+          [`${user_logged_type}_id`]: user_logged_id
+        })
       } else if (relationship_type === 'Filho' && relationship_sex === 'M') {
         await Relationship.create({
           entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Pai'
         })
+
+        await Log.create({
+          action: 'create',
+          model: 'relatioship',
+          model_id: relationship_id,
+          description: `O relacionamento entre o id ${relationship_id} com o id ${entity_id} foi criado (Pai).`,
+          [`${user_logged_type}_id`]: user_logged_id
+        })
       } else if (relationship_type === 'Filho' && relationship_sex === 'F') {
         await Relationship.create({
           entity_id: relationship_id, relationship_id: entity_id, relationship_type: 'Mãe'
+        })
+
+        await Log.create({
+          action: 'create',
+          model: 'relatioship',
+          model_id: relationship_id,
+          description: `O relacionamento entre o id ${relationship_id} com o id ${entity_id} foi criado (Mãe).`,
+          [`${user_logged_type}_id`]: user_logged_id
         })
       }
 
       await Log.create({
         action: 'create',
         model: 'relatioship',
-        new_data: {
-          entity_id,
-          relationship_id,
-          relationship_type,
-          relationship_sex
-        },
+        model_id: entity_id,
+        description: `O relacionamento entre o id ${entity_id} com o id ${relationship_id} foi criado (${relationship_type}).`,
         [`${user_logged_type}_id`]: user_logged_id
       })
 
@@ -111,7 +147,8 @@ class RelationshipController {
       await Log.create({
         action: 'update',
         model: 'relatioship',
-        old_data: relationship.toJSON(),
+        model_id: relationship.entity_id,
+        description: `O relacionamento entre o id ${relationship.entity_id} com o id ${relationship.relationship_id} foi atualizado (${relationship.relationship_type}).`,
         new_data: data,
         [`${user_logged_type}_id`]: user_logged_id
       })
@@ -153,7 +190,16 @@ class RelationshipController {
       await Log.create({
         action: 'delete',
         model: 'relatioship',
-        old_data: relationship.toJSON(),
+        model_id: relationship.entity_id,
+        description: `O relacionamento entre o id ${relationship.entity_id} com o id ${relationship.relationship_id} foi removido (${relationship.relationship_type}).`,
+        [`${user_logged_type}_id`]: user_logged_id
+      })
+
+      await Log.create({
+        action: 'delete',
+        model: 'relatioship',
+        model_id: relative.entity_id,
+        description: `O relacionamento entre o id ${relative.entity_id} com o id ${relative.relationship_id} foi atualizado (${relative.relationship_type}).`,
         [`${user_logged_type}_id`]: user_logged_id
       })
 

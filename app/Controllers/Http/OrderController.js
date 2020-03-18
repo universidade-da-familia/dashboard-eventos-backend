@@ -285,7 +285,8 @@ class OrderController {
       await Log.create({
         action: 'update',
         model: 'order',
-        old_data: order.toJSON(),
+        model_id: order.id,
+        description: `O pedido id ${order.id} foi atualizado.`,
         new_data: data,
         [`${user_logged_type}_id`]: user_logged_id
       })
@@ -323,7 +324,8 @@ class OrderController {
       await Log.create({
         action: 'delete',
         model: 'order',
-        old_data: order.id,
+        model_id: order.id,
+        description: `O pedido id ${order.id} foi deletado.`,
         [`${user_logged_type}_id`]: user_logged_id
       })
 

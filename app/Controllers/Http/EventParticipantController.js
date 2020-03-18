@@ -79,11 +79,8 @@ class EventParticipantController {
             await Log.create({
               action: 'update',
               model: 'participant',
-              old_data: {
-                event_id,
-                entity_id,
-                assistant: event_participant.pivot.assistant
-              },
+              model_id: event_id,
+              description: `O participante id ${entity_id} foi atualizado no evento id ${event_id}.`,
               new_data: {
                 event_id,
                 entity_id,
@@ -117,11 +114,8 @@ class EventParticipantController {
             await Log.create({
               action: 'update',
               model: 'participant',
-              old_data: {
-                event_id,
-                entity_id,
-                assistant: event_participant.pivot.assistant
-              },
+              model_id: event_id,
+              description: `O participante id ${entity_id} foi atualizado no evento id ${event_id}.`,
               new_data: {
                 event_id,
                 entity_id,
@@ -133,7 +127,10 @@ class EventParticipantController {
         }
       } else {
         if (assistant) {
-          if (parseInt(entity[event.toJSON().defaultEvent.ministery.tag]) < parseInt(event.toJSON().defaultEvent.assistant_current_event_id)) {
+          if (
+            parseInt(entity[event.toJSON().defaultEvent.ministery.tag]) <
+            parseInt(event.toJSON().defaultEvent.assistant_current_event_id)
+          ) {
             await Entity.updateLeaderTrainingHierarchy(
               entity_id,
               event.toJSON().defaultEvent.ministery.tag,
@@ -151,6 +148,8 @@ class EventParticipantController {
           await Log.create({
             action: 'create',
             model: 'participant',
+            model_id: event_id,
+            description: `O participante id ${entity_id} foi inserido no evento id ${event_id}.`,
             new_data: {
               event_id,
               entity_id,
@@ -341,7 +340,11 @@ class EventParticipantController {
    */
   async update ({ params, request, response }) {
     try {
-      const { is_quitter, assistant, print_date } = request.only(['is_quitter', 'assistant', 'print_date'])
+      const { is_quitter, assistant, print_date } = request.only([
+        'is_quitter',
+        'assistant',
+        'print_date'
+      ])
 
       const user_logged_id = parseInt(request.header('user_logged_id'))
       const user_logged_type = request.header('user_logged_type')
@@ -352,15 +355,12 @@ class EventParticipantController {
         await Log.create({
           action: 'update',
           model: 'participant',
-          old_data: {
+          model_id: participant.event_id,
+          description: `O participante id ${participant.entity_id} foi atualizado no evento id ${participant.event_id}.`,
+          new_data: {
             id: participant.id,
             entity_id: participant.entity_id,
             event_id: participant.event_id,
-            is_quitter: participant.is_quitter,
-            assistant: participant.assistant,
-            print_date: participant.print_date
-          },
-          new_data: {
             is_quitter,
             assistant,
             print_date
@@ -396,25 +396,23 @@ class EventParticipantController {
    */
   async updatePrintDate ({ request, response }) {
     try {
-      const { participants_id } = request.only(['participants_id'])
+      const { participants_id, event_id } = request.only(['participants_id', 'event_id'])
 
       const user_logged_id = parseInt(request.header('user_logged_id'))
       const user_logged_type = request.header('user_logged_type')
 
       const current_date = new Date()
 
-      const participants = await Participant.query().whereIn('id', participants_id).update({ print_date: current_date })
+      const participants = await Participant.query()
+        .whereIn('id', participants_id)
+        .update({ print_date: current_date })
 
       if (user_logged_id && user_logged_type) {
         await Log.create({
           action: 'update',
           model: 'participant',
-          old_data: participants.toJSON().map(participant => {
-            return {
-              participant_id: participant.id,
-              print_date: participant.print_date
-            }
-          }),
+          model_id: event_id,
+          description: `Certificados impressos para vários participantes no evento id ${event_id}.`,
           new_data: {
             participants: participants_id,
             current_date
@@ -458,7 +456,10 @@ class EventParticipantController {
 
       await event.save()
 
-      if (parseInt(entity[event.toJSON().defaultEvent.ministery.tag]) <= parseInt(event.toJSON().defaultEvent.assistant_current_event_id)) {
+      if (
+        parseInt(entity[event.toJSON().defaultEvent.ministery.tag]) <=
+        parseInt(event.toJSON().defaultEvent.assistant_current_event_id)
+      ) {
         await Entity.updateLeaderTrainingHierarchy(
           params.entity_id,
           event.toJSON().defaultEvent.ministery.tag,
@@ -477,11 +478,8 @@ class EventParticipantController {
         await Log.create({
           action: 'delete',
           model: 'participant',
-          old_data: {
-            entity_id: entity.id,
-            participant_id: participant.id,
-            event_id: event.id
-          },
+          model_id: event.id,
+          description: `O participante id ${entity.id} foi removido do evento id ${event.id}.`,
           [`${user_logged_type}_id`]: user_logged_id
         })
       }

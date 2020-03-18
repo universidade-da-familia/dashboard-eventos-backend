@@ -274,7 +274,8 @@ class EventController {
         await Log.create({
           action: 'create',
           model: 'event',
-          new_data: event.toJSON(),
+          model_id: event.id,
+          description: `O evento id ${event.id} foi criado.`,
           [`${user_logged_type}_id`]: user_logged_id
         })
       }
@@ -351,7 +352,8 @@ class EventController {
         await Log.create({
           action: 'update',
           model: 'event',
-          old_data: event.toJSON(),
+          model_id: event.id,
+          description: `O evento id ${event.id} foi atualizado.`,
           new_data: data,
           [`${user_logged_type}_id`]: user_logged_id
         })
@@ -395,7 +397,8 @@ class EventController {
         await Log.create({
           action: 'update',
           model: 'event',
-          old_data: event.toJSON(),
+          model_id: event.id,
+          description: `O evento id ${event.id} foi deletado.`,
           [`${user_logged_type}_id`]: user_logged_id
         })
       }
