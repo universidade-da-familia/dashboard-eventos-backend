@@ -285,6 +285,11 @@ class OrganizationController {
     try {
       const data = request.all()
 
+      const convertUnicode = new ConvertUnicode()
+
+      data.corporate_name = await convertUnicode.convert(data.corporate_name)
+      data.fantasy_name = await convertUnicode.convert(data.fantasy_name)
+
       const organization = await Organization.create(data)
 
       return organization
