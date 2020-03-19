@@ -10,6 +10,8 @@ const DefaultEvent = use('App/Models/DefaultEvent')
 const Participant = use('App/Models/Participant')
 const Log = use('App/Models/Log')
 
+const ValidateEmail = use('App/Controllers/Http/Validations/ValidateEmail')
+
 /**
  * Resourceful controller for interacting with participants
  */
@@ -96,14 +98,14 @@ class EventParticipantController {
           return response.status(200).send({
             error: {
               title: 'Aviso!',
-              message: 'O CPF informado já é de um líder em treinamento'
+              message: 'O usuário informado é um líder em treinamento'
             }
           })
         } else if (!event_participant.pivot.assistant && !assistant) {
           return response.status(200).send({
             error: {
               title: 'Aviso!',
-              message: 'O CPF informado já é um participante'
+              message: 'O usuário informado é um participante'
             }
           })
         } else if (event_participant.pivot.assistant && !assistant) {
@@ -172,7 +174,7 @@ class EventParticipantController {
       return response.status(200).send({
         error: {
           title: 'Falha!',
-          message: 'O CPF informado é de um organizador.'
+          message: 'O usuário informado é um organizador.'
         }
       })
     }
@@ -195,12 +197,15 @@ class EventParticipantController {
         params.default_event_id
       )
 
+      const validateEmail = new ValidateEmail()
+      const isEmail = await validateEmail.validate(params.cpf_email)
+
       const ministery_id = defaultEvent.ministery_id
       const participant_hierarchy_id = defaultEvent.participant_hierarchy_id
       // const assistant_hierarchy_id = defaultEvent.assistant_hierarchy_id
       const sex_type = defaultEvent.sex_type
 
-      const participant = await Entity.findByOrFail('cpf', params.cpf)
+      const participant = isEmail ? await Entity.findByOrFail('email', params.cpf_email) : await Entity.findByOrFail('cpf', params.cpf_email)
 
       await participant.load('file')
 
@@ -212,7 +217,7 @@ class EventParticipantController {
             return response.status(200).send({
               error: {
                 title: 'Aviso!',
-                message: 'CPF Informado não é de um participante válido'
+                message: 'O usuário informado não é de um participante válido'
               }
             })
           }
@@ -224,7 +229,7 @@ class EventParticipantController {
             return response.status(200).send({
               error: {
                 title: 'Aviso!',
-                message: 'CPF Informado não é de um participante válido'
+                message: 'O usuário informado não é de um participante válido'
               }
             })
           }
@@ -236,7 +241,7 @@ class EventParticipantController {
             return response.status(200).send({
               error: {
                 title: 'Aviso!',
-                message: 'CPF Informado não é de um participante válido'
+                message: 'O usuário informado não é de um participante válido'
               }
             })
           }
@@ -248,7 +253,7 @@ class EventParticipantController {
             return response.status(200).send({
               error: {
                 title: 'Aviso!',
-                message: 'CPF Informado não é de um participante válido'
+                message: 'O usuário informado não é de um participante válido'
               }
             })
           }
@@ -260,7 +265,7 @@ class EventParticipantController {
             return response.status(200).send({
               error: {
                 title: 'Aviso!',
-                message: 'CPF Informado não é de um participante válido'
+                message: 'O usuário informado não é de um participante válido'
               }
             })
           }
@@ -272,7 +277,7 @@ class EventParticipantController {
             return response.status(200).send({
               error: {
                 title: 'Aviso!',
-                message: 'CPF Informado não é de um participante válido'
+                message: 'O usuário informado não é de um participante válido'
               }
             })
           }
@@ -284,7 +289,7 @@ class EventParticipantController {
             return response.status(200).send({
               error: {
                 title: 'Aviso!',
-                message: 'CPF Informado não é de um participante válido'
+                message: 'O usuário informado não é de um participante válido'
               }
             })
           }
@@ -296,7 +301,7 @@ class EventParticipantController {
             return response.status(200).send({
               error: {
                 title: 'Aviso!',
-                message: 'CPF Informado não é de um participante válido'
+                message: 'O usuário informado não é de um participante válido'
               }
             })
           }
@@ -324,7 +329,7 @@ class EventParticipantController {
       return response.status(err.status).send({
         error: {
           title: 'Falha!',
-          message: 'Nenhum participante foi encontrado com este CPF',
+          message: 'Nenhum participante foi encontrado',
           type: 'not_found'
         }
       })

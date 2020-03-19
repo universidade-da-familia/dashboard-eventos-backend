@@ -9,6 +9,8 @@ const Entity = use('App/Models/Entity')
 const DefaultEvent = use('App/Models/DefaultEvent')
 const Log = use('App/Models/Log')
 
+const ValidateEmail = use('App/Controllers/Http/Validations/ValidateEmail')
+
 /**
  * Resourceful controller for interacting with organizators
  */
@@ -59,7 +61,7 @@ class EventOrganizatorController {
     } else {
       return response.status(401).send({
         title: 'Falha!',
-        message: 'O CPF é de um participante inscrito'
+        message: 'O usuário é de um participante inscrito'
       })
     }
 
@@ -93,13 +95,16 @@ class EventOrganizatorController {
         params.default_event_id
       )
 
+      const validateEmail = new ValidateEmail()
+      const isEmail = await validateEmail.validate(params.cpf_email)
+
       const ministery_id = defaultEvent.ministery_id
       const organizator_hierarchy_id = defaultEvent.organizator_hierarchy_id
       const assistant_hierarchy_id = defaultEvent.assistant_hierarchy_id
       const sex_type = defaultEvent.sex_type
       const organizator_type = params.organizator_type
 
-      const organizator = await Entity.findByOrFail('cpf', params.cpf)
+      const organizator = isEmail ? await Entity.findByOrFail('email', params.cpf_email) : await Entity.findByOrFail('cpf', params.cpf_email)
 
       await organizator.loadMany([
         'file',
@@ -121,7 +126,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não é de um líder válido'
+                  message: 'O usuário informado não é um líder válido'
                 }
               })
             }
@@ -132,7 +137,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não pode ser assistente'
+                  message: 'O usuário informado não pode ser assistente'
                 }
               })
             }
@@ -146,7 +151,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não é de um líder válido'
+                  message: 'O usuário informado não é um líder válido'
                 }
               })
             }
@@ -157,7 +162,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não pode ser assistente'
+                  message: 'O usuário informado não pode ser assistente'
                 }
               })
             }
@@ -171,7 +176,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não é de um líder válido'
+                  message: 'O usuário informado não é um líder válido'
                 }
               })
             }
@@ -182,7 +187,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não pode ser assistente'
+                  message: 'O usuário informado não pode ser assistente'
                 }
               })
             }
@@ -196,7 +201,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não é de um líder válido'
+                  message: 'O usuário informado não é um líder válido'
                 }
               })
             }
@@ -207,7 +212,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não pode ser assistente'
+                  message: 'O usuário informado não pode ser assistente'
                 }
               })
             }
@@ -221,7 +226,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não é de um líder válido'
+                  message: 'O usuário informado não é um líder válido'
                 }
               })
             }
@@ -232,7 +237,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não pode ser assistente'
+                  message: 'O usuário informado não pode ser assistente'
                 }
               })
             }
@@ -246,7 +251,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não é de um líder válido'
+                  message: 'O usuário informado não é um líder válido'
                 }
               })
             }
@@ -257,7 +262,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não pode ser assistente'
+                  message: 'O usuário informado não pode ser assistente'
                 }
               })
             }
@@ -271,7 +276,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não é de um líder válido'
+                  message: 'O usuário informado não é um líder válido'
                 }
               })
             }
@@ -282,7 +287,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não pode ser assistente'
+                  message: 'O usuário informado não pode ser assistente'
                 }
               })
             }
@@ -296,7 +301,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não é de um líder válido'
+                  message: 'O usuário informado não é um líder válido'
                 }
               })
             }
@@ -307,7 +312,7 @@ class EventOrganizatorController {
               return response.status(200).send({
                 error: {
                   title: 'Aviso!',
-                  message: 'O CPF Informado não pode ser assistente'
+                  message: 'O usuário informado não pode ser assistente'
                 }
               })
             }
@@ -334,7 +339,7 @@ class EventOrganizatorController {
       return response.status(err.status).send({
         error: {
           title: 'Falha!',
-          message: 'Nenhum líder ou líder em treinamento foi encontrado com este CPF.'
+          message: 'Nenhum líder ou líder em treinamento foi encontrado.'
         }
       })
     }

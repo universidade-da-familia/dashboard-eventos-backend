@@ -126,7 +126,7 @@ Route.resource('event_organizator', 'EventOrganizatorController').except([
 ])
 Route.get('event_organizators/:event_id', 'EventOrganizatorController.index')
 Route.get(
-  'event_organizator/:organizator_type/:cpf/:default_event_id',
+  'event_organizator/:organizator_type/:cpf_email/:default_event_id',
   'EventOrganizatorController.show'
 )
 Route.delete(
@@ -144,7 +144,7 @@ Route.resource('event_participant', 'EventParticipantController').except([
 ])
 Route.get('event_participants/:event_id', 'EventParticipantController.index')
 Route.get(
-  'event_participant/:cpf/:default_event_id',
+  'event_participant/:cpf_email/:default_event_id',
   'EventParticipantController.show'
 )
 Route.delete('event_participant/:entity_id/:participant_id', 'EventParticipantController.destroy')
