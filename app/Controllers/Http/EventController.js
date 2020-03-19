@@ -100,14 +100,23 @@ class EventController {
         }
 
         // busca dados endereço entidade
+        if (filterData.country !== '') {
+          this.where('country', filterData.country === '30' ? 'BRASIL' : filterData.country)
+        }
         if (filterData.cep !== '') {
           this.where('cep', filterData.cep)
         }
         if (filterData.uf !== '') {
           this.where('uf', filterData.uf)
         }
+        if (filterData.apiUf !== '') {
+          this.where('uf', filterData.apiUf)
+        }
         if (filterData.city !== '') {
           this.where('city', filterData.city)
+        }
+        if (filterData.apiCity !== '') {
+          this.where('city', filterData.apiCity)
         }
         if (filterData.is_printed === 'false') {
           this.whereHas('participants', builder => {
