@@ -344,6 +344,49 @@ class OrderController {
       })
     }
   }
+
+  /**
+   * Delete a order with id.
+   * DELETE orders/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async destroy_netsuite ({ params, request, response }) {
+    try {
+      const netsuite_id = params.netsuite_id
+      const data = request.all()
+
+      const order = await Order.findByOrFail('netsuite_id', netsuite_id)
+
+      await Log.create({
+        action: 'update',
+        model: 'order',
+        model_id: order.id,
+        description: `O pedido id ${order.id} foi cancelado pelo usuário ${data.name}.`
+      })
+
+      order.status_id = 10
+
+      await order.save()
+
+      console.log(`O pedido id: ${order.id} FOI CANCELADO`)
+
+      return response.status(200).send({
+        title: 'Sucesso!',
+        message: 'O pedido foi cancelado.'
+      })
+    } catch (err) {
+      console.log('Falha ao cancelar o pedido')
+      return response.status(err.status).send({
+        error: {
+          title: 'Falha!',
+          message: 'Erro ao excluir o pedido'
+        }
+      })
+    }
+  }
 }
 
 module.exports = OrderController
