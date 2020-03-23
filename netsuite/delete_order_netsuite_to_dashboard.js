@@ -19,12 +19,12 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
 
     if (type === "delete") {
       const netsuite_id = oldRecord.id;
-      const user = runtime.getCurrentUser()
+      const name = runtime.getCurrentUser().name
 
       http.delete({
         url: "http://apieventos.udf.org.br/netsuite_order/" + netsuite_id,
         body: {
-          name: user.name
+          name
         }
       });
     }
