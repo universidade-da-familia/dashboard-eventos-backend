@@ -196,7 +196,8 @@ Route.resource('status', 'StatusController').except(['edit', 'create'])
 
 Route.resource('coupon', 'CouponController').except(['edit', 'create'])
 
-Route.resource('order', 'OrderController').except(['edit', 'create'])
+Route.resource('order', 'OrderController').except(['edit', 'create', 'destroy_netsuite'])
+Route.delete('netsuite_order/:netsuite_id', 'OrderController.destroy_netsuite')
 
 Route.post('shipping_tag', 'ShippingTagController.index')
 
