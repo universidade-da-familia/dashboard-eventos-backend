@@ -67,7 +67,7 @@ class LessonReportController {
     try {
       const data = request.all()
 
-      const { participants, offer, date, testimony, doubts } = data
+      const { participants, offer, date, pray_request } = data
 
       const user_logged_id = parseInt(request.header('user_logged_id'))
       const user_logged_type = request.header('user_logged_type')
@@ -81,8 +81,7 @@ class LessonReportController {
 
       lessonReport.date = date || lessonReport.date
       lessonReport.offer = offer
-      lessonReport.testimony = testimony
-      lessonReport.doubts = doubts
+      lessonReport.pray_request = pray_request
       lessonReport.is_finished = true
 
       await lessonReport.save()
@@ -110,8 +109,7 @@ class LessonReportController {
             event_id: lessonReport.event_id,
             date,
             offer,
-            testimony,
-            doubts,
+            pray_request,
             participants
           },
           [`${user_logged_type}_id`]: user_logged_id
