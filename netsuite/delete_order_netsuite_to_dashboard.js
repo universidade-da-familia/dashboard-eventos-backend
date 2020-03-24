@@ -22,10 +22,7 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
       const name = runtime.getCurrentUser().name
 
       http.delete({
-        url: "http://apieventos.udf.org.br/netsuite_order/" + netsuite_id,
-        body: {
-          name
-        }
+        url: "http://apieventos.udf.org.br/netsuite_order/" + netsuite_id + "/" + name
       });
     }
   }
