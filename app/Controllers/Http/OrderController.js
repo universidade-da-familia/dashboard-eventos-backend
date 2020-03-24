@@ -356,7 +356,7 @@ class OrderController {
   async destroy_netsuite ({ params, request, response }) {
     try {
       const netsuite_id = params.netsuite_id
-      const username = params.username.replace('%20', ' ')
+      const username = params.username.replace(/%20/g, ' ')
 
       const order = await Order.findByOrFail('netsuite_id', netsuite_id)
 
