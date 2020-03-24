@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 'use strict'
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
@@ -90,6 +89,7 @@ class OrderController {
       const order = await Order.create({
         status_id: 1,
         entity_id: user.id,
+        type: order_details.order_type,
         payment_name: card === null ? 'Boleto' : 'Cartão de crédito',
         shipping_name: shipping_option.delivery_method_name,
         delivery_estimate_days:
@@ -167,13 +167,15 @@ class OrderController {
 
       const orderNetsuite = {
         entity: user,
-        products: products.map(product => {
-          const product_subtotal = parseInt(product.quantity) * product.cost_of_goods
-          const product_subtotal_percent = product_subtotal / order_details.subtotal
+        products: products.filter(product => {
+          if (product.cost_of_goods > 0) {
+            const product_subtotal = parseInt(product.quantity) * product.cost_of_goods
+            const product_subtotal_percent = product_subtotal / order_details.subtotal
 
-          product.freight_per_item = product_subtotal_percent * order_details.shipping_amount
+            product.freight_per_item = product_subtotal_percent * order_details.shipping_amount
 
-          return product
+            return product
+          }
         }),
         card,
         installments:

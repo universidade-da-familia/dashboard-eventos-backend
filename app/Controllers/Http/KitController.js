@@ -1,10 +1,10 @@
-"use strict";
+'use strict'
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Kit = use("App/Models/Kit");
+const Kit = use('App/Models/Kit')
 
 class KitController {
   /**
@@ -16,12 +16,12 @@ class KitController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index() {
+  async index () {
     const kits = await Kit.query()
-      .with("products")
-      .fetch();
+      .with('products')
+      .fetch()
 
-    return kits;
+    return kits
   }
 
   /**
@@ -32,27 +32,18 @@ class KitController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {
-    try {
-      const { name, products } = request.only(["name", "products"]);
+  async store ({ request, response }) {
+    const { name, products } = request.only(['name', 'products'])
 
-      const kit = await Kit.create({ name });
+    const kit = await Kit.create({ name })
 
-      if (products && products.length > 0) {
-        await kit.products().attach(products);
+    if (products && products.length > 0) {
+      await kit.products().attach(products)
 
-        kit.products = await kit.products().fetch();
-      }
-
-      return kit;
-    } catch (err) {
-      return response.status(err.status).send({
-        error: {
-          title: "Falha!",
-          message: "Tente cadastrar novamente"
-        }
-      });
+      kit.products = await kit.products().fetch()
     }
+
+    return kit
   }
 
   /**
@@ -64,12 +55,12 @@ class KitController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params }) {
-    const kit = await Kit.findOrFail(params.id);
+  async show ({ params }) {
+    const kit = await Kit.findOrFail(params.id)
 
-    await kit.load("products");
+    await kit.load('products')
 
-    return kit;
+    return kit
   }
 
   /**
@@ -80,31 +71,31 @@ class KitController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {
+  async update ({ params, request, response }) {
     try {
-      const { name, products } = request.only(["name", "products"]);
+      const { name, products } = request.only(['name', 'products'])
 
-      const kit = await Kit.findOrFail(params.id);
+      const kit = await Kit.findOrFail(params.id)
 
-      kit.name = name || kit.name;
+      kit.name = name || kit.name
 
-      await kit.save();
+      await kit.save()
 
       if (products && products.length > 0) {
-        await kit.products().detach();
-        await kit.products().attach(products);
+        await kit.products().detach()
+        await kit.products().attach(products)
 
-        kit.products = await kit.products().fetch();
+        kit.products = await kit.products().fetch()
       }
 
-      return kit;
+      return kit
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Tente atualizar novamente"
+          title: 'Falha!',
+          message: 'Tente atualizar novamente'
         }
-      });
+      })
     }
   }
 
@@ -116,25 +107,25 @@ class KitController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, response }) {
+  async destroy ({ params, response }) {
     try {
-      const kit = await Kit.findOrFail(params.id);
+      const kit = await Kit.findOrFail(params.id)
 
-      await kit.delete();
+      await kit.delete()
 
       return response.status(200).send({
-        title: "Sucesso!",
-        message: "O kit foi removido."
-      });
+        title: 'Sucesso!',
+        message: 'O kit foi removido.'
+      })
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Tente remover novamente"
+          title: 'Falha!',
+          message: 'Tente remover novamente'
         }
-      });
+      })
     }
   }
 }
 
-module.exports = KitController;
+module.exports = KitController
