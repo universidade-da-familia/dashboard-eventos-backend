@@ -356,7 +356,7 @@ class OrderController {
   async destroy_netsuite ({ params, request, response }) {
     try {
       const netsuite_id = params.netsuite_id
-      const { name } = request.only(['name'])
+      const username = params.username.replace('%20', ' ')
 
       const order = await Order.findByOrFail('netsuite_id', netsuite_id)
 
@@ -364,7 +364,7 @@ class OrderController {
         action: 'update',
         model: 'order',
         model_id: order.id,
-        description: `O pedido id ${order.id} foi cancelado pelo usuário ${name}.`
+        description: `O pedido id ${order.id} foi cancelado pelo usuário ${username}.`
       })
 
       order.status_id = 10
