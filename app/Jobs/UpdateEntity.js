@@ -48,8 +48,6 @@ class UpdateEntity {
       pg_yes_hierarchy_id
     } = entity
 
-    const { netsuite_id: church_netsuite_id } = church
-
     const fullname = name.split(' ')
     const firstname = fullname[0]
     fullname.shift()
@@ -68,7 +66,7 @@ class UpdateEntity {
       sex: sex || '',
       phone: phone || '',
       alt_phone: alt_phone || '',
-      church_netsuite_id: church_netsuite_id || '',
+      church_netsuite_id: church.netsuite_id || '',
       cmn_hierarchy_id,
       mu_hierarchy_id,
       crown_hierarchy_id,
