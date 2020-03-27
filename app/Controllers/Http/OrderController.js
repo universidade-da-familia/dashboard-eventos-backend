@@ -165,6 +165,14 @@ class OrderController {
       order.products = await order.products().fetch()
       order.transaction = transaction || order.transaction
 
+      const gifts = []
+
+      products.map(product => {
+        if (product.cost_of_goods === 0) {
+          gifts.push(`${product.quantity} ${product.name}\n`)
+        }
+      })
+
       const orderNetsuite = {
         entity: user,
         order_type: order_details.order_type,
@@ -178,11 +186,7 @@ class OrderController {
             return product
           }
         }),
-        gifts: products.map(product => {
-          if (product.cost_of_goods === 0) {
-            return `${product.quantity} ${product.name}\n`
-          }
-        }),
+        gifts,
         card,
         installments:
             card !== null
