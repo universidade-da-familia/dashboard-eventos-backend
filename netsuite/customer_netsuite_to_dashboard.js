@@ -28,9 +28,12 @@ define(["N/runtime", "N/record", "N/http"], function(runtime, record, http) {
     });
 
     const netsuite_id = data.getValue({ fieldId: "id" })
+    const dashboard_id = data.getValue({ fieldId: "custentityid_dashboard_cliente" })
     const is_person = data.getValue({ fieldId: "isperson" });
 
-    if (type === "create") {
+    log.debug({ title: 'dashboard id', details: dashboard_id })
+
+    if (type === "create" && dashboard_id === "") {
       if (is_person === 'T') {
         http.post({
           url: "http://apieventos.udf.org.br/entity",
