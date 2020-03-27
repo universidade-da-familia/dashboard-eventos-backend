@@ -71,29 +71,46 @@ define(["N/record"], function(record) {
       customer.setValue({ fieldId: "phone", value: context.phone || "" });
       customer.setValue({ fieldId: "altphone", value: context.alt_phone || "" });
       customer.setValue({ fieldId: "custentity_rsc_igreja", value: context.church_netsuite_id || "" });
-      if (context.cmn_hierarchy_id != 0) {
-        customer.setValue({ fieldId: "custentity_cmn_hierarchy_id", value: context.cmn_hierarchy_id || "" });
+
+      if (context.cmn_hierarchy_id == 0) {
+        customer.setValue({ fieldId: "custentity_cmn_hierarchy_id", value: "" });
+      } else {
+        customer.setValue({ fieldId: "custentity_cmn_hierarchy_id", value: context.cmn_hierarchy_id })
       }
-      if (context.mu_hierarchy_id != 0) {
-        customer.setValue({ fieldId: "custentity_mu_hierarchy_id", value: context.mu_hierarchy_id || "" });
+      if (context.mu_hierarchy_id == 0) {
+        customer.setValue({ fieldId: "custentity_mu_hierarchy_id", value: "" });
+      } else {
+        customer.setValue({ fieldId: "custentity_mu_hierarchy_id", value: context.mu_hierarchy_id })
       }
-      if (context.crown_hierarchy_id != 0) {
-        customer.setValue({ fieldId: "custentity_crown_hierarchy_id", value: context.crown_hierarchy_id || "" });
+      if (context.crown_hierarchy_id == 0) {
+        customer.setValue({ fieldId: "custentity_crown_hierarchy_id", value: "" });
+      } else {
+        customer.setValue({ fieldId: "custentity_crown_hierarchy_id", value: context.crown_hierarchy_id })
       }
-      if (context.mp_hierarchy_id != 0) {
-        customer.setValue({ fieldId: "custentity_mp_hierarchy_id", value: context.mp_hierarchy_id || "" });
+      if (context.mp_hierarchy_id == 0) {
+        customer.setValue({ fieldId: "custentity_mp_hierarchy_id", value: "" });
+      } else {
+        customer.setValue({ fieldId: "custentity_mp_hierarchy_id", value: context.mp_hierarchy_id })
       }
-      if (context.ffi_hierarchy_id != 0) {
-        customer.setValue({ fieldId: "custentity_ffi_hierarchy_id", value: context.ffi_hierarchy_id || "" });
+      if (context.ffi_hierarchy_id == 0) {
+        customer.setValue({ fieldId: "custentity_ffi_hierarchy_id", value: "" });
+      } else {
+        customer.setValue({ fieldId: "custentity_ffi_hierarchy_id", value: context.ffi_hierarchy_id })
       }
-      if (context.gfi_hierarchy_id != 0) {
-        customer.setValue({ fieldId: "custentity_gfi_hierarchy_id", value: context.gfi_hierarchy_id || "" });
+      if (context.gfi_hierarchy_id == 0) {
+        customer.setValue({ fieldId: "custentity_gfi_hierarchy_id", value: "" });
+      } else {
+        customer.setValue({ fieldId: "custentity_gfi_hierarchy_id", value: context.gfi_hierarchy_id })
       }
-      if (context.pg_hab_hierarchy_id != 0) {
-        customer.setValue({ fieldId: "custentity_pg_hab_hierarchy_id", value: context.pg_hab_hierarchy_id || "" });
+      if (context.pg_hab_hierarchy_id == 0) {
+        customer.setValue({ fieldId: "custentity_pg_hab_hierarchy_id", value: "" });
+      } else {
+        customer.setValue({ fieldId: "custentity_pg_hab_hierarchy_id", value: context.pg_hab_hierarchy_id })
       }
-      if (context.pg_yes_hierarchy_id != 0) {
-        customer.setValue({ fieldId: "custentity_pg_yes_hierarchy_id", value: context.pg_yes_hierarchy_id || "" });
+      if (context.pg_yes_hierarchy_id == 0) {
+        customer.setValue({ fieldId: "custentity_pg_yes_hierarchy_id", value: "" });
+      } else {
+        customer.setValue({ fieldId: "custentity_pg_yes_hierarchy_id", value: context.pg_yes_hierarchy_id })
       }
 
       const customerId = customer.save();
