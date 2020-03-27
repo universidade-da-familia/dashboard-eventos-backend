@@ -178,6 +178,11 @@ class OrderController {
             return product
           }
         }),
+        gifts: products.filter(product => {
+          if (product.cost_of_goods === 0) {
+            return `${product.quantity} ${product.name}\n`
+          }
+        }),
         card,
         installments:
             card !== null
