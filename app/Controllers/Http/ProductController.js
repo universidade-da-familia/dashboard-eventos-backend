@@ -1,10 +1,10 @@
-"use strict";
+'use strict'
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Product = use("App/Models/Product");
+const Product = use('App/Models/Product')
 
 class ProductController {
   /**
@@ -16,12 +16,12 @@ class ProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index() {
+  async index () {
     const products = await Product.query()
-      .with("kits")
-      .fetch();
+      .with('kits')
+      .fetch()
 
-    return products;
+    return products
   }
 
   /**
@@ -32,32 +32,32 @@ class ProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {
+  async store ({ request, response }) {
     try {
       const data = request.only([
-        "name",
-        "group_price",
-        "training_price",
-        "seminary_price",
-        "netsuite_id",
-        "weight",
-        "width",
-        "height",
-        "length",
-        "sku_id",
-        "product_category"
-      ]);
+        'name',
+        'group_price',
+        'training_price',
+        'seminary_price',
+        'netsuite_id',
+        'weight',
+        'width',
+        'height',
+        'length',
+        'sku_id',
+        'product_category'
+      ])
 
-      const product = await Product.create(data);
+      const product = await Product.create(data)
 
-      return product;
+      return product
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Tente cadastrar novamente"
+          title: 'Falha!',
+          message: 'Tente cadastrar novamente'
         }
-      });
+      })
     }
   }
 
@@ -70,12 +70,12 @@ class ProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params }) {
-    const product = await Product.findOrFail(params.id);
+  async show ({ params }) {
+    const product = await Product.findOrFail(params.id)
 
-    await product.load("kits");
+    await product.load('kits')
 
-    return product;
+    return product
   }
 
   /**
@@ -86,36 +86,36 @@ class ProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request }) {
+  async update ({ params, request, response }) {
     try {
       const data = request.only([
-        "name",
-        "group_price",
-        "training_price",
-        "seminary_price",
-        "netsuite_id",
-        "weight",
-        "width",
-        "height",
-        "length",
-        "sku_id",
-        "product_category"
-      ]);
+        'name',
+        'group_price',
+        'training_price',
+        'seminary_price',
+        'netsuite_id',
+        'weight',
+        'width',
+        'height',
+        'length',
+        'sku_id',
+        'product_category'
+      ])
 
-      const product = await Product.findOrFail(params.id);
+      const product = await Product.findOrFail(params.id)
 
-      product.merge(data);
+      product.merge(data)
 
-      await product.save();
+      await product.save()
 
-      return product;
+      return product
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Tente atualizar novamente"
+          title: 'Falha!',
+          message: 'Tente atualizar novamente'
         }
-      });
+      })
     }
   }
 
@@ -127,25 +127,25 @@ class ProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, response }) {
+  async destroy ({ params, response }) {
     try {
-      const product = await Product.findOrFail(params.id);
+      const product = await Product.findOrFail(params.id)
 
-      await product.delete();
+      await product.delete()
 
       return response.status(200).send({
-        title: "Sucesso!",
-        message: "O produto foi removido."
-      });
+        title: 'Sucesso!',
+        message: 'O produto foi removido.'
+      })
     } catch (err) {
       return response.status(err.status).send({
         error: {
-          title: "Falha!",
-          message: "Tente remover novamente"
+          title: 'Falha!',
+          message: 'Tente remover novamente'
         }
-      });
+      })
     }
   }
 }
 
-module.exports = ProductController;
+module.exports = ProductController
