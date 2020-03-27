@@ -55,12 +55,12 @@ define(["N/record"], function(record) {
       });
       customer.setValue({
         fieldId: "custentity_enl_cnpjcpf",
-        value: context.cpf_cnpj
+        value: context.cpf_cnpj || ""
       });
       customer.setValue({ fieldId: "email", value: context.email || "" });
       customer.setValue({
         fieldId: "custentity_rsc_estadocivil",
-        value: context.personal_state_id
+        value: context.personal_state_id || ""
       });
       if (context.sex === "F") {
         customer.setValue({ fieldId: "custentity_rsc_sexo", value: "1" });
