@@ -457,11 +457,32 @@ define(["N/record", "N/search"], function(record, search) {
           fieldId: "quantity",
           value: product.quantity
         });
-        salesOrder.setCurrentSublistValue({
-          sublistId: "item",
-          fieldId: "price",
-          value: 3
-        });
+
+        if (context.order_type === "Curso") {
+          salesOrder.setCurrentSublistValue({
+            sublistId: "item",
+            fieldId: "price",
+            value: 3
+          });
+        }
+
+        if (context.order_type === "Capacitação de líderes" ||
+          context.order_type === "Treinamento de treinadores"
+        ) {
+          salesOrder.setCurrentSublistValue({
+            sublistId: "item",
+            fieldId: "price",
+            value: 6
+          });
+        }
+
+        if (context.order_type === "Seminário") {
+          salesOrder.setCurrentSublistValue({
+            sublistId: "item",
+            fieldId: "price",
+            value: 9
+          });
+        }
 
         if (context.shipping_cost === 0) {
           salesOrder.setCurrentSublistValue({

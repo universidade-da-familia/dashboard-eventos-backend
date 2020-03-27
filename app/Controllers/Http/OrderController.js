@@ -167,6 +167,7 @@ class OrderController {
 
       const orderNetsuite = {
         entity: user,
+        order_type: order_details.order_type,
         products: products.filter(product => {
           if (product.cost_of_goods > 0) {
             const product_subtotal = parseInt(product.quantity) * product.cost_of_goods
