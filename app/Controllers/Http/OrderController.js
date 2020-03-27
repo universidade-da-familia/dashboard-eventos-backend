@@ -186,7 +186,7 @@ class OrderController {
             return product
           }
         }),
-        gifts,
+        gifts: gifts.join(''),
         card,
         installments:
             card !== null

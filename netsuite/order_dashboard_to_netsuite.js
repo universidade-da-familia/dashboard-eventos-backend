@@ -408,7 +408,7 @@ define(["N/record", "N/search"], function(record, search) {
       } else if (
         context.shipping_option.delivery_method_name === "Retirar na UDF"
       ) {
-        if (context.gifts && context.gifts.length > 0) {
+        if (context.gifts !== "") {
           salesOrder.setValue({
             fieldId: "custbody_udf_obs_envio",
             value: "Brindes: \n" + context.gifts + "\n" + "O líder irá retirar na UDF"
@@ -532,7 +532,7 @@ define(["N/record", "N/search"], function(record, search) {
         salesOrder.commitLine({ sublistId: "item" });
       });
 
-      if (context.gifts && context.gifts.length > 0) {
+      if (context.gifts !== "") {
         salesOrder.setValue({
           fieldId: "custbody_udf_obs_envio",
           value: "Brindes: \n" + context.gifts
