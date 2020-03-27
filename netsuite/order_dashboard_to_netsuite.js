@@ -244,6 +244,29 @@ define(["N/record", "N/search"], function(record, search) {
         }
       }
 
+      if (context.order_type === "Curso") {
+        salesOrder.setValue({
+          fieldId: "custbodyudf_order_type",
+          value: 1
+        })
+      }
+
+      if (context.order_type === "Capacitação de líderes" ||
+        context.order_type === "Treinamento de treinadores"
+      ) {
+        salesOrder.setValue({
+          fieldId: "custbodyudf_order_type",
+          value: 2
+        })
+      }
+
+      if (context.order_type === "Seminário") {
+        salesOrder.setValue({
+          fieldId: "custbodyudf_order_type",
+          value: 3
+        })
+      }
+
       salesOrder.setValue({
         fieldId: "custbody_enl_operationtypeid",
         value: "1"
