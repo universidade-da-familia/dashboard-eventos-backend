@@ -13,6 +13,8 @@ define(["N/record"], function(record) {
    */
   function update(context) {
     try {
+      log.debug({ title: 'testezada', details: 'ooooooi' })
+
       const customer = record.load({
         type: record.Type.CUSTOMER,
         id: context.netsuite_id,
