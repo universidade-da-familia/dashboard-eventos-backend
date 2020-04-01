@@ -30,7 +30,7 @@ class Event extends Model {
   }
 
   lessonReports () {
-    return this.hasMany('App/Models/LessonReport').orderBy('id')
+    return this.hasMany('App/Models/LessonReport').orderBy('lesson_id')
   }
 
   invites () {
