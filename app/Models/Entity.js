@@ -38,6 +38,10 @@ class Entity extends Model {
     return this.hasMany('App/Models/Address').orderBy('id')
   }
 
+  bankAccounts () {
+    return this.hasMany('App/Models/BankAccount').orderBy('id')
+  }
+
   creditCards () {
     return this.hasMany('App/Models/CreditCard')
   }

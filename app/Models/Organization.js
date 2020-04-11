@@ -25,7 +25,11 @@ class Organization extends Model {
   }
 
   addresses () {
-    return this.hasMany('App/Models/Address')
+    return this.hasMany('App/Models/Address').orderBy('id')
+  }
+
+  bankAccounts () {
+    return this.hasMany('App/Models/BankAccount').orderBy('id')
   }
 
   creditCards () {
