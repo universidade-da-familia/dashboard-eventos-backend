@@ -48,6 +48,10 @@ class Event extends Model {
       .orderBy('organizators.id')
   }
 
+  paymentPlans () {
+    return this.hasMany('App/Models/PaymentPlan')
+  }
+
   noQuitterParticipants () {
     return this.belongsToMany('App/Models/Entity')
       .pivotTable('participants')
