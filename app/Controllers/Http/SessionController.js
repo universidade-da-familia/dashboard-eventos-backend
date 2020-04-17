@@ -125,6 +125,7 @@ class SessionController {
         'file',
         'relationships.relationshipEntity.file',
         'addresses',
+        'bankAccounts',
         'creditCards',
         'checkouts',
         'checkoutItems',
@@ -142,6 +143,7 @@ class SessionController {
       : await user.loadMany([
         'file',
         'addresses',
+        'bankAccounts',
         'creditCards',
         'checkouts',
         'entityOrganizations',

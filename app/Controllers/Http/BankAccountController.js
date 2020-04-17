@@ -49,9 +49,6 @@ class BankAccountController {
         'bankAccountsPut'
       ])
 
-      // const user_logged_id = parseInt(request.header('user_logged_id'))
-      // const user_logged_type = request.header('user_logged_type')
-
       const trx = await Database.beginTransaction()
 
       if (bankAccountsPost && bankAccountsPost.length > 0) {
@@ -120,22 +117,10 @@ class BankAccountController {
       return response.status(err.status).send({
         error: {
           title: 'Falha!',
-          message: 'Erro ao mostrar o endereço'
+          message: 'Erro ao mostrar a conta bancaria'
         }
       })
     }
-  }
-
-  /**
-   * Render a form to update an existing bankaccount.
-   * GET bankaccounts/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
   }
 
   /**

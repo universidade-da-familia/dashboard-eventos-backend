@@ -17,7 +17,6 @@ class PaymentPlansSchema extends Schema {
       table.string('title', 254).notNullable()
       table.string('description', 254).notNullable()
       table.string('plan_type', 254).notNullable() // couple, individual
-      table.string('name', 254).notNullable()
       table
         .float('amount')
         .unsigned()

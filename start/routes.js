@@ -207,6 +207,8 @@ Route.post('shipping_tag', 'ShippingTagController.index')
 Route.resource('relationship', 'RelationshipController')
 Route.get('relationship/entity/:entity_id', 'RelationshipController.indexEntity')
 
+Route.resource('payment_plan', 'PaymentPlanController')
+
 Route.post('logs', 'LogController.index')
 
 Route.group(() => {
