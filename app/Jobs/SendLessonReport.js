@@ -27,8 +27,8 @@ class SendLessonReport {
       {
         lesson_title: data.lesson.title,
         send_date: moment(data.date).format('LLL'),
-        testimony: data.testimony || 'Sem testemunho',
-        doubts: data.doubts || 'Sem dúvidas',
+        pray_request: data.pray_request || 'Sem pedido de oração',
+        offer: data.offer > 0 ? `R$ ${data.offer}` : 'Sem ofertas',
         event_id: data.event.id,
         event_type: data.event.defaultEvent.event_type,
         event_name: data.event.defaultEvent.name,
