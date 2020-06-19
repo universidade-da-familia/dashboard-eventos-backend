@@ -11,6 +11,16 @@ class BankAccount extends Model {
   organization () {
     return this.belongsTo('App/Models/Organization')
   }
+
+  bank () {
+    return this.belongsTo('App/Models/Bank')
+  }
+
+  eventBankAccounts () {
+    return this.belongsToMany('App/Models/Event')
+      .pivotTable('event_bank_accounts')
+      .withTimestamps()
+  }
 }
 
 module.exports = BankAccount

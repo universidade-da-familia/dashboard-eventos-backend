@@ -190,8 +190,7 @@ Route.get('site_event/:id', 'SiteEventController.show')
 Route.resource('address', 'AddressController').except(['edit', 'create', 'destroy'])
 Route.delete('address/:id/:index/:netsuite_id', 'AddressController.destroy')
 
-Route.resource('bank_account', 'BankAccountController').except(['edit', 'create', 'destroy'])
-Route.delete('bank_account/:id/:index/:netsuite_id', 'BankAccountController.destroy')
+Route.resource('bank_account', 'BankAccountController').except(['edit', 'create'])
 
 Route.resource('category', 'CategoryController').except(['edit', 'create'])
 
@@ -208,6 +207,8 @@ Route.resource('relationship', 'RelationshipController')
 Route.get('relationship/entity/:entity_id', 'RelationshipController.indexEntity')
 
 Route.resource('payment_plan', 'PaymentPlanController')
+
+Route.resource('banks', 'BankController').except(['edit', 'create', 'destroy'])
 
 Route.post('logs', 'LogController.index')
 

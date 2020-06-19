@@ -125,7 +125,7 @@ class SessionController {
         'file',
         'relationships.relationshipEntity.file',
         'addresses',
-        'bankAccounts',
+        'bankAccounts.bank',
         'creditCards',
         'checkouts',
         'checkoutItems',
