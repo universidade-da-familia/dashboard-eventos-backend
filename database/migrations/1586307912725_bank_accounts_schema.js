@@ -21,26 +21,19 @@ class BankAccountsSchema extends Schema {
         .inTable('organizations')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-      table.string('bank', 254).notNullable()
       table
-        .integer('branch')
+        .integer('bank_id')
         .unsigned()
-        .notNullable()
-      table
-        .integer('account')
-        .unsigned()
-        .notNullable()
-      table
-        .string('favored', 254)
-      table
-        .string('account_type', 254)
-        .notNullable()
-      table
-        .string('entity_type', 254)
-        .notNullable()
-      table
-        .string('cpf_cnpj', 14)
-        .notNullable()
+        .references('id')
+        .inTable('banks')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+      table.string('account_type', 254).notNullable()
+      table.string('agency', 254).notNullable()
+      table.string('account_number', 254).notNullable()
+      table.string('favored', 254).notNullable()
+      table.string('favored_type', 254).notNullable()
+      table.string('cpf_cnpj', 14).notNullable()
       table.timestamps()
     })
   }

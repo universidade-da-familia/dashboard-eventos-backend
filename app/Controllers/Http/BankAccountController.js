@@ -142,7 +142,26 @@ class BankAccountController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
+    try {
+      const { id } = params
+
+      const bank_account = await BankAccount.findOrFail(id)
+
+      await bank_account.delete()
+
+      return response.status(200).send({
+        title: 'Sucesso!',
+        message: 'A conta bancária foi removida.'
+      })
+    } catch (err) {
+      return response.status(err.status).send({
+        error: {
+          title: 'Falha!',
+          message: 'Erro ao deletar a conta bancária'
+        }
+      })
+    }
   }
 }
 

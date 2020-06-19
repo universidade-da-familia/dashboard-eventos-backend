@@ -5,6 +5,8 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Database = use('Database')
+const BankAccount = use('App/Models/BankAccount')
+const Entity = use('App/Models/Entity')
 const Event = use('App/Models/Event')
 const Log = use('App/Models/Log')
 
@@ -256,46 +258,107 @@ class EventController {
    */
   async store ({ request, response }) {
     try {
+      let bank_account_data = null
       const data = request.all()
 
       const user_logged_id = parseInt(request.header('user_logged_id'))
       const user_logged_type = request.header('user_logged_type')
 
-      const trx = await Database.beginTransaction()
+      const entity = await Entity.findOrFail(user_logged_id)
 
-      const event = await Event.create(data, trx)
+      if (data.bank_account) {
+        const { bank_account } = data
 
-      await event.load('defaultEvent.lessons')
+        delete data.bank_account
 
-      const lessons = event.toJSON().defaultEvent.lessons.map(lesson => {
-        return {
-          event_id: event.id,
-          lesson_id: lesson.id,
-          offer: 0,
-          date: null,
-          testimony: null,
-          doubts: null,
-          is_finished: false
+        if (bank_account.bank_account_id === 'other') {
+          bank_account_data = await entity.bankAccounts().create({
+            entity_id: user_logged_id,
+            bank_id: bank_account.bank_id,
+            agency: bank_account.agency,
+            account_number: bank_account.account_number,
+            favored: bank_account.favored,
+            account_type: bank_account.account_type,
+            favored_type: bank_account.favored_type,
+            cpf_cnpj: bank_account.cpf_cnpj
+          })
+        } else {
+          bank_account_data = await BankAccount.findOrFail(bank_account.bank_account_id)
         }
-      })
 
-      await event.lessonReports().createMany(lessons, trx)
+        const trx = await Database.beginTransaction()
 
-      await trx.commit()
+        const event = await Event.create(data, trx)
 
-      await event.load('lessonReports')
+        await event.load('defaultEvent.lessons')
 
-      if (user_logged_id && user_logged_type) {
-        await Log.create({
-          action: 'create',
-          model: 'event',
-          model_id: event.id,
-          description: `O evento id ${event.id} foi criado.`,
-          [`${user_logged_type}_id`]: user_logged_id
+        const lessons = event.toJSON().defaultEvent.lessons.map(lesson => {
+          return {
+            event_id: event.id,
+            lesson_id: lesson.id,
+            offer: 0,
+            date: null,
+            testimony: null,
+            doubts: null,
+            is_finished: false
+          }
         })
-      }
 
-      return event
+        await event.lessonReports().createMany(lessons, trx)
+        await bank_account_data.eventBankAccounts().attach([event.id], null, trx)
+
+        await trx.commit()
+
+        await event.load('lessonReports')
+
+        if (user_logged_id && user_logged_type) {
+          await Log.create({
+            action: 'create',
+            model: 'event',
+            model_id: event.id,
+            description: `O evento id ${event.id} foi criado.`,
+            [`${user_logged_type}_id`]: user_logged_id
+          })
+        }
+
+        return event
+      } else {
+        const trx = await Database.beginTransaction()
+
+        const event = await Event.create(data, trx)
+
+        await event.load('defaultEvent.lessons')
+
+        const lessons = event.toJSON().defaultEvent.lessons.map(lesson => {
+          return {
+            event_id: event.id,
+            lesson_id: lesson.id,
+            offer: 0,
+            date: null,
+            testimony: null,
+            doubts: null,
+            is_finished: false
+          }
+        })
+
+        await event.lessonReports().createMany(lessons, trx)
+
+        await trx.commit()
+
+        await event.load('lessonReports')
+
+        if (user_logged_id && user_logged_type) {
+          await Log.create({
+            action: 'create',
+            model: 'event',
+            model_id: event.id,
+            description: `O evento id ${event.id} foi criado.`,
+            [`${user_logged_type}_id`]: user_logged_id
+          })
+        }
+
+        return event
+      }
     } catch (err) {
       return response.status(err.status).send({
         error: {

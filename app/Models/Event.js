@@ -48,6 +48,12 @@ class Event extends Model {
       .orderBy('organizators.id')
   }
 
+  eventBankAccounts () {
+    return this.belongsToMany('App/Models/BankAccount')
+      .pivotTable('event_bank_accounts')
+      .withTimestamps()
+  }
+
   paymentPlans () {
     return this.hasMany('App/Models/PaymentPlan')
   }
