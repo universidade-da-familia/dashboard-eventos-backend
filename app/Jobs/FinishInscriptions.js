@@ -31,7 +31,8 @@ class FinishInscriptions {
         participants: data.noQuitterParticipants.length,
         initial_date: moment(data.start_date).format('LLL'),
         organizator_name: organizator.name,
-        organizator_cpf: organizator.cpf || 'sem CPF'
+        organizator_cpf: organizator.cpf || 'sem CPF',
+        organizator_email: organizator.email || 'sem email'
       },
       message => {
         message

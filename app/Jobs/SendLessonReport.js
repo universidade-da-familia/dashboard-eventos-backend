@@ -33,7 +33,8 @@ class SendLessonReport {
         event_type: data.event.defaultEvent.event_type,
         event_name: data.event.defaultEvent.name,
         organizator_name: data.event.organizators[0].name,
-        organizator_cpf: data.event.organizators[0].cpf || 'sem CPF'
+        organizator_cpf: data.event.organizators[0].cpf || 'sem CPF',
+        organizator_email: data.event.organizators[0].email || 'sem email'
       },
       message => {
         message
