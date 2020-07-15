@@ -20,7 +20,7 @@ const api = axios.default.create({
   headers: {
     'Content-Type': 'application/json',
     Authorization:
-      'NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=Shalom1234,nlauth_role=1077'
+      'NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=0rZFiwRE#@!,nlauth_role=1077'
   }
 })
 
