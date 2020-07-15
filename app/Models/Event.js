@@ -44,6 +44,10 @@ class Event extends Model {
   organizators () {
     return this.belongsToMany('App/Models/Entity')
       .pivotTable('organizators')
+      .withPivot([
+        'id',
+        'print_date'
+      ])
       .withTimestamps()
       .orderBy('organizators.id')
   }
