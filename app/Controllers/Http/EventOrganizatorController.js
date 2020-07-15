@@ -365,6 +365,55 @@ class EventOrganizatorController {
   async update ({ params, request, response }) {}
 
   /**
+   * Update participant details.
+   * PUT or PATCH participants/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async updatePrintDate ({ request, response }) {
+    try {
+      const { organizators_id, event_id } = request.only(['organizators_id', 'event_id'])
+
+      const user_logged_id = parseInt(request.header('user_logged_id'))
+      const user_logged_type = request.header('user_logged_type')
+
+      const current_date = new Date()
+
+      const event = await Event.findOrFail(event_id)
+
+      await event.organizators().detach(organizators_id)
+      await event.organizators().attach(organizators_id, (row) => {
+        row.print_date = current_date
+      })
+
+      if (user_logged_id && user_logged_type) {
+        await Log.create({
+          action: 'update',
+          model: 'organizator',
+          model_id: event_id,
+          description: `Certificados impressos para vários organizadores no evento id ${event_id}.`,
+          new_data: {
+            organizators: organizators_id,
+            current_date
+          },
+          [`${user_logged_type}_id`]: user_logged_id
+        })
+      }
+
+      return event
+    } catch (err) {
+      return response.status(err.status).send({
+        error: {
+          title: 'Falha!',
+          message: 'Erro ao atualizar o participante'
+        }
+      })
+    }
+  }
+
+  /**
    * Delete a organizator with id.
    * DELETE organizators/:id
    *
