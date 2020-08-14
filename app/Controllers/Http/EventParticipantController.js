@@ -207,6 +207,10 @@ class EventParticipantController {
       const participant = isEmail ? await Entity.findByOrFail('email', params.cpf_email) : await Entity.findByOrFail('cpf', params.cpf_email)
 
       await participant.load('file')
+      await participant.loadMany([
+        'file',
+        'addresses'
+      ])
 
       if (participant.sex === sex_type || sex_type === 'A') {
         if (ministery_id === 1) {
