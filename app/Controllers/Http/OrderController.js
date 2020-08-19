@@ -231,7 +231,7 @@ class OrderController {
 
       Kue.dispatch(Job.key, { orderNetsuite, order_id: order.id }, {
         attempts: 5,
-        priority: 'high'
+        priority: 'critical'
       })
 
       return order
