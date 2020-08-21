@@ -12,6 +12,8 @@ const Log = use('App/Models/Log')
 
 const Kue = use('Kue')
 const Job = use('App/Jobs/CreateOrder')
+const JobSendOrder = use('App/Jobs/SendOrder')
+const JobSendOrderApproved = use('App/Jobs/SendOrderApproved')
 
 const axios = require('axios')
 
@@ -58,7 +60,8 @@ class OrderController {
         shipping_address,
         shipping_option,
         order_details,
-        payu
+        payu,
+        invite
       } = data
 
       console.log('Comecei a gerar o pedido no portal')
@@ -227,12 +230,31 @@ class OrderController {
         orderNetsuite.payu_json = 'Pagamento pendente: cartão de crédito.'
       }
 
+      if (invite && card === null) {
+        console.log('Pedido com cartão: pagamento pendente na payu.')
+
+        orderNetsuite.orderstatus = 'A'
+        orderNetsuite.origstatus = 'A'
+        orderNetsuite.statusRef = 'pendingApproval'
+        orderNetsuite.payu_json = 'Pagamento pendente: boleto a vista.'
+      }
+
       console.log('Terminei de gerar o pedido e enviei para a fila.')
 
       Kue.dispatch(Job.key, { orderNetsuite, order_id: order.id }, {
         attempts: 5,
         priority: 'critical'
       })
+
+      Kue.dispatch(JobSendOrder.key, { entity, order }, {
+        attempts: 5
+      })
+
+      if (payuData.transactionResponse.state === 'APPROVED') {
+        Kue.dispatch(JobSendOrderApproved.key, { entity, order }, {
+          attempts: 5
+        })
+      }
 
       return order
     } catch (err) {

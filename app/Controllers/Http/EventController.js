@@ -9,6 +9,7 @@ const BankAccount = use('App/Models/BankAccount')
 const Entity = use('App/Models/Entity')
 const Event = use('App/Models/Event')
 const Log = use('App/Models/Log')
+const Participant = use('App/Models/Participant')
 
 const Kue = use('Kue')
 const Job = use('App/Jobs/FinishInscriptions')
@@ -397,7 +398,29 @@ class EventController {
         'lessonReports.lesson'
       ])
 
-      return event
+      const eventData = event.toJSON()
+
+      const participants = []
+
+      eventData.participants.map(participant => {
+        participants.push(participant.pivot.id)
+      })
+
+      const participantsData = await Participant.query()
+        .with('order')
+        .where(function () {
+          this.whereIn('id', participants)
+          this.whereNotNull('order_id')
+        })
+        .fetch()
+
+      eventData.participants.map((participant, index) => {
+        const order_data = participantsData.toJSON().find(teste => teste.entity_id === participant.id)
+
+        eventData.participants[index].participant_order = order_data || null
+      })
+
+      return eventData
     } catch (err) {
       return response.status(err.status).send({
         error: {

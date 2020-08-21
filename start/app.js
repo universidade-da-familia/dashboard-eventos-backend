@@ -79,7 +79,9 @@ const jobs = [
   'App/Jobs/Addresses',
   'App/Jobs/ApproveOrder',
   'App/Jobs/FinishInscriptions',
-  'App/Jobs/SendLessonReport'
+  'App/Jobs/SendLessonReport',
+  'App/Jobs/SendOrder',
+  'App/Jobs/SendOrderApproved'
 ]
 
 module.exports = { providers, aceProviders, aliases, commands, jobs }

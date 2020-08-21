@@ -2,9 +2,11 @@
 
 const OrderTransaction = use('App/Models/OrderTransaction')
 const Order = use('App/Models/Order')
+const Entity = use('App/Models/Entity')
 
 const Kue = use('Kue')
 const Job = use('App/Jobs/ApproveOrder')
+const JobSendOrderApproved = use('App/Jobs/SendOrderApproved')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -87,6 +89,7 @@ class OrderTransactionController {
 
       const transaction = await OrderTransaction.findByOrFail('transaction_id', data.transaction_id)
       const order = await Order.findOrFail(transaction.order_id)
+      const entity = await Entity.findOrFail(order.entity_id)
 
       await order.load('status')
 
@@ -123,6 +126,12 @@ class OrderTransactionController {
       transaction.installments = data.installments_number || transaction.installments
 
       await transaction.save()
+
+      if (data.response_message_pol === 'APPROVED') {
+        Kue.dispatch(JobSendOrderApproved.key, { entity, order }, {
+          attempts: 5
+        })
+      }
 
       console.log(`A transação order_id ${transaction.api_order_id} foi atualizada com sucesso para ${data.response_message_pol}`)
       return response.status(200).send({

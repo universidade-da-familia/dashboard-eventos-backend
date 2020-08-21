@@ -41,10 +41,11 @@ class EventParticipantController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const { entity_id, event_id, assistant } = request.only([
+    const { entity_id, event_id, assistant, order_id } = request.only([
       'entity_id',
       'event_id',
-      'assistant'
+      'assistant',
+      'order_id'
     ])
 
     const user_logged_id = parseInt(request.header('user_logged_id'))
@@ -144,6 +145,7 @@ class EventParticipantController {
 
         await event.participants().attach([entity_id], row => {
           row.assistant = assistant
+          row.order_id = order_id
         })
 
         if (user_logged_id && user_logged_type) {
@@ -155,7 +157,8 @@ class EventParticipantController {
             new_data: {
               event_id,
               entity_id,
-              assistant
+              assistant,
+              order_id
             },
             [`${user_logged_type}_id`]: user_logged_id
           })
@@ -169,6 +172,10 @@ class EventParticipantController {
       // }
 
       await event.save()
+
+      const participantAdded = await Participant.findByOrFail('entity_id', entity_id)
+
+      return participantAdded
     } else {
       return response.status(200).send({
         error: {
@@ -177,8 +184,6 @@ class EventParticipantController {
         }
       })
     }
-
-    return event
   }
 
   /**
@@ -206,7 +211,11 @@ class EventParticipantController {
 
       const participant = isEmail ? await Entity.findByOrFail('email', params.cpf_email) : await Entity.findByOrFail('cpf', params.cpf_email)
 
-      await participant.load('file')
+      // await participant.load('file')
+      await participant.loadMany([
+        'file',
+        'addresses'
+      ])
 
       if (participant.sex === sex_type || sex_type === 'A') {
         if (ministery_id === 1) {
@@ -345,10 +354,11 @@ class EventParticipantController {
    */
   async update ({ params, request, response }) {
     try {
-      const { is_quitter, assistant, print_date } = request.only([
+      const { is_quitter, assistant, print_date, order_id } = request.only([
         'is_quitter',
         'assistant',
-        'print_date'
+        'print_date',
+        'order_id'
       ])
 
       const user_logged_id = parseInt(request.header('user_logged_id'))
@@ -368,7 +378,8 @@ class EventParticipantController {
             event_id: participant.event_id,
             is_quitter,
             assistant,
-            print_date
+            print_date,
+            order_id
           },
           [`${user_logged_type}_id`]: user_logged_id
         })
@@ -377,6 +388,7 @@ class EventParticipantController {
       participant.is_quitter = is_quitter
       participant.assistant = assistant
       participant.print_date = print_date
+      participant.order_id = order_id
 
       await participant.save()
 

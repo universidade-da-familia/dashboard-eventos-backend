@@ -30,6 +30,10 @@ class Order extends Model {
   transaction () {
     return this.hasOne('App/Models/OrderTransaction')
   }
+
+  participant () {
+    return this.hasOne('App/Models/Participant')
+  }
 }
 
 module.exports = Order
