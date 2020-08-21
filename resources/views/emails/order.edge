@@ -1,0 +1,44 @@
+<div>
+  <div style="max-width:600px;font-size:16px;line-height:1.6">
+
+    <p style="margin-bottom:1em">Atenção: você está recebendo uma cópia das informações apresentadas na página de finalização de venda.</p>
+
+    <strong style="margin-bottom:1em">Olá {{ name }}, tudo bem com você?!</strong>
+
+    <p style="margin-bottom:1em">
+      Veja abaixo todos os detalhes da sua compra. Caso você tenha alguma dúvida entre em contato conosco através do telefone (14) 3405-8500 ou celular (14) 9 8219-0179.
+    </p>
+    <p style="margin-bottom:1em">
+      Data da Compra: {{ created_at }}
+    </p>
+    <p style="margin-bottom:1em">
+      Pedido: {{ id }}
+    </p>
+    <p style="margin-bottom:1em">
+      Sempre que entrar em contato conosco. Utilize este código para identificar seu pedido.
+    </p>
+    <p style="margin-bottom:1em">
+      Dados de Entrega
+    </p>
+    <p style="margin-bottom:1em">
+      Nome Completo: {{ name }} <br>
+      Destinatário: {{ shipping_receiver }} <br>
+      Endereço: {{ shipping_street }} {{ shipping_street_number }} - Complemento: {{ shipping_complement }} - Bairro: {{ shipping_neighborhood }} <br>
+      Cidade: {{ shipping_city }} - {{ shipping_uf }} <br>
+      CEP: {{ shipping_cep }} <br>
+    </p>
+
+    <p style="margin-bottom:1em">
+      E-mail: pedidos@udf.org.br <br>
+      Telefone: (14) 3405-8500 ou (14) 9 8219-0179
+    </p>
+
+    <br/>
+    <br/>
+
+    <span class="il">Universidade da Família</span><br/>
+    <strong>Portal de Líderes</strong>
+
+    </p>
+  </div>
+</div>

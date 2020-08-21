@@ -14,6 +14,10 @@ class Participant extends Model {
       .withPivot(['id', 'participant_id', 'lesson_report_id', 'is_present'])
       .withTimestamps()
   }
+
+  order () {
+    return this.belongsTo('App/Models/Order')
+  }
 }
 
 module.exports = Participant
