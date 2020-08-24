@@ -231,7 +231,7 @@ class OrderController {
       }
 
       if (invite && card === null) {
-        console.log('Pedido com cartão: pagamento pendente na payu.')
+        console.log('Pedido com boleto: pagamento pendente na payu.')
 
         orderNetsuite.orderstatus = 'A'
         orderNetsuite.origstatus = 'A'

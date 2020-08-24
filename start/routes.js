@@ -25,6 +25,7 @@ Route.put('entity/:id', 'EntityController.update').validator('EntityUpdate')
 Route.post('entity_paginate', 'EntityController.indexPaginate')
 Route.post('entity_export_excel', 'EntityController.exportExcel')
 Route.get('entity/cpf/:cpf/:profile_id', 'EntityController.showCpf')
+Route.get('entity/email/:email/:current_email', 'EntityController.showEmail')
 
 Route.put('change_password/:id/:user_type', 'ChangePasswordController.update')
 

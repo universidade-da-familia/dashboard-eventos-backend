@@ -13,6 +13,7 @@ define(["N/record", "N/search"], function(record, search) {
    * @param context
    */
   function store(context) {
+    log.debug({ title: 'order context', details: context })
     try {
       const customer = record.load({
         type: record.Type.CUSTOMER,
@@ -199,10 +200,38 @@ define(["N/record", "N/search"], function(record, search) {
         }
       });
 
+      if (context.shipping_receiver) {
+		salesOrder.setValue({ fieldId: "custbody_enl_legaltext", value: "A/C: " + context.shipping_receiver });
+      }
+
       salesOrder.setValue({ fieldId: "trandate", value: new Date() });
       salesOrder.setValue({ fieldId: "department", value: "3" });
       salesOrder.setValue({ fieldId: "class", value: "1" });
       salesOrder.setValue({ fieldId: "location", value: "1" });
+
+      // grava o pedido como pendente de aprovação (pagamento pendente na payu)
+      if (context.orderstatus) {
+        salesOrder.setValue({
+          fieldId: "orderstatus",
+          value: context.orderstatus
+        })
+      }
+
+      // grava o pedido como pendente de aprovação (pagamento pendente na payu)
+      if (context.origstatus) {
+        salesOrder.setValue({
+          fieldId: "origstatus",
+          value: context.origstatus
+        })
+      }
+
+      // grava o pedido como pendente de aprovação (pagamento pendente na payu)
+      if (context.statusRef) {
+        salesOrder.setValue({
+          fieldId: "statusRef",
+          value: context.statusRef
+        })
+      }
 
       if (context.card === null) {
         salesOrder.setValue({ fieldId: "terms", value: "10" });
@@ -217,30 +246,6 @@ define(["N/record", "N/search"], function(record, search) {
 
         if (context.installments === 3) {
           salesOrder.setValue({ fieldId: "terms", value: "16" });
-        }
-
-        // grava o pedido como pendente de aprovação (pagamento pendente na payu)
-        if (context.orderstatus) {
-          salesOrder.setValue({
-            fieldId: "orderstatus",
-            value: context.orderstatus
-          })
-        }
-
-        // grava o pedido como pendente de aprovação (pagamento pendente na payu)
-        if (context.origstatus) {
-          salesOrder.setValue({
-            fieldId: "origstatus",
-            value: context.origstatus
-          })
-        }
-
-        // grava o pedido como pendente de aprovação (pagamento pendente na payu)
-        if (context.statusRef) {
-          salesOrder.setValue({
-            fieldId: "statusRef",
-            value: context.statusRef
-          })
         }
       }
 
@@ -408,7 +413,7 @@ define(["N/record", "N/search"], function(record, search) {
       } else if (
         context.shipping_option.delivery_method_name === "Retirar na UDF"
       ) {
-        if (context.gifts !== "") {
+        if (context.gifts && context.gifts.length > 0) {
           salesOrder.setValue({
             fieldId: "custbody_udf_obs_envio",
             value: "Brindes: \n" + context.gifts + "\n" + "O líder irá retirar na UDF"
@@ -532,7 +537,7 @@ define(["N/record", "N/search"], function(record, search) {
         salesOrder.commitLine({ sublistId: "item" });
       });
 
-      if (context.gifts !== "") {
+      if (context.gifts && context.gifts.length > 0) {
         salesOrder.setValue({
           fieldId: "custbody_udf_obs_envio",
           value: "Brindes: \n" + context.gifts
@@ -548,6 +553,7 @@ define(["N/record", "N/search"], function(record, search) {
         id: salesOrderId
       };
     } catch (err) {
+      log.debug({ title: 'order err', details: err })
       return err
     }
   }

@@ -407,13 +407,15 @@ class EntityController {
       family_id,
       relationship,
       responsible_organization_id,
-      responsible_role
+      responsible_role,
+      invite
     } = data
 
     delete data.family_id
     delete data.relationship
     delete data.responsible_organization_id
     delete data.responsible_role
+    delete data.invite
 
     const trx = await Database.beginTransaction()
 
@@ -441,7 +443,19 @@ class EntityController {
 
     await trx.commit()
 
-    Kue.dispatch(JobCreate.key, entity, { attempts: 5 })
+    let netsuite_entity = null
+
+    if (invite) {
+      const job = Kue.dispatch(JobCreate.key, entity, { attempts: 5 })
+
+      console.log(job)
+
+      const result = await job.result
+
+      netsuite_entity = result
+    } else {
+      Kue.dispatch(JobCreate.key, entity, { attempts: 5 })
+    }
 
     if (user_logged_id && user_logged_type) {
       await Log.create({
@@ -452,6 +466,11 @@ class EntityController {
         [`${user_logged_type}_id`]: user_logged_id
       })
     }
+
+    entity.netsuite_id = netsuite_entity
+
+    // console.log(entity)
+    console.log(netsuite_entity)
 
     return entity
   }
@@ -541,6 +560,28 @@ class EntityController {
         type: 'not_found'
       })
     }
+  }
+
+  /**
+   * Display a single user.
+   * GET users/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async showEmail ({ params, response, request }) {
+    const { email, current_email } = params
+
+    const entity = await Entity.findBy('email', email)
+
+    if (entity && entity.email === current_email) {
+      return true
+    }
+
+    return !entity
+    // se encontrar retorna false
   }
 
   /**

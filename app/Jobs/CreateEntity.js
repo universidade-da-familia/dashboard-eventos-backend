@@ -57,6 +57,8 @@ class CreateEntity {
       await entity.save()
 
       console.log('Chamada ao netsuite finalizada com sucesso (CreateEntity).')
+
+      return response.data.id
     } else {
       console.log('Chamada ao netsuite finalizada com falha (CreateEntity).')
       throw new Error({
