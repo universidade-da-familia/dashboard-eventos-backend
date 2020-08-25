@@ -2,7 +2,7 @@
 
 const Mail = use('Mail')
 const moment = require('moment')
-moment.locale('pt-br')
+moment.locale('pt-BR')
 
 class SendLessonReport {
   // If this getter isn't provided, it will default to 1.
