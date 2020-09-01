@@ -234,7 +234,11 @@ define(["N/record", "N/search"], function(record, search) {
       }
 
       if (context.card === null) {
-        salesOrder.setValue({ fieldId: "terms", value: "10" });
+        if (context.invite) {
+          salesOrder.setValue({ fieldId: "terms", value: "36" });
+        } else {
+          salesOrder.setValue({ fieldId: "terms", value: "10" });
+        }
       } else {
         if (context.installments === 1) {
           salesOrder.setValue({ fieldId: "terms", value: "1" });
