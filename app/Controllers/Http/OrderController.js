@@ -214,7 +214,8 @@ class OrderController {
         shipping_neighborhood: shipping_address.neighborhood,
         shipping_complement: shipping_address.complement,
         shipping_receiver: shipping_address.receiver,
-        shipping_option
+        shipping_option,
+        invite
       }
 
       if (
