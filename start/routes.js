@@ -39,9 +39,6 @@ Route.resource('family', 'FamilyController')
 // CRUD ministério
 Route.resource('ministery', 'MinisteryController').except(['edit', 'create'])
 
-// CRUD modalidades
-Route.resource('modalities', 'ModalityController').except(['edit', 'create'])
-
 // CRUD hierarquias
 Route.resource('hierarchy', 'HierarchyController').except(['edit', 'create'])
 
