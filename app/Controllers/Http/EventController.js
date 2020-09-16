@@ -127,6 +127,7 @@ class EventController {
               builder.whereNull('print_date').andWhere('is_quitter', false)
             })
             builder.andWhere('is_inscription_finished', true)
+            builder.andWhere('digital_certificate', false)
           })
         }
         if (filterData.is_printed === 'true') {
@@ -219,13 +220,20 @@ class EventController {
             this.where('city', filterData.city)
           }
           if (filterData.is_printed === 'false') {
-            this.whereHas('participants', builder => {
-              builder.whereNull('print_date').andWhere('is_quitter', false)
+            this.where(builder => {
+              builder.whereHas('participants', builder => {
+                builder.whereNull('print_date').andWhere('is_quitter', false)
+              })
+              builder.andWhere('is_inscription_finished', true)
+              builder.andWhere('digital_certificate', false)
             })
           }
           if (filterData.is_printed === 'true') {
-            this.whereHas('participants', builder => {
-              builder.whereNotNull('print_date').andWhere('is_quitter', false)
+            this.where(builder => {
+              builder.whereHas('participants', builder => {
+                builder.whereNotNull('print_date').andWhere('is_quitter', false)
+              })
+              builder.andWhere('is_inscription_finished', true)
             })
           }
         })
