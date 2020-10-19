@@ -50,6 +50,10 @@ class OrganizationController {
         const [end_date] = filterData.end_date.split('T')
         const [, ministery_id] = filterData.ministery.split('/')
 
+        console.log('START DATE', start_date)
+        console.log('END DATE', end_date)
+        console.log('MINISTERY ID', ministery_id)
+
         if (filterData.id !== '') {
           this.where('id', filterData.id)
         }

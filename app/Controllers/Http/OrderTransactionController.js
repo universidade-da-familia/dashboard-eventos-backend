@@ -103,7 +103,7 @@ class OrderTransactionController {
       if (data.response_message_pol === 'APPROVED') {
         transaction.authorized_amount = data.value || transaction.authorized_amount
 
-        if (data.franchise && order.netsuite_id && order.status_id === 1) {
+        if (order.netsuite_id && order.status_id === 1) {
           const orderNetsuite = {
             order_id: order.netsuite_id,
             orderstatus: 'B',

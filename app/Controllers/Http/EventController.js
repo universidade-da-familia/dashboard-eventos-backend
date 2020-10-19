@@ -99,6 +99,10 @@ class EventController {
           this.where("start_date", "<=", end_date);
         }
 
+        if (filterData.modality) {
+          this.where("modality", filterData.modality);
+        }
+
         // busca dados endereço entidade
         if (filterData.country !== "") {
           this.where(
