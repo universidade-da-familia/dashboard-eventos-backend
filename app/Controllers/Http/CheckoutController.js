@@ -43,7 +43,7 @@ class CheckoutController {
         "total",
         "tax",
         "current",
-        "items"
+        "items",
       ]);
 
       const checkout = await Checkout.create(data);
@@ -53,8 +53,8 @@ class CheckoutController {
       return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "Tente cadastrar novamente"
-        }
+          message: "Tente cadastrar novamente",
+        },
       });
     }
   }
@@ -75,7 +75,7 @@ class CheckoutController {
       "transaction",
       "checkoutItems",
       "entity",
-      "organization"
+      "organization",
     ]);
 
     return checkout;
@@ -97,7 +97,7 @@ class CheckoutController {
         "total",
         "tax",
         "current",
-        "items"
+        "items",
       ]);
 
       const checkout = await Checkout.findOrFail(params.id);
@@ -111,8 +111,8 @@ class CheckoutController {
       return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "Tente atualizar novamente"
-        }
+          message: "Tente atualizar novamente",
+        },
       });
     }
   }
@@ -133,14 +133,14 @@ class CheckoutController {
 
       return response.status(200).send({
         title: "Sucesso!",
-        message: "O checkout foi removido."
+        message: "O checkout foi removido.",
       });
     } catch (err) {
       return response.status(err.status).send({
         error: {
           title: "Falha!",
-          message: "Tente remover novamente"
-        }
+          message: "Tente remover novamente",
+        },
       });
     }
   }
