@@ -3,19 +3,13 @@
 const CryptoJS = require("crypto-js");
 const Base64 = require("crypto-js/enc-base64");
 
-// console.log(OAuth);
-
-// module.exports = {
-//   OAuth,
-// };
-
 module.exports = class Help {
   display() {
     const NETSUITE_ACCOUNT_ID = "5260046";
     const BASE_URL =
       "https://5260046.restlets.api.netsuite.com/app/site/hosting/restlet.nl";
     const HTTP_METHOD = "POST";
-    const SCRIPT_ID = "185";
+    const SCRIPT_ID = "162";
     const OAUTH_VERSION = "1.0";
     const SCRIPT_DEPLOYMENT_ID = "1";
     const TOKEN_ID =

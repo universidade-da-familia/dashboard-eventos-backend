@@ -10,7 +10,7 @@ const Order = use("App/Models/Order");
 const Entity = use("App/Models/Entity");
 const Log = use("App/Models/Log");
 
-const Help = use("App/Helpers/netsuite_api");
+const Help = use("App/Helpers/create_order_helper");
 
 const Kue = use("Kue");
 const Job = use("App/Jobs/CreateOrder");

@@ -1,72 +1,76 @@
-'use strict'
+"use strict";
 
-const Entity = use('App/Models/Entity')
+const Entity = use("App/Models/Entity");
 
-const axios = require('axios')
+const axios = require("axios");
 
 const api = axios.default.create({
-  baseURL: 'https://5260046.restlets.api.netsuite.com/app/site/hosting',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization:
-      'NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=0rZFiwRE#@!,nlauth_role=1077'
-  }
-})
+  baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
+});
 
 class CreateEntity {
   // If this getter isn't provided, it will default to 1.
   // Increase this number to increase processing concurrency.
-  static get concurrency () {
-    return 1
+  static get concurrency() {
+    return 1;
   }
 
   // This is required. This is a unique key used to identify this job.
-  static get key () {
-    return 'CreateEntity-job'
+  static get key() {
+    return "CreateEntity-job";
   }
 
   // This is where the work is done.
-  async handle (data) {
-    console.log('CreateEntity-job started')
+  async handle({ entity, OAuth }) {
+    console.log("CreateEntity-job started");
 
-    const { id, name, email, cpf, sex } = data
+    const { id, name, email, cpf, sex } = entity;
 
-    const fullname = name.split(' ')
-    const firstname = fullname[0]
-    fullname.shift()
-    const lastname = fullname.length >= 1 ? fullname.join(' ') : ''
+    const fullname = name.split(" ");
+    const firstname = fullname[0];
+    fullname.shift();
+    const lastname = fullname.length >= 1 ? fullname.join(" ") : "";
 
-    const response = await api.post('/restlet.nl?script=162&deploy=1', {
-      is_business: false,
-      id,
-      name,
-      firstname,
-      lastname,
-      email: email || '',
-      cpf_cnpj: cpf || '',
-      sex: sex || ''
-    })
+    const response = await api.post(
+      "/restlet.nl?script=162&deploy=1",
+      {
+        is_business: false,
+        id,
+        name,
+        firstname,
+        lastname,
+        email: email || "",
+        cpf_cnpj: cpf || "",
+        sex: sex || "",
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: OAuth,
+        },
+      }
+    );
 
-    console.log(response.data)
+    console.log(response.data);
 
     if (response.data.id) {
-      const entity = await Entity.findOrFail(id)
+      const entity = await Entity.findOrFail(id);
 
-      entity.netsuite_id = response.data.id || entity.netsuite_id
+      entity.netsuite_id = response.data.id || entity.netsuite_id;
 
-      await entity.save()
+      await entity.save();
 
-      console.log('Chamada ao netsuite finalizada com sucesso (CreateEntity).')
+      console.log("Chamada ao netsuite finalizada com sucesso (CreateEntity).");
 
-      return response.data.id
+      return response.data.id;
     } else {
-      console.log('Chamada ao netsuite finalizada com falha (CreateEntity).')
+      console.log("Chamada ao netsuite finalizada com falha (CreateEntity).");
       throw new Error({
-        title: 'Falha!',
-        message: 'Houve um erro ao criar a entidade no Netsuite.'
-      })
+        title: "Falha!",
+        message: "Houve um erro ao criar a entidade no Netsuite.",
+      });
     }
   }
 }
 
-module.exports = CreateEntity
+module.exports = CreateEntity;
