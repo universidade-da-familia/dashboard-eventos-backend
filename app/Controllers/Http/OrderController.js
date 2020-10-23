@@ -10,6 +10,8 @@ const Order = use("App/Models/Order");
 const Entity = use("App/Models/Entity");
 const Log = use("App/Models/Log");
 
+const Help = use("App/Helpers/netsuite_api");
+
 const Kue = use("Kue");
 const Job = use("App/Jobs/CreateOrder");
 const JobSendOrder = use("App/Jobs/SendOrder");
@@ -256,9 +258,12 @@ class OrderController {
 
       console.log("Terminei de gerar o pedido e enviei para a fila.");
 
+      const obj = new Help();
+      const OAuth = obj.display();
+
       Kue.dispatch(
         Job.key,
-        { orderNetsuite, order_id: order.id },
+        { orderNetsuite, OAuth, order_id: order.id },
         {
           attempts: 5,
           priority: "critical",

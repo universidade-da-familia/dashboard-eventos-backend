@@ -4,8 +4,6 @@ const Order = use("App/Models/Order");
 
 const axios = require("axios");
 
-const Help = use("App/Helpers/netsuite_api");
-
 const api = axios.default.create({
   baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
 });
@@ -23,11 +21,8 @@ class CreateOrder {
   }
 
   // This is where the work is done.
-  async handle({ orderNetsuite, order_id }) {
+  async handle({ orderNetsuite, OAuth, order_id }) {
     console.log("CreateOrder-job started");
-
-    const obj = new Help();
-    const OAuth = obj.display();
 
     const response = await api.post(
       "/restlet.nl?script=185&deploy=1",
