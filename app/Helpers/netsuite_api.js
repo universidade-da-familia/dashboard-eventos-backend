@@ -47,8 +47,14 @@ const oauth_signature = encodeURIComponent(base64EncodedData);
 
 const OAuth = `OAuth oauth_signature="${oauth_signature}",oauth_version="1.0",oauth_nonce="${OAUTH_NONCE}",oauth_signature_method="HMAC-SHA1",oauth_consumer_key="${CONSUMER_KEY}",oauth_token="${TOKEN_ID}",oauth_timestamp="${TIME_STAMP}",realm="${NETSUITE_ACCOUNT_ID}"`;
 
-console.log(OAuth);
+// console.log(OAuth);
 
-module.exports = {
-  OAuth,
+// module.exports = {
+//   OAuth,
+// };
+
+module.exports = class Help {
+  display() {
+    return OAuth;
+  }
 };
