@@ -664,10 +664,10 @@ class EntityController {
 
     await entity.load("church");
 
-    const obj = new HelpUpdate();
-    const OAuth = obj.display();
+    const obj_update = new HelpUpdate();
+    const OAuthUpdate = obj_update.display();
 
-    Kue.dispatch(JobUpdate.key, { entity, OAuth }, { attempts: 5 });
+    Kue.dispatch(JobUpdate.key, { entity, OAuthUpdate }, { attempts: 5 });
 
     return entity;
   }

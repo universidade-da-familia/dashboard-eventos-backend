@@ -19,8 +19,10 @@ class UpdateEntity {
   }
 
   // This is where the work is done.
-  async handle({ entity, OAuth }) {
+  async handle({ entity, OAuthUpdate }) {
     console.log("UpdateEntity-job started");
+
+    console.log(OAuthUpdate);
 
     const {
       id,
@@ -76,7 +78,7 @@ class UpdateEntity {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: OAuth,
+          Authorization: OAuthUpdate,
         },
       }
     );
