@@ -22,6 +22,8 @@ class Addresses {
   async handle({ netsuite_id, OAuth, netsuiteAddresses }) {
     console.log("Addresses-job started");
 
+    console.log("Antes de enviar netsuite");
+
     const response = await api.post(
       "/restlet.nl?script=186&deploy=1",
       {
@@ -35,6 +37,9 @@ class Addresses {
         },
       }
     );
+
+    console.log("Depois de enviar netsuite");
+    console.log(response.data);
 
     console.log(response.data);
   }

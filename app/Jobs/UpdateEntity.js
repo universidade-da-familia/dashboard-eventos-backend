@@ -22,8 +22,6 @@ class UpdateEntity {
   async handle({ entity, OAuthUpdate }) {
     console.log("UpdateEntity-job started");
 
-    console.log(OAuthUpdate);
-
     const {
       id,
       netsuite_id,

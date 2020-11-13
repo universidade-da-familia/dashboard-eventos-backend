@@ -11,6 +11,7 @@ const Organization = use("App/Models/Organization");
 const Log = use("App/Models/Log");
 
 const Help = use("App/Helpers/addresses_helper");
+const HelpDelete = use("App/Helpers/delete_addresses_helper");
 
 const Kue = use("Kue");
 const Job = use("App/Jobs/Addresses");
@@ -19,11 +20,6 @@ const axios = require("axios");
 
 const api = axios.default.create({
   baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization:
-      "NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=0rZFiwRE#@!,nlauth_role=1077",
-  },
 });
 
 /**
@@ -244,8 +240,17 @@ class AddressController {
 
       await address.delete();
 
+      const obj = new HelpDelete();
+      const OAuthDelete = obj.display();
+
       await api.delete(
-        `/restlet.nl?script=186&deploy=1&netsuite_id=${netsuite_id}&index=${index}`
+        `/restlet.nl?script=186&amp;deploy=1&amp;netsuite_id=${netsuite_id}&amp;index=${index}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: OAuthDelete,
+          },
+        }
       );
 
       return response.status(200).send({
@@ -253,6 +258,8 @@ class AddressController {
         message: "O endereço foi removido.",
       });
     } catch (err) {
+      console.log(err);
+
       return response.status(err.status).send({
         error: {
           title: "Falha!",
