@@ -476,8 +476,6 @@ class EntityController {
     const obj = new HelpCreate();
     const OAuth = obj.display();
 
-    // console.log(OAuth);
-
     if (invite) {
       const job = Kue.dispatch(
         JobCreate.key,
