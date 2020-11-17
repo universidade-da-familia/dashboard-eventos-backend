@@ -482,7 +482,6 @@ class EntityController {
         { entity, OAuth },
         {
           attempts: 5,
-          priority: "critical",
         }
       );
 
@@ -497,7 +496,6 @@ class EntityController {
         { entity, OAuth },
         {
           attempts: 5,
-          priority: "critical",
         }
       );
     }
