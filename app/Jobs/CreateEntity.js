@@ -17,7 +17,11 @@ class CreateEntity {
 
   // This is required. This is a unique key used to identify this job.
   static get key() {
-    return "CreateEntity-job";
+    if (Env.get("NODE_ENV") === "development") {
+      return "CreateEntity-job-development";
+    } else {
+      return "CreateEntity-job-production";
+    }
   }
 
   // This is where the work is done.

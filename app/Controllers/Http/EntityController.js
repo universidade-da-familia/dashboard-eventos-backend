@@ -482,6 +482,7 @@ class EntityController {
         { entity, OAuth },
         {
           attempts: 5,
+          remove: true,
         }
       );
 
@@ -496,6 +497,7 @@ class EntityController {
         { entity, OAuth },
         {
           attempts: 5,
+          remove: true,
         }
       );
     }
@@ -663,7 +665,11 @@ class EntityController {
     const obj_update = new HelpUpdate();
     const OAuthUpdate = obj_update.display();
 
-    Kue.dispatch(JobUpdate.key, { entity, OAuthUpdate }, { attempts: 5 });
+    Kue.dispatch(
+      JobUpdate.key,
+      { entity, OAuthUpdate },
+      { priority: "critical", attempts: 5, remove: true }
+    );
 
     return entity;
   }
