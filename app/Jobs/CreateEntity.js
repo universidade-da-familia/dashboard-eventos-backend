@@ -1,5 +1,7 @@
 "use strict";
 
+const Env = use("Env");
+
 const Entity = use("App/Models/Entity");
 
 const axios = require("axios");
