@@ -1,5 +1,7 @@
 "use strict";
 
+const Env = use("Env");
+
 const axios = require("axios");
 
 const api = axios.default.create({
@@ -15,7 +17,11 @@ class Addresses {
 
   // This is required. This is a unique key used to identify this job.
   static get key() {
-    return "Addresses-job";
+    if (Env.get("NODE_ENV") === "development") {
+      return "Addresses-job-development";
+    } else {
+      return "Addresses-job-production";
+    }
   }
 
   // This is where the work is done.
@@ -24,22 +30,24 @@ class Addresses {
 
     console.log("Antes de enviar netsuite");
 
-    const response = await api.post(
-      "/restlet.nl?script=186&deploy=1",
-      {
-        netsuite_id,
-        netsuiteAddresses,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: OAuth,
+    const response = await api
+      .post(
+        "/restlet.nl?script=186&deploy=1",
+        {
+          netsuite_id,
+          netsuiteAddresses,
         },
-      }
-    );
-
-    console.log("Depois de enviar netsuite");
-    console.log(response.data);
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: OAuth,
+          },
+        }
+      )
+      .catch((e) => {
+        console.log("log do catch", e);
+        return true;
+      });
 
     console.log(response.data);
   }

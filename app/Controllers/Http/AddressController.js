@@ -101,7 +101,7 @@ class AddressController {
       Kue.dispatch(
         Job.key,
         { netsuite_id, OAuth, netsuiteAddresses },
-        { attempts: 5 }
+        { attempts: 5, remove: true }
       );
 
       const ceps = user.toJSON().addresses.map((address) => {
