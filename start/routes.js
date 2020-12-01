@@ -251,6 +251,7 @@ Route.get(
 );
 
 Route.resource("payment_plan", "PaymentPlanController");
+Route.resource("schedule", "PaymentPlanController");
 
 Route.resource("banks", "BankController").except(["edit", "create", "destroy"]);
 

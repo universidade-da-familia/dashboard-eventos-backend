@@ -71,6 +71,9 @@ class EventController {
         if (filterData.default_event_id) {
           builder.where("id", filterData.default_event_id);
         }
+        if (filterData.event_type) {
+          builder.where("event_type", filterData.event_type);
+        }
       })
       .where(function () {
         const currentDate = new Date();
@@ -273,13 +276,19 @@ class EventController {
       let bank_account_data = null;
       const data = request.all();
 
+      console.log("entrei aqui");
+
       const user_logged_id = parseInt(request.header("user_logged_id"));
       const user_logged_type = request.header("user_logged_type");
 
       const entity = await Entity.findOrFail(user_logged_id);
 
+      console.log("entidade");
+
       if (data.bank_account) {
         const { bank_account } = data;
+
+        console.log("entrei conta banco");
 
         delete data.bank_account;
 
@@ -300,32 +309,21 @@ class EventController {
           );
         }
 
-        const trx = await Database.beginTransaction();
+        // const trx = await Database.beginTransaction();
 
-        const event = await Event.create(data, trx);
+        console.log("comeco trx");
 
-        await event.load("defaultEvent.lessons");
+        const event = await Event.create(data);
 
-        const lessons = event.toJSON().defaultEvent.lessons.map((lesson) => {
-          return {
-            event_id: event.id,
-            lesson_id: lesson.id,
-            offer: 0,
-            date: null,
-            testimony: null,
-            doubts: null,
-            is_finished: false,
-          };
-        });
+        console.log("criei evento");
 
-        await event.lessonReports().createMany(lessons, trx);
-        await bank_account_data
-          .eventBankAccounts()
-          .attach([event.id], null, trx);
+        await bank_account_data.eventBankAccounts().attach([event.id], null);
 
-        await trx.commit();
+        console.log("depois attach");
 
-        await event.load("lessonReports");
+        // await trx.commit();
+
+        // await event.load("lessonReports");
 
         if (user_logged_id && user_logged_type) {
           await Log.create({
