@@ -31,27 +31,34 @@ class CreateEntity {
     fullname.shift();
     const lastname = fullname.length >= 1 ? fullname.join(" ") : "";
 
-    const response = await api.post(
-      "/restlet.nl?script=162&deploy=1",
-      {
-        is_business: false,
-        id,
-        name,
-        firstname,
-        lastname,
-        email: email || "",
-        cpf_cnpj: cpf || "",
-        sex: sex || "",
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: OAuth,
+    const response = await api
+      .post(
+        "/restlet.nl?script=162&deploy=1",
+        {
+          is_business: false,
+          id,
+          name,
+          firstname,
+          lastname,
+          email: email || "",
+          cpf_cnpj: cpf || "",
+          sex: sex || "",
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: OAuth,
+          },
+        }
+      )
+      .catch((e) => {
+        console.log("log do catch", e);
+        return true;
+      });
 
-    console.log(response.data);
+    // console.log(JSON.stringify(response));
+
+    console.log(response);
 
     if (response.data.id) {
       const entity = await Entity.findOrFail(id);
