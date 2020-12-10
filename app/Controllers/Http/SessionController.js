@@ -11,11 +11,6 @@ const axios = require("axios");
 
 const api = axios.default.create({
   baseURL: "https://5260046.restlets.api.netsuite.com/app/site/hosting",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization:
-      "NLAuth nlauth_account=5260046, nlauth_email=dev@udf.org.br, nlauth_signature=0rZFiwRE#@!,nlauth_role=1077",
-  },
 });
 
 /**
@@ -161,15 +156,29 @@ class SessionController {
     const obj = new Help();
     const OAuth = obj.display();
 
-    const { data: overdue_cpfs } = await api.get(
-      `/restlet.nl?script=184&deploy=1&cpf=${params.cpf}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: OAuth,
+    console.log("teste");
+    console.log(OAuth);
+
+    const { data: overdue_cpfs } = await api
+      .post(
+        "/restlet.nl?script=184&deploy=1",
+        {
+          cpf: params.cpf,
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: OAuth,
+          },
+        }
+      )
+      .catch((e) => {
+        console.log("log do catch", e.response.data);
+        return true;
+      });
+
+    console.log(overdue_cpfs);
+
     const unique_cpfs = [...new Set(overdue_cpfs)];
     const overdue = unique_cpfs.find((cpf) => cpf === params.cpf);
 
