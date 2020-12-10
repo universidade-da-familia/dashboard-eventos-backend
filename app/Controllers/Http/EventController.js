@@ -309,19 +309,23 @@ class EventController {
           );
         }
 
-        // const trx = await Database.beginTransaction();
+        const trx = await Database.beginTransaction();
 
         console.log("comeco trx");
 
-        const event = await Event.create(data);
+        const event = await Event.create(data, trx);
 
         console.log("criei evento");
 
-        await bank_account_data.eventBankAccounts().attach([event.id], null);
+        await bank_account_data
+          .eventBankAccounts()
+          .attach([event.id], null, trx);
 
         console.log("depois attach");
 
-        // await trx.commit();
+        await trx.commit();
+
+        console.log("depois do trx");
 
         // await event.load("lessonReports");
 
@@ -334,6 +338,8 @@ class EventController {
             [`${user_logged_type}_id`]: user_logged_id,
           });
         }
+
+        console.log("print do evento");
 
         return event;
       } else {
@@ -409,6 +415,7 @@ class EventController {
         "invites",
         "lessonReports.attendances",
         "lessonReports.lesson",
+        "schedules",
       ]);
 
       const eventData = event.toJSON();
