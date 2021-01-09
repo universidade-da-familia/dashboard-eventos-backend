@@ -344,19 +344,10 @@ class OrderController {
     try {
       const data = request.all()
 
-      const user_logged_id = parseInt(request.header('user_logged_id'))
-      const user_logged_type = request.header('user_logged_type')
-
       const order = await Order.findOrFail(params.id)
 
-      await Log.create({
-        action: 'update',
-        model: 'order',
-        model_id: order.id,
-        description: `O pedido id ${order.id} foi atualizado.`,
-        new_data: data,
-        [`${user_logged_type}_id`]: user_logged_id
-      })
+      console.log('data', data)
+      console.log('order', order)
 
       order.merge(data)
 
@@ -364,6 +355,7 @@ class OrderController {
 
       return order
     } catch (err) {
+      console.log('err', err)
       return response.status(err.status).send({
         error: {
           title: 'Falha!',
