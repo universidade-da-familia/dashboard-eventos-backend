@@ -176,6 +176,10 @@ Route.put(
   "participant_print_date",
   "EventParticipantController.updatePrintDate"
 );
+Route.post(
+  "inscription_training",
+  "EventParticipantController.inscription_training"
+);
 
 // CRUD entity organizators
 Route.resource("entity_organizator", "EntityOrganizatorController").except([
