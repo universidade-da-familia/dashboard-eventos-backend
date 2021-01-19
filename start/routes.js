@@ -176,6 +176,10 @@ Route.put(
   "participant_print_date",
   "EventParticipantController.updatePrintDate"
 );
+Route.post(
+  "inscription_training",
+  "EventParticipantController.inscription_training"
+);
 
 // CRUD entity organizators
 Route.resource("entity_organizator", "EntityOrganizatorController").except([
@@ -251,6 +255,7 @@ Route.get(
 );
 
 Route.resource("payment_plan", "PaymentPlanController");
+Route.resource("schedule", "ScheduleController");
 
 Route.resource("banks", "BankController").except(["edit", "create", "destroy"]);
 

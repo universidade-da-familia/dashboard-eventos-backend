@@ -409,6 +409,7 @@ class EventController {
         "noQuitterParticipants",
         "participants.file",
         "invites",
+        "schedules",
         "lessonReports.attendances",
         "lessonReports.lesson",
       ]);

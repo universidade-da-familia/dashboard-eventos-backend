@@ -16,13 +16,13 @@ define(["N/search"], function (search) {
       .create({
         type: "invoice",
         filters: [
-          ["type", "anyof", "CustInvc"],
+          ["type", "anyof", "custinvc"],
           "AND",
           ["duedate", "before", "today"],
           "AND",
-          ["amount", "greaterthan", "0.00"],
+          ["amountremainingtotalbox", "greaterthan", "0.00"],
           "AND",
-          ["billingstatus", "is", "T"],
+          ["status", "is", "Em aberto"],
           "AND",
           ["customer.custentity_enl_cnpjcpf", "is", context.cpf],
         ],
@@ -57,6 +57,6 @@ define(["N/search"], function (search) {
   }
 
   return {
-    post: index,
+    get: index,
   };
 });
