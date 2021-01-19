@@ -7,11 +7,10 @@
  */
 define(["N/search"], function (search) {
   /**
-   * Columns to be retrieved in the search.
+   * POST.
    *
-   * @type {object[]}
+   * @param context
    */
-
   function index(context) {
     return search
       .create({

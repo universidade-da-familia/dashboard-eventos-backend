@@ -1,5 +1,7 @@
 "use strict";
 
+const Env = use("Env");
+
 const Entity = use("App/Models/Entity");
 
 const axios = require("axios");
@@ -17,7 +19,11 @@ class CreateEntity {
 
   // This is required. This is a unique key used to identify this job.
   static get key() {
-    return "CreateEntity-job";
+    if (Env.get("NODE_ENV") === "development") {
+      return "CreateEntity-job-development";
+    } else {
+      return "CreateEntity-job-production";
+    }
   }
 
   // This is where the work is done.
@@ -31,27 +37,34 @@ class CreateEntity {
     fullname.shift();
     const lastname = fullname.length >= 1 ? fullname.join(" ") : "";
 
-    const response = await api.post(
-      "/restlet.nl?script=162&deploy=1",
-      {
-        is_business: false,
-        id,
-        name,
-        firstname,
-        lastname,
-        email: email || "",
-        cpf_cnpj: cpf || "",
-        sex: sex || "",
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: OAuth,
+    const response = await api
+      .post(
+        "/restlet.nl?script=162&deploy=1",
+        {
+          is_business: false,
+          id,
+          name,
+          firstname,
+          lastname,
+          email: email || "",
+          cpf_cnpj: cpf || "",
+          sex: sex || "",
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: OAuth,
+          },
+        }
+      )
+      .catch((e) => {
+        console.log("log do catch", e);
+        return true;
+      });
 
-    console.log(response.data);
+    // console.log(JSON.stringify(response));
+
+    console.log(response);
 
     if (response.data.id) {
       const entity = await Entity.findOrFail(id);
