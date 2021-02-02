@@ -17,7 +17,7 @@ class CreateOrder {
 
   // This is required. This is a unique key used to identify this job.
   static get key() {
-    return "CreateOrder-job";
+    return "CreateOrder2-job";
   }
 
   // This is where the work is done.
