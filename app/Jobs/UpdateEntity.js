@@ -1,5 +1,7 @@
 "use strict";
 
+const Env = use("Env");
+
 const axios = require("axios");
 
 const api = axios.default.create({
@@ -15,7 +17,11 @@ class UpdateEntity {
 
   // This is required. This is a unique key used to identify this job.
   static get key() {
-    return "UpdateEntity-job";
+    if (Env.get("NODE_ENV") === "development") {
+      return "UpdateEntity-job-development";
+    } else {
+      return "UpdateEntity-job-production";
+    }
   }
 
   // This is where the work is done.
