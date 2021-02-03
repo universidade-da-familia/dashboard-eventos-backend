@@ -1,5 +1,7 @@
 "use strict";
 
+const Env = use("Env");
+
 const Order = use("App/Models/Order");
 
 const axios = require("axios");
