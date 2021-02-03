@@ -17,7 +17,11 @@ class CreateOrder {
 
   // This is required. This is a unique key used to identify this job.
   static get key() {
-    return "CreateOrder-job";
+    if (Env.get("NODE_ENV") === "development") {
+      return "CreateOrder-job-development";
+    } else {
+      return "CreateOrder-job-production";
+    }
   }
 
   // This is where the work is done.
