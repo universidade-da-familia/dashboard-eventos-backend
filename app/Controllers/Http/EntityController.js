@@ -656,7 +656,11 @@ class EntityController {
       });
     }
 
-    entity.merge(data);
+    const trx = await Database.beginTransaction();
+
+    entity.merge(data, trx);
+
+    trx.commit();
 
     await entity.save();
 
