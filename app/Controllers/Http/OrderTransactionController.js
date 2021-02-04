@@ -1,14 +1,14 @@
-"use strict";
+'use strict'
 
-const OrderTransaction = use("App/Models/OrderTransaction");
-const Order = use("App/Models/Order");
-const Entity = use("App/Models/Entity");
+const OrderTransaction = use('App/Models/OrderTransaction')
+const Order = use('App/Models/Order')
+const Entity = use('App/Models/Entity')
 
-const Help = use("App/Helpers/approve_order_helper");
+const Help = use('App/Helpers/approve_order_helper')
 
-const Kue = use("Kue");
-const Job = use("App/Jobs/ApproveOrder");
-const JobSendOrderApproved = use("App/Jobs/SendOrderApproved");
+const Kue = use('Kue')
+const Job = use('App/Jobs/ApproveOrder')
+const JobSendOrderApproved = use('App/Jobs/SendOrderApproved')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -27,7 +27,7 @@ class OrderTransactionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response, view }) {}
+  async index ({ request, response, view }) {}
 
   /**
    * Render a form to be used for creating a new ordertransaction.
@@ -38,7 +38,7 @@ class OrderTransactionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create({ request, response, view }) {}
+  async create ({ request, response, view }) {}
 
   /**
    * Create/save a new ordertransaction.
@@ -48,7 +48,7 @@ class OrderTransactionController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {}
+  async store ({ request, response }) {}
 
   /**
    * Display a single ordertransaction.
@@ -59,7 +59,7 @@ class OrderTransactionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response, view }) {}
+  async show ({ params, request, response, view }) {}
 
   /**
    * Render a form to update an existing ordertransaction.
@@ -70,7 +70,7 @@ class OrderTransactionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit({ params, request, response, view }) {}
+  async edit ({ params, request, response, view }) {}
 
   /**
    * Update ordertransaction details.
@@ -80,87 +80,98 @@ class OrderTransactionController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ request, response }) {
+  async update ({ request, response }) {
     try {
-      const data = request.all();
+      const data = request.all()
 
-      const transaction = await OrderTransaction.findByOrFail(
-        "transaction_id",
+      console.log('Iniciando a atualização de um pagamento no portal')
+      console.log(data)
+
+      const transaction = await OrderTransaction.findBy(
+        'transaction_id',
         data.transaction_id
-      );
-      const order = await Order.findOrFail(transaction.order_id);
-      const entity = await Entity.findOrFail(order.entity_id);
+      )
 
-      await order.load("status");
-
-      transaction.status = data.response_message_pol || transaction.status;
-      transaction.authorization_code =
-        data.authorization_code || transaction.authorization_code;
-
-      if (data.franchise) {
-        transaction.brand = data.franchise || transaction.brand;
+      if (!transaction) {
+        console.log(`A transação ${data.transaction_id} existe?`)
+        return response.status(404).send({
+          message: 'Essa transação existe?'
+        })
       }
 
-      if (data.response_message_pol === "APPROVED") {
+      const order = await Order.findOrFail(transaction.order_id)
+      const entity = await Entity.findOrFail(order.entity_id)
+
+      await order.load('status')
+
+      transaction.status = data.response_message_pol || transaction.status
+      transaction.authorization_code =
+        data.authorization_code || transaction.authorization_code
+
+      if (data.franchise) {
+        transaction.brand = data.franchise || transaction.brand
+      }
+
+      if (data.response_message_pol === 'APPROVED') {
         transaction.authorized_amount =
-          data.value || transaction.authorized_amount;
+          data.value || transaction.authorized_amount
 
         if (order.netsuite_id && order.status_id === 1) {
           const orderNetsuite = {
             order_id: order.netsuite_id,
-            orderstatus: "B",
-            origstatus: "B",
-            statusRef: "pendingFulfillment",
-            payu_order_status: data.response_message_pol,
-          };
+            orderstatus: 'B',
+            origstatus: 'B',
+            statusRef: 'pendingFulfillment',
+            payu_order_status: data.response_message_pol
+          }
 
-          const obj = new Help();
-          const OAuth = obj.display();
+          const obj = new Help()
+          const OAuth = obj.display()
 
           Kue.dispatch(
             Job.key,
             { orderNetsuite, OAuth },
             {
               attempts: 5,
-              priority: "normal",
+              priority: 'normal'
             }
-          );
+          )
         }
 
-        order.status_id = 2 || order.status_id;
+        order.status_id = 2 || order.status_id
 
-        await order.save();
+        await order.save()
       }
 
       transaction.installments =
-        data.installments_number || transaction.installments;
+        data.installments_number || transaction.installments
 
-      await transaction.save();
+      await transaction.save()
 
-      if (data.response_message_pol === "APPROVED") {
+      if (data.response_message_pol === 'APPROVED') {
         Kue.dispatch(
           JobSendOrderApproved.key,
           { entity, order },
           {
-            attempts: 5,
+            attempts: 5
           }
-        );
+        )
       }
 
       console.log(
         `A transação order_id ${transaction.api_order_id} foi atualizada com sucesso para ${data.response_message_pol}`
-      );
+      )
       return response.status(200).send({
-        title: "Sucesso!",
-        message: `A transação order_id ${transaction.api_order_id} foi atualizada com sucesso para ${data.response_message_pol}`,
-      });
+        title: 'Sucesso!',
+        message: `A transação order_id ${transaction.api_order_id} foi atualizada com sucesso para ${data.response_message_pol}`
+      })
     } catch (err) {
-      console.log("Houve um erro ao atualizar uma transação");
-      console.log(err);
+      console.log('Houve um erro ao atualizar uma transação')
+      console.log(err)
       return response.status(err.status).send({
-        title: "Falha!",
-        message: "Houve um erro ao atualizar os dados da transação",
-      });
+        title: 'Falha!',
+        message: 'Houve um erro ao atualizar os dados da transação'
+      })
     }
   }
 
@@ -172,7 +183,7 @@ class OrderTransactionController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy ({ params, request, response }) {}
 }
 
-module.exports = OrderTransactionController;
+module.exports = OrderTransactionController

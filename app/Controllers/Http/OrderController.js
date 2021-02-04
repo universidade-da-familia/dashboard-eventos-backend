@@ -192,6 +192,7 @@ class OrderController {
         entity: user,
         order_id: order.id,
         order_type: order_details.order_type,
+        inscription_type: shipping_address.inscription_type,
         products: products.filter((product) => {
           if (product.cost_of_goods > 0) {
             const product_subtotal =
