@@ -1,44 +1,50 @@
-'use strict'
+"use strict";
 
-const Mail = use('Mail')
-const moment = require('moment')
-moment.locale('pt-BR')
+const Env = use("Env");
+
+const Mail = use("Mail");
+const moment = require("moment");
+moment.locale("pt-BR");
 
 class SendOrderApproved {
   // If this getter isn't provided, it will default to 1.
   // Increase this number to increase processing concurrency.
-  static get concurrency () {
-    return 1
+  static get concurrency() {
+    return 1;
   }
 
   // This is required. This is a unique key used to identify this job.
-  static get key () {
-    return 'SendOrderApproved-job'
+  static get key() {
+    if (Env.get("NODE_ENV") === "development") {
+      return "SendOrderApproved-job-development";
+    } else {
+      return "SendOrderApproved-job-production";
+    }
   }
 
   // This is where the work is done.
-  async handle (data) {
-    console.log('SendOrderApproved-job started')
+  async handle(data) {
+    console.log("SendOrderApproved-job started");
 
-    const { entity, order } = data
+    const { entity, order } = data;
 
     await Mail.send(
-      ['emails.order_approved', 'emails.order_approved-text'],
+      ["emails.order_approved", "emails.order_approved-text"],
       {
         name: entity.name,
-        id: order.id || 'Sem pedido',
-        updated_at: moment(new Date()).format('LLL')
+        id: order.id || "Sem pedido",
+        updated_at: moment(new Date()).format("LLL"),
       },
-      message => {
+      (message) => {
         message
           .to(entity.email)
-          .from('naoresponda@udf.org.br', 'UDF | Portal do Líder')
-          .subject(`Dados do pagamento - Pedido ${order.id}`)
+          .from("naoresponda@udf.org.br", "UDF | Portal do Líder")
+          .subject(`Dados do pagamento - Pedido ${order.id}`);
       }
-    )
+    );
 
-    console.log('SendOrderApproved-job enviado com sucesso!')
+    console.log("SendOrderApproved-job enviado com sucesso!");
   }
 }
 
-module.exports = SendOrderApproved
+module.exports = SendOrderApproved;
