@@ -711,20 +711,26 @@ class EntityController {
 
       console.log("Iniciando atualizacao de entidade");
 
-      const entity = await Entity.findOrCreate(
-        {
-          netsuite_id: params.netsuite_id,
-        },
-        data
-      );
+      const entity = await Entity.findBy("netsuite_id", params.netsuite_id);
+      if (entity) {
+        data.password = entity.password;
 
-      entity.merge(data);
+        entity.merge(data);
 
-      await entity.save();
+        await entity.save();
 
-      console.log("Entidade criada ou atualizada com sucesso");
+        console.log("Entidade atualizada com sucesso");
 
-      return entity;
+        return entity;
+      } else {
+        data.password = "123456";
+
+        const newEntity = Entity.create(data);
+
+        console.log("Entidade criada com sucesso");
+
+        return newEntity;
+      }
     } catch (err) {
       console.log("Falha ao atualizar uma entidade do netsuite para o portal.");
       console.log(err);
