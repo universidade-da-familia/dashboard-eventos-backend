@@ -21,6 +21,7 @@ module.exports = {
   origin:
     Env.get('NODE_ENV') === 'production'
       ? [
+        'https://portal-lider.netlify.app',
         'http://lider.udf.org.br',
         'https://lider.udf.org.br',
         'https://5260046.app.netsuite.com'
