@@ -1,5 +1,7 @@
 "use strict";
 
+const ScheduleController = require("../app/Controllers/Http/ScheduleController");
+
 const Route = use("Route");
 
 Route.post("payment_confirmation", "OrderTransactionController.update");
@@ -255,7 +257,9 @@ Route.get(
 );
 
 Route.resource("payment_plan", "PaymentPlanController");
+
 Route.resource("schedule", "ScheduleController");
+Route.post("event_schedule", "ScheduleController.event_schedule");
 
 Route.resource("banks", "BankController").except(["edit", "create", "destroy"]);
 

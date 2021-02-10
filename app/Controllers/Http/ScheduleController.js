@@ -55,6 +55,61 @@ class ScheduleController {
   }
 
   /**
+   * Create/save a new schedule.
+   * POST event_schedules
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async event_schedule({ request, response }) {
+    try {
+      const { schedulesPost, schedulesPut } = request.only([
+        "schedulesPost",
+        "schedulesPut",
+      ]);
+
+      const trx = await Database.beginTransaction();
+
+      if (schedulesPost && schedulesPost.length > 0) {
+        await Schedule.createMany(schedulesPost, trx);
+      }
+
+      if (schedulesPut && schedulesPut.length > 0) {
+        schedulesPut.map(async (schedule) => {
+          const searchSchedules = await Schedule.findOrFail(schedule.id);
+
+          searchSchedules.merge(schedule, trx);
+
+          await searchSchedules.save();
+        });
+      }
+
+      trx.commit();
+
+      // if (user_logged_id && user_logged_type) {
+      //   await Log.create({
+      //     action: 'create',
+      //     model: 'address',
+      //     model_id: user.id,
+      //     description: `Os endereços de CEP ${ceps.join(', ')} foram criados/atualizados`,
+      //     [`${user_logged_type}_id`]: user_logged_id
+      //   })
+      // }
+
+      return response.status(200).send({
+        title: "Sucesso!",
+        message: "Cronograma foram atualizados.",
+      });
+    } catch (err) {
+      return response.status(err.status).send({
+        title: "Falha!",
+        message: "Erro ao atualizar as contas bancárias",
+      });
+    }
+  }
+
+  /**
    * Display a single schedule.
    * GET schedules/:id
    *
@@ -94,7 +149,27 @@ class ScheduleController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy({ params, response }) {
+    try {
+      const { id } = params;
+
+      const schedule = await Schedule.findOrFail(id);
+
+      await schedule.delete();
+
+      return response.status(200).send({
+        title: "Sucesso!",
+        message: "O cronograma foi removido.",
+      });
+    } catch (err) {
+      return response.status(err.status).send({
+        error: {
+          title: "Falha!",
+          message: "Erro ao deletar o cronograma",
+        },
+      });
+    }
+  }
 }
 
 module.exports = ScheduleController;
