@@ -99,8 +99,8 @@ define(["N/runtime", "N/record", "N/http"], function (runtime, record, http) {
     if (type === "edit") {
       if (is_person === "T") {
         http.put({
-          // url: "http://apieventos.udf.org.br/netsuite_entity/" + netsuite_id,
-          url: "http://87318f0b4ce1.ngrok.io/netsuite_entity/" + netsuite_id,
+          url: "http://apieventos.udf.org.br/netsuite_entity/" + netsuite_id,
+          // url: "http://87318f0b4ce1.ngrok.io/netsuite_entity/" + netsuite_id,
           body: {
             name: data.getText({ fieldId: "custentity_enl_legalname" }) || "",
             email: data.getValue({ fieldId: "email" }) || "",
