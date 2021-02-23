@@ -50,6 +50,35 @@ class EventParticipantController {
 
     const event = await Event.findOrFail(event_id);
 
+    const entity = await Entity.findOrFail(entity_id);
+
+    await entity.load("organizators");
+    await entity.load("participants");
+
+    const event_participant = entity
+      .toJSON()
+      .participants.find(
+        (participant) => participant.id === parseInt(event_id)
+      );
+
+    if (event_participant !== undefined) {
+      if (!event_participant.pivot.assistant && !assistant) {
+        return response.status(200).send({
+          error: {
+            title: "Aviso!",
+            message: "O usuário informado é um participante",
+          },
+        });
+      } else if (event_participant.pivot.assistant && !assistant) {
+        return response.status(200).send({
+          error: {
+            title: "Falha!",
+            message: "O usuário informado é um organizador.",
+          },
+        });
+      }
+    }
+
     await event.participants().attach([entity_id], (row) => {
       row.assistant = assistant;
       row.order_id = order_id;
@@ -388,6 +417,185 @@ class EventParticipantController {
       });
     }
   }
+
+  /**
+   * Display a single participant.
+   * GET participants/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  // async searchParticipant({ params, request, response, view }) {
+  //   try {
+  //     const defaultEvent = await DefaultEvent.findOrFail(
+  //       params.default_event_id
+  //     );
+
+  //     const validateEmail = new ValidateEmail();
+  //     const isEmail = await validateEmail.validate(params.cpf_email);
+
+  //     const ministery_id = defaultEvent.ministery_id;
+  //     const participant_hierarchy_id = defaultEvent.participant_hierarchy_id;
+  //     // const assistant_hierarchy_id = defaultEvent.assistant_hierarchy_id
+  //     const sex_type = defaultEvent.sex_type;
+
+  //     const participant = isEmail
+  //       ? await Entity.findByOrFail("email", params.cpf_email)
+  //       : await Entity.findByOrFail("cpf", params.cpf_email);
+
+  //     // await participant.load('file')
+  //     await participant.loadMany([
+  //       "file",
+  //       "addresses",
+  //       "relationships.relationshipEntity",
+  //     ]);
+
+  //     const event_participant = participant
+  //       .toJSON()
+  //       .participants.find(
+  //         (participant) => participant.id === parseInt(params.event_id)
+  //       );
+
+  //     if (event_participant !== undefined) {
+  //       if (!event_participant.pivot.assistant) {
+  //         return response.status(200).send({
+  //           error: {
+  //             title: "Aviso!",
+  //             message: "O usuário informado é um participante",
+  //             type: "error",
+  //           },
+  //         });
+  //       }
+  //     }
+
+  //     if (participant.sex === sex_type || sex_type === "A") {
+  //       if (ministery_id === 1) {
+  //         if (participant.cmn_hierarchy_id >= participant_hierarchy_id) {
+  //           return participant;
+  //         } else {
+  //           return response.status(200).send({
+  //             error: {
+  //               title: "Aviso!",
+  //               message: "O usuário informado não é de um participante válido",
+  //             },
+  //           });
+  //         }
+  //       }
+  //       if (ministery_id === 2) {
+  //         if (participant.mu_hierarchy_id >= participant_hierarchy_id) {
+  //           return participant;
+  //         } else {
+  //           return response.status(200).send({
+  //             error: {
+  //               title: "Aviso!",
+  //               message: "O usuário informado não é de um participante válido",
+  //             },
+  //           });
+  //         }
+  //       }
+  //       if (ministery_id === 3) {
+  //         if (participant.crown_hierarchy_id >= participant_hierarchy_id) {
+  //           return participant;
+  //         } else {
+  //           return response.status(200).send({
+  //             error: {
+  //               title: "Aviso!",
+  //               message: "O usuário informado não é de um participante válido",
+  //             },
+  //           });
+  //         }
+  //       }
+  //       if (ministery_id === 4) {
+  //         if (participant.mp_hierarchy_id >= participant_hierarchy_id) {
+  //           return participant;
+  //         } else {
+  //           return response.status(200).send({
+  //             error: {
+  //               title: "Aviso!",
+  //               message: "O usuário informado não é de um participante válido",
+  //             },
+  //           });
+  //         }
+  //       }
+  //       if (ministery_id === 5) {
+  //         if (participant.ffi_hierarchy_id >= participant_hierarchy_id) {
+  //           return participant;
+  //         } else {
+  //           return response.status(200).send({
+  //             error: {
+  //               title: "Aviso!",
+  //               message: "O usuário informado não é de um participante válido",
+  //             },
+  //           });
+  //         }
+  //       }
+  //       if (ministery_id === 6) {
+  //         if (participant.gfi_hierarchy_id >= participant_hierarchy_id) {
+  //           return participant;
+  //         } else {
+  //           return response.status(200).send({
+  //             error: {
+  //               title: "Aviso!",
+  //               message: "O usuário informado não é de um participante válido",
+  //             },
+  //           });
+  //         }
+  //       }
+  //       if (ministery_id === 7) {
+  //         if (participant.pg_hab_hierarchy_id >= participant_hierarchy_id) {
+  //           return participant;
+  //         } else {
+  //           return response.status(200).send({
+  //             error: {
+  //               title: "Aviso!",
+  //               message: "O usuário informado não é de um participante válido",
+  //             },
+  //           });
+  //         }
+  //       }
+  //       if (ministery_id === 8) {
+  //         if (participant.pg_yes_hierarchy_id >= participant_hierarchy_id) {
+  //           return participant;
+  //         } else {
+  //           return response.status(200).send({
+  //             error: {
+  //               title: "Aviso!",
+  //               message: "O usuário informado não é de um participante válido",
+  //             },
+  //           });
+  //         }
+  //       }
+  //     } else {
+  //       if (sex_type === "M") {
+  //         return response.status(200).send({
+  //           error: {
+  //             title: "Aviso!",
+  //             message: "Evento exclusivo para o sexo masculino.",
+  //             type: "sex_type",
+  //           },
+  //         });
+  //       } else {
+  //         return response.status(200).send({
+  //           error: {
+  //             title: "Aviso!",
+  //             message: "Evento exclusivo para o sexo feminino.",
+  //             type: "sex_type",
+  //           },
+  //         });
+  //       }
+  //     }
+  //   } catch (err) {
+  //     return response.status(err.status).send({
+  //       error: {
+  //         title: "Falha!",
+  //         message: "Nenhum participante foi encontrado",
+  //         type: "not_found",
+  //       },
+  //     });
+  //   }
+  // }
 
   /**
    * Update participant details.

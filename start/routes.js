@@ -170,6 +170,7 @@ Route.get(
   "event_participant/:cpf_email/:default_event_id",
   "EventParticipantController.show"
 );
+// Route.get("searchParticipant/:cpf_email/:default_event_id/:event_id");
 Route.delete(
   "event_participant/:entity_id/:participant_id",
   "EventParticipantController.destroy"
