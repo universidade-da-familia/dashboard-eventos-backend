@@ -45,7 +45,7 @@ class Addresses {
         }
       )
       .catch((e) => {
-        console.log("log do catch", e);
+        console.log("log do catch address", e);
         return true;
       });
 

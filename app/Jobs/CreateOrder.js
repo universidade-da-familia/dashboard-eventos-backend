@@ -30,16 +30,17 @@ class CreateOrder {
   async handle({ orderNetsuite, OAuth, order_id }) {
     console.log("CreateOrder-job started");
 
-    const response = await api.post(
-      "/restlet.nl?script=185&deploy=1",
-      orderNetsuite,
-      {
+    const response = await api
+      .post("/restlet.nl?script=185&deploy=1", orderNetsuite, {
         headers: {
           "Content-Type": "application/json",
           Authorization: OAuth,
         },
-      }
-    );
+      })
+      .catch((e) => {
+        console.log("log do catch create-order", e);
+        return true;
+      });
 
     console.log(response.data);
 

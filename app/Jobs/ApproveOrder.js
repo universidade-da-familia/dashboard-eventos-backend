@@ -28,16 +28,17 @@ class ApproveOrder {
   async handle({ orderNetsuite, OAuth }) {
     console.log("ApproveOrder-job started");
 
-    const response = await api.put(
-      "/restlet.nl?script=190&deploy=1",
-      orderNetsuite,
-      {
+    const response = await api
+      .put("/restlet.nl?script=190&deploy=1", orderNetsuite, {
         headers: {
           "Content-Type": "application/json",
           Authorization: OAuth,
         },
-      }
-    );
+      })
+      .catch((e) => {
+        console.log("log do catch approve-order", e);
+        return true;
+      });
 
     console.log(response.data);
 
