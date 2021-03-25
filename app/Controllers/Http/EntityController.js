@@ -494,7 +494,7 @@ class EntityController {
     } else {
       Kue.dispatch(
         JobCreate.key,
-        { entity, OAuth },
+        { entity },
         {
           attempts: 5,
           remove: true,
