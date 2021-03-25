@@ -4,6 +4,8 @@ const Env = use("Env");
 
 const Entity = use("App/Models/Entity");
 
+const HelpCreate = use("App/Helpers/create_entity_helper");
+
 const axios = require("axios");
 
 const api = axios.default.create({
@@ -27,8 +29,11 @@ class CreateEntity {
   }
 
   // This is where the work is done.
-  async handle({ entity, OAuth }) {
+  async handle({ entity }) {
     console.log("CreateEntity-job started");
+
+    const obj = new HelpCreate();
+    const OAuth = obj.display();
 
     const { id, name, email, cpf, sex } = entity;
 

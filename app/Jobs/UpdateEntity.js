@@ -2,6 +2,8 @@
 
 const Env = use("Env");
 
+const HelpUpdate = use("App/Helpers/update_entity_helper");
+
 const axios = require("axios");
 
 const api = axios.default.create({
@@ -25,8 +27,11 @@ class UpdateEntity {
   }
 
   // This is where the work is done.
-  async handle({ entity, OAuthUpdate }) {
+  async handle({ entity }) {
     console.log("UpdateEntity-job started");
+
+    const obj_update = new HelpUpdate();
+    const OAuthUpdate = obj_update.display();
 
     const {
       id,

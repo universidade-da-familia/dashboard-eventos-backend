@@ -8,8 +8,8 @@ const Entity = use("App/Models/Entity");
 const Organization = use("App/Models/Organization");
 const Log = use("App/Models/Log");
 
-const HelpCreate = use("App/Helpers/create_entity_helper");
-const HelpUpdate = use("App/Helpers/update_entity_helper");
+// const HelpCreate = use("App/Helpers/create_entity_helper");
+// const HelpUpdate = use("App/Helpers/update_entity_helper");
 
 const Kue = use("Kue");
 const JobCreate = use("App/Jobs/CreateEntity");
@@ -473,13 +473,13 @@ class EntityController {
 
     let netsuite_entity = null;
 
-    const obj = new HelpCreate();
-    const OAuth = obj.display();
+    // const obj = new HelpCreate();
+    // const OAuth = obj.display();
 
     if (invite) {
       const job = Kue.dispatch(
         JobCreate.key,
-        { entity, OAuth },
+        { entity },
         {
           attempts: 5,
           remove: true,
@@ -666,12 +666,12 @@ class EntityController {
 
     await entity.load("church");
 
-    const obj_update = new HelpUpdate();
-    const OAuthUpdate = obj_update.display();
+    // const obj_update = new HelpUpdate();
+    // const OAuthUpdate = obj_update.display();
 
     Kue.dispatch(
       JobUpdate.key,
-      { entity, OAuthUpdate },
+      { entity },
       { priority: "critical", attempts: 5, remove: true }
     );
 

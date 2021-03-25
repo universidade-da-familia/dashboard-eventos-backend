@@ -4,6 +4,8 @@ const Env = use("Env");
 
 const Order = use("App/Models/Order");
 
+const Help = use("App/Helpers/create_order_helper");
+
 const axios = require("axios");
 
 const api = axios.default.create({
@@ -27,8 +29,11 @@ class CreateOrder {
   }
 
   // This is where the work is done.
-  async handle({ orderNetsuite, OAuth, order_id }) {
+  async handle({ orderNetsuite, order_id }) {
     console.log("CreateOrder-job started");
+
+    const obj = new Help();
+    const OAuth = obj.display();
 
     const response = await api
       .post("/restlet.nl?script=185&deploy=1", orderNetsuite, {
