@@ -492,7 +492,7 @@ class EntityController {
 
       netsuite_entity = result;
     } else {
-      Kue.dispatch(
+      const job = Kue.dispatch(
         JobCreate.key,
         { entity },
         {
@@ -500,6 +500,12 @@ class EntityController {
           remove: true,
         }
       );
+
+      console.log(job);
+
+      const result = await job.result;
+
+      netsuite_entity = result;
     }
 
     if (user_logged_id && user_logged_type) {

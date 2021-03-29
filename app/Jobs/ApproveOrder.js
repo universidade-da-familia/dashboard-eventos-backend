@@ -20,7 +20,7 @@ class ApproveOrder {
     if (Env.get("NODE_ENV") === "development") {
       return "ApproveOrder-job-development";
     } else {
-      return "ApproveOrder-job-production";
+      return "ApproveOrder-job-production-1";
     }
   }
 
