@@ -24,7 +24,7 @@ class CreateEntity {
     if (Env.get("NODE_ENV") === "development") {
       return "CreateEntity-job-development";
     } else {
-      return "CreateEntity-job-production-2";
+      return "CreateEntity-job-production-3";
     }
   }
 

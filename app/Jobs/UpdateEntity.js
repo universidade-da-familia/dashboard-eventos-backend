@@ -22,7 +22,7 @@ class UpdateEntity {
     if (Env.get("NODE_ENV") === "development") {
       return "UpdateEntity-job-development";
     } else {
-      return "UpdateEntity-job-production-1";
+      return "UpdateEntity-job-production-3";
     }
   }
 
