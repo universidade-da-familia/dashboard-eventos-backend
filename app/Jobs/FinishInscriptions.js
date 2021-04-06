@@ -25,8 +25,23 @@ class FinishInscriptions {
   // This is where the work is done.
   async handle(data) {
     console.log("FinishInscriptions-job started");
+    console.log("TESTE ERICK");
 
-    const { email } = data.defaultEvent.ministery;
+    let email = "";
+
+    if (data.defaultEvent.event_type === "Curso") {
+      email = data.defaultEvent.ministery.email;
+    } else if (
+      data.defaultEvent.event_type === "Capacitação de líderes" ||
+      data.defaultEvent.event_type === "Treinamento de treinadores"
+    ) {
+      email = data.defaultEvent.ministery.training_email;
+    } else if (data.defaultEvent.event_type === "Seminário") {
+      email = data.defaultEvent.ministery.seminary_email;
+    }
+
+    console.log("EMAIL ENVIADO", email);
+
     const organizator = data.organizators[0];
 
     await Mail.send(
