@@ -25,7 +25,7 @@ class FinishInscriptions {
   // This is where the work is done.
   async handle(data) {
     console.log("FinishInscriptions-job started");
-    console.log("TESTE ERICK");
+    console.log("EMAIL DATA -> ", data.defaultEvent.event_type);
 
     let email = "";
 

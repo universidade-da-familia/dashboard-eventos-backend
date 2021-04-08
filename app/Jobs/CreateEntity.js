@@ -67,10 +67,6 @@ class CreateEntity {
         return true;
       });
 
-    // console.log(JSON.stringify(response));
-
-    console.log(response);
-
     if (response.data.id) {
       const entity = await Entity.findOrFail(id);
 
