@@ -18,7 +18,7 @@ class SendOrder {
     if (Env.get("NODE_ENV") === "development") {
       return "SendOrder-job-development";
     } else {
-      return "SendOrder-job-production";
+      return "SendOrder-job-production-3";
     }
   }
 

@@ -26,7 +26,18 @@ class SendLessonReport {
   async handle(data) {
     console.log("SendLessonReport-job started");
 
-    const { email } = data.event.defaultEvent.ministery;
+    let email = "";
+
+    if (data.event.defaultEvent.event_type === "Curso") {
+      email = data.event.defaultEvent.ministery.email;
+    } else if (
+      data.event.defaultEvent.event_type === "Capacitação de líderes" ||
+      data.event.defaultEvent.event_type === "Treinamento de treinadores"
+    ) {
+      email = data.event.defaultEvent.ministery.training_email;
+    } else if (data.event.defaultEvent.event_type === "Seminário") {
+      email = data.event.defaultEvent.ministery.seminary_email;
+    }
 
     await Mail.send(
       ["emails.lesson_report", "emails.lesson_report-text"],

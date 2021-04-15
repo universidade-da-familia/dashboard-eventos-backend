@@ -4,6 +4,8 @@ const Env = use("Env");
 
 const Order = use("App/Models/Order");
 
+const Help = use("App/Helpers/create_order_helper");
+
 const axios = require("axios");
 
 const api = axios.default.create({
@@ -22,24 +24,28 @@ class CreateOrder {
     if (Env.get("NODE_ENV") === "development") {
       return "CreateOrder-job-development";
     } else {
-      return "CreateOrder-job-production";
+      return "CreateOrder-job-production-3";
     }
   }
 
   // This is where the work is done.
-  async handle({ orderNetsuite, OAuth, order_id }) {
+  async handle({ orderNetsuite, order_id }) {
     console.log("CreateOrder-job started");
 
-    const response = await api.post(
-      "/restlet.nl?script=185&deploy=1",
-      orderNetsuite,
-      {
+    const obj = new Help();
+    const OAuth = obj.display();
+
+    const response = await api
+      .post("/restlet.nl?script=185&deploy=1", orderNetsuite, {
         headers: {
           "Content-Type": "application/json",
           Authorization: OAuth,
         },
-      }
-    );
+      })
+      .catch((e) => {
+        console.log("log do catch create-order", e);
+        return true;
+      });
 
     console.log(response.data);
 

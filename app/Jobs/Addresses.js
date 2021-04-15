@@ -20,7 +20,7 @@ class Addresses {
     if (Env.get("NODE_ENV") === "development") {
       return "Addresses-job-development";
     } else {
-      return "Addresses-job-production";
+      return "Addresses-job-production-3";
     }
   }
 
@@ -45,7 +45,7 @@ class Addresses {
         }
       )
       .catch((e) => {
-        console.log("log do catch", e);
+        console.log("log do catch address", e);
         return true;
       });
 

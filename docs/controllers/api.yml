@@ -1,0 +1,58 @@
+/sessions:
+  post:
+    tags:
+      - Authentication
+    summary: User authentication
+    operationId: post-auth
+    parameters:
+      - in: body
+        name: autenticação
+        description: Autenticação do usuário
+        schema:
+          type: object
+          additionalProperties: false
+          properties:
+            email_cpf_cnpj:
+              type: string
+              description: "Email ou CPF do usuário"
+              example: "testeudf@udf.org.br"
+            password:
+              type: string
+              description: Senha do usuário
+              example: "udf123"
+          required:
+            - email_cpf_cnpj
+            - password
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: "#/definitions/Auth"
+      404:
+        description: Not found
+      412:
+        description: Precondition failed
+      401:
+        description: Access token is missing or invalid
+
+/entity/{user_id}:
+  get:
+    tags:
+      - Entity
+    summary: Show entity by id
+    parameters:
+      - name: user_id
+        description: ID of entity to return
+        in: path
+        type: integer
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: "#/definitions/Entity"
+      404:
+        description: Not found
+      412:
+        description: Precondition failed
+      401:
+        description: Access token is missing or invalid

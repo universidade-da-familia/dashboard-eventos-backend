@@ -8,8 +8,8 @@ const Entity = use("App/Models/Entity");
 const Organization = use("App/Models/Organization");
 const Log = use("App/Models/Log");
 
-const HelpCreate = use("App/Helpers/create_entity_helper");
-const HelpUpdate = use("App/Helpers/update_entity_helper");
+// const HelpCreate = use("App/Helpers/create_entity_helper");
+// const HelpUpdate = use("App/Helpers/update_entity_helper");
 
 const Kue = use("Kue");
 const JobCreate = use("App/Jobs/CreateEntity");
@@ -473,13 +473,13 @@ class EntityController {
 
     let netsuite_entity = null;
 
-    const obj = new HelpCreate();
-    const OAuth = obj.display();
+    // const obj = new HelpCreate();
+    // const OAuth = obj.display();
 
     if (invite) {
       const job = Kue.dispatch(
         JobCreate.key,
-        { entity, OAuth },
+        { entity },
         {
           attempts: 5,
           remove: true,
@@ -492,14 +492,20 @@ class EntityController {
 
       netsuite_entity = result;
     } else {
-      Kue.dispatch(
+      const job = Kue.dispatch(
         JobCreate.key,
-        { entity, OAuth },
+        { entity },
         {
           attempts: 5,
           remove: true,
         }
       );
+
+      console.log(job);
+
+      const result = await job.result;
+
+      netsuite_entity = result;
     }
 
     if (user_logged_id && user_logged_type) {
@@ -529,25 +535,33 @@ class EntityController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params }) {
-    const entity = await Entity.findOrFail(params.id);
 
-    await entity.loadMany([
-      "file",
-      "church",
-      "relationships.relationshipEntity.file",
-      "addresses",
-      "organizators.defaultEvent.ministery",
-      "organizators.organization",
-      "organizators.noQuitterParticipants",
-      "participants.noQuitterParticipants",
-      "participants.defaultEvent.ministery",
-      "creditCards",
-      "orders.status",
-      "orders.transaction",
-    ]);
+  async show({ params, response }) {
+    try {
+      const entity = await Entity.findOrFail(params.id);
 
-    return entity;
+      await entity.loadMany([
+        "file",
+        "church",
+        "relationships.relationshipEntity.file",
+        "addresses",
+        "organizators.defaultEvent.ministery",
+        "organizators.organization",
+        "organizators.noQuitterParticipants",
+        "participants.noQuitterParticipants",
+        "participants.defaultEvent.ministery",
+        "creditCards",
+        "orders.status",
+        "orders.transaction",
+      ]);
+
+      return entity;
+    } catch (err) {
+      return response.status(err.status).send({
+        title: "Falha!",
+        message: "Erro encontrar entidade",
+      });
+    }
   }
 
   /**
@@ -666,12 +680,12 @@ class EntityController {
 
     await entity.load("church");
 
-    const obj_update = new HelpUpdate();
-    const OAuthUpdate = obj_update.display();
+    // const obj_update = new HelpUpdate();
+    // const OAuthUpdate = obj_update.display();
 
     Kue.dispatch(
       JobUpdate.key,
-      { entity, OAuthUpdate },
+      { entity },
       { priority: "critical", attempts: 5, remove: true }
     );
 
