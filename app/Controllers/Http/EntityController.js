@@ -535,25 +535,33 @@ class EntityController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params }) {
-    const entity = await Entity.findOrFail(params.id);
 
-    await entity.loadMany([
-      "file",
-      "church",
-      "relationships.relationshipEntity.file",
-      "addresses",
-      "organizators.defaultEvent.ministery",
-      "organizators.organization",
-      "organizators.noQuitterParticipants",
-      "participants.noQuitterParticipants",
-      "participants.defaultEvent.ministery",
-      "creditCards",
-      "orders.status",
-      "orders.transaction",
-    ]);
+  async show({ params, response }) {
+    try {
+      const entity = await Entity.findOrFail(params.id);
 
-    return entity;
+      await entity.loadMany([
+        "file",
+        "church",
+        "relationships.relationshipEntity.file",
+        "addresses",
+        "organizators.defaultEvent.ministery",
+        "organizators.organization",
+        "organizators.noQuitterParticipants",
+        "participants.noQuitterParticipants",
+        "participants.defaultEvent.ministery",
+        "creditCards",
+        "orders.status",
+        "orders.transaction",
+      ]);
+
+      return entity;
+    } catch (err) {
+      return response.status(err.status).send({
+        title: "Falha!",
+        message: "Erro encontrar entidade",
+      });
+    }
   }
 
   /**
