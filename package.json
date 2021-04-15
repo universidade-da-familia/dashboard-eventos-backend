@@ -36,7 +36,7 @@
     "adonis-kue": "^5.0.1",
     "adonis-swagger": "^1.2.9",
     "aws-sdk": "^2.623.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
     "pg": "^7.18.2",
     "raven": "^2.6.4",
