@@ -232,6 +232,10 @@ class AddressController {
     try {
       const { id, index, netsuite_id } = params;
 
+      console.log("id -> ", id);
+      console.log("index -> ", index);
+      console.log("netsuite_id -> ", netsuite_id);
+
       const address = await Address.findOrFail(id);
 
       await address.delete();
