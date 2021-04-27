@@ -245,7 +245,7 @@ class AddressController {
 
       const response = await api
         .delete(
-          `/restlet.nl?script=186&deploy=1&netsuite_id=${netsuite_id}&index=${index}`,
+          `/restlet.nl?script=186&amp;deploy=1&amp;netsuite_id=${netsuite_id}&amp;index=${index}`,
           {
             headers: {
               "Content-Type": "application/json",
