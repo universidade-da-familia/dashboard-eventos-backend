@@ -25,8 +25,11 @@ class Addresses {
   }
 
   // This is where the work is done.
-  async handle({ netsuite_id, OAuth, netsuiteAddresses }) {
+  async handle({ netsuite_id, netsuiteAddresses }) {
     console.log("Addresses-job started");
+
+    const obj = new Help();
+    const OAuth = obj.display();
 
     console.log("Antes de enviar netsuite");
 
