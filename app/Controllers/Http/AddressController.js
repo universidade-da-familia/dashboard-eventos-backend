@@ -10,7 +10,6 @@ const Entity = use("App/Models/Entity");
 const Organization = use("App/Models/Organization");
 const Log = use("App/Models/Log");
 
-const Help = use("App/Helpers/addresses_helper");
 const HelpDelete = use("App/Helpers/delete_addresses_helper");
 
 const Kue = use("Kue");
@@ -95,12 +94,9 @@ class AddressController {
 
       const netsuiteAddresses = user.toJSON().addresses;
 
-      const obj = new Help();
-      const OAuth = obj.display();
-
       Kue.dispatch(
         Job.key,
-        { netsuite_id, OAuth, netsuiteAddresses },
+        { netsuite_id, netsuiteAddresses },
         { attempts: 5, remove: true }
       );
 
