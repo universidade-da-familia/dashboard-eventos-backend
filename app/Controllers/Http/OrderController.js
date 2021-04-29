@@ -257,7 +257,12 @@ class OrderController {
         orderNetsuite.orderstatus = "A";
         orderNetsuite.origstatus = "A";
         orderNetsuite.statusRef = "pendingApproval";
-        orderNetsuite.payu_json = "Pagamento pendente: boleto a vista.";
+
+        if (boleto_a_vista === true) {
+          orderNetsuite.payu_json = "Pagamento pendente: boleto a vista.";
+        } else {
+          orderNetsuite.payu_json = "Pagamento pendente: boleto para 30 dias.";
+        }
       }
 
       console.log("Terminei de gerar o pedido e enviei para a fila.");
