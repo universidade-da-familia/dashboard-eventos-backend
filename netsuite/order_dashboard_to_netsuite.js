@@ -6,7 +6,7 @@
  *@NScriptType Restlet
  *@NModuleScope SameAccount
  */
-define(["N/record", "N/search"], function (record, search) {
+define(["N/record", "N/search", "N/log"], function (record, search) {
   /**
    * POST.
    *
@@ -237,8 +237,10 @@ define(["N/record", "N/search"], function (record, search) {
         });
       }
 
+      log.debug({ title: "BOLETO LOG", details: context.boleto_a_vista });
+
       if (context.card === null) {
-        if (context.invite) {
+        if (context.boleto_a_vista === true) {
           salesOrder.setValue({ fieldId: "terms", value: "36" });
         } else {
           salesOrder.setValue({ fieldId: "terms", value: "10" });
@@ -431,6 +433,18 @@ define(["N/record", "N/search"], function (record, search) {
         salesOrder.setValue({
           fieldId: "custbody_enl_carrierid",
           value: 2,
+        });
+      } else if (
+        context.shipping_option.delivery_method_name === "Total Express"
+      ) {
+        salesOrder.setValue({
+          fieldId: "shipmethod",
+          value: 3749,
+        });
+
+        salesOrder.setValue({
+          fieldId: "custbody_enl_carrierid",
+          value: 16,
         });
       } else if (
         context.shipping_option.delivery_method_name === "Retirar na UDF"

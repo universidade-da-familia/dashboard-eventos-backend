@@ -64,6 +64,7 @@ class OrderController {
         order_details,
         payu,
         invite,
+        boleto_a_vista,
       } = data;
 
       console.log("Comecei a gerar o pedido no portal");
@@ -189,6 +190,7 @@ class OrderController {
       });
 
       const orderNetsuite = {
+        boleto_a_vista,
         entity: user,
         order_id: order.id,
         order_type: order_details.order_type,

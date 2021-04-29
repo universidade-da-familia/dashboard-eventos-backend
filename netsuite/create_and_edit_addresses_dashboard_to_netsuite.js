@@ -5,7 +5,7 @@
  *@NApiVersion 2.x
  *@NScriptType Restlet
  */
-define(["N/record", "N/search"], function (record, search) {
+define(["N/record", "N/search", "N/log"], function (record, search) {
   /**
    * POST.
    *
@@ -19,6 +19,11 @@ define(["N/record", "N/search"], function (record, search) {
         isDynamic: true,
       });
 
+      log.debug({
+        title: "Debug Entry",
+        details: "Verificando entrada store",
+      });
+
       log.debug({ title: "create", details: customer });
 
       const name =
@@ -29,6 +34,12 @@ define(["N/record", "N/search"], function (record, search) {
       });
 
       if (numberOfAddresses > 0) {
+        log.debug({
+          title: "NUMBER ADDRESS > 0",
+          details: "entrando no if maior que 0",
+        });
+        log.debug({ title: "NUMBER address", details: numberOfAddresses });
+
         for (var index = 0; index < numberOfAddresses; index += 1) {
           customer.selectLine({
             sublistId: "addressbook",
@@ -195,6 +206,11 @@ define(["N/record", "N/search"], function (record, search) {
         type: record.Type.CUSTOMER,
         id: requestParams.netsuite_id,
         isDynamic: true,
+      });
+
+      log.debug({
+        title: "Debug Entry",
+        details: "Verificando entrada destroy",
       });
 
       log.debug({ title: "destroy", details: customer });
