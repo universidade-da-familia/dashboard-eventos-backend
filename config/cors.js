@@ -1,6 +1,6 @@
-'use strict'
+"use strict";
 
-const Env = use('Env')
+const Env = use("Env");
 
 module.exports = {
   /*
@@ -19,13 +19,14 @@ module.exports = {
   |
   */
   origin:
-    Env.get('NODE_ENV') === 'production'
+    Env.get("NODE_ENV") === "production"
       ? [
-        'https://portal-lider.netlify.app',
-        'http://lider.udf.org.br',
-        'https://lider.udf.org.br',
-        'https://5260046.app.netsuite.com'
-      ]
+          "https://portal-lider.netlify.app",
+          "http://lider.udf.org.br",
+          "https://lider.udf.org.br",
+          "https://5260046.app.netsuite.com",
+          "https://online.udf.org.br/",
+        ]
       : true,
 
   /*
@@ -39,7 +40,7 @@ module.exports = {
   | Array - An array of allowed methods
   |
   */
-  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  methods: ["GET", "PUT", "PATCH", "POST", "DELETE"],
 
   /*
   |--------------------------------------------------------------------------
@@ -93,5 +94,5 @@ module.exports = {
   | Define Access-Control-Allow-Max-Age
   |
   */
-  maxAge: 90
-}
+  maxAge: 90,
+};
