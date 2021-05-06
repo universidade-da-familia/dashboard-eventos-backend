@@ -243,20 +243,15 @@ class AddressController {
       const obj = new HelpDelete();
       const OAuthDelete = obj.display();
 
-      await api
-        .delete(
-          `/restlet.nl?script=186&deploy=1&netsuite_id=${netsuite_id}&index=${index}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: OAuthDelete,
-            },
-          }
-        )
-        .catch((e) => {
-          console.log("log do catch address delete", e);
-          return true;
-        });
+      await api.delete(
+        `/restlet.nl?script=186&amp;deploy=1&amp;netsuite_id=${netsuite_id}&amp;index=${index}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: OAuthDelete,
+          },
+        }
+      );
 
       return response.status(200).send({
         title: "Sucesso!",

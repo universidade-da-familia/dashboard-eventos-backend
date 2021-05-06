@@ -5,7 +5,7 @@
  *@NApiVersion 2.x
  *@NScriptType Restlet
  */
-define(["N/record", "N/search", "N/log"], function (record, search) {
+define(["N/record", "N/search"], function (record, search) {
   /**
    * POST.
    *
@@ -19,12 +19,7 @@ define(["N/record", "N/search", "N/log"], function (record, search) {
         isDynamic: true,
       });
 
-      log.debug({
-        title: "Debug Entry",
-        details: "Verificando entrada store",
-      });
-
-      log.debug({ title: "create", details: customer });
+      log.debug({ title: "put", details: JSON.stringify(context) });
 
       const name =
         customer.getText({ fieldId: "custentity_enl_legalname" }) || "";
@@ -32,35 +27,24 @@ define(["N/record", "N/search", "N/log"], function (record, search) {
       const numberOfAddresses = customer.getLineCount({
         sublistId: "addressbook",
       });
+      log.debug({
+        title: "put",
+        details: "numberOfAddresses: " + numberOfAddresses,
+      });
 
       if (numberOfAddresses > 0) {
-        log.debug({
-          title: "NUMBER ADDRESS > 0",
-          details: "entrando no if maior que 0",
-        });
-        log.debug({ title: "NUMBER address", details: numberOfAddresses });
-
-        for (var index = 0; index < numberOfAddresses; index += 1) {
-          customer.selectLine({
+        for (var index = 0; index < numberOfAddresses; index++) {
+          customer.removeLine({
             sublistId: "addressbook",
-            line: index,
-          });
-
-          customer.removeCurrentSublistSubrecord({
-            sublistId: "addressbook",
-            fieldId: "addressbookaddress",
-          });
-
-          customer.commitLine({
-            sublistId: "addressbook",
+            line: 0,
           });
         }
+        log.debug({ title: "put", details: "address lines removed" });
       }
 
       if (context.netsuiteAddresses && context.netsuiteAddresses.length > 0) {
-        customer.selectNewLine({ sublistId: "addressbook" });
-
         context.netsuiteAddresses.forEach(function (address, index) {
+          customer.selectNewLine({ sublistId: "addressbook" });
           const searchColumns = ["internalid"];
           const ufIds = search
             .create({
@@ -181,6 +165,13 @@ define(["N/record", "N/search", "N/log"], function (record, search) {
         ignoreMandatoryFields: false,
         enableSourcing: false,
       });
+      log.debug({
+        title: "put",
+        details:
+          "updated the customer {" +
+          context.netsuite_id +
+          "} with the new addresses",
+      });
 
       return {
         title: "Sucesso!",
@@ -206,11 +197,6 @@ define(["N/record", "N/search", "N/log"], function (record, search) {
         type: record.Type.CUSTOMER,
         id: requestParams.netsuite_id,
         isDynamic: true,
-      });
-
-      log.debug({
-        title: "Debug Entry",
-        details: "Verificando entrada destroy",
       });
 
       log.debug({ title: "destroy", details: customer });
