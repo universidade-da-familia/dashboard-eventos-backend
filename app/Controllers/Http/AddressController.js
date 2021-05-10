@@ -243,8 +243,12 @@ class AddressController {
       const obj = new HelpDelete();
       const OAuthDelete = obj.display();
 
-      await api.delete(
-        `/restlet.nl?script=186&deploy=1&netsuite_id=${netsuite_id}&index=${index}`,
+      await api.put(
+        `/restlet.nl?script=186&deploy=1`,
+        {
+          netsuite_id: netsuite_id,
+          index: index,
+        },
         {
           headers: {
             "Content-Type": "application/json",

@@ -8,7 +8,7 @@ module.exports = class Help {
     const NETSUITE_ACCOUNT_ID = "5260046";
     const BASE_URL =
       "https://5260046.restlets.api.netsuite.com/app/site/hosting/restlet.nl";
-    const HTTP_METHOD = "DELETE";
+    const HTTP_METHOD = "PUT";
     const SCRIPT_ID = "186";
     const OAUTH_VERSION = "1.0";
     const SCRIPT_DEPLOYMENT_ID = "1";
