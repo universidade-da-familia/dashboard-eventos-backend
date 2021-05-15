@@ -98,9 +98,14 @@ class OrderController {
           entity_id: user.id,
           type: order_details.order_type,
           payment_name: card === null ? "Boleto" : "Cartão de crédito",
-          shipping_name: shipping_option.delivery_method_name,
+          shipping_name:
+            shipping_option === null
+              ? "Serviço"
+              : shipping_option.delivery_method_name,
           delivery_estimate_days:
-            shipping_option.delivery_estimate_business_days,
+            shipping_option === null
+              ? 0
+              : shipping_option.delivery_estimate_business_days,
           shipping_cost: order_details.shipping_amount,
           total: order_details.amount,
           shipping_cep: shipping_address.cep,
