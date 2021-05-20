@@ -24,7 +24,7 @@ class CreateOrder {
     if (Env.get("NODE_ENV") === "development") {
       return "CreateOrder-job-development";
     } else {
-      return "CreateOrder-job-production-4";
+      return "CreateOrder-job-production-5";
     }
   }
 
