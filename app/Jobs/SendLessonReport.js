@@ -3,7 +3,7 @@
 const Env = use("Env");
 
 const Mail = use("Mail");
-const moment = require("moment");
+const moment = require("moment-timezone");
 moment.locale("pt-BR");
 
 class SendLessonReport {
@@ -43,7 +43,7 @@ class SendLessonReport {
       ["emails.lesson_report", "emails.lesson_report-text"],
       {
         lesson_title: data.lesson.title,
-        send_date: moment(data.date).format("LLL"),
+        send_date: moment(data.date).tz('America/Bahia').format("LLL"),
         pray_request: data.pray_request || "Sem pedido de oração",
         offer: data.offer > 0 ? `R$ ${data.offer}` : "Sem ofertas",
         event_id: data.event.id,

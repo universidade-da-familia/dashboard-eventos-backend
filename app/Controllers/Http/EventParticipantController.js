@@ -411,7 +411,7 @@ class EventParticipantController {
       return response.status(err.status).send({
         error: {
           title: 'Falha!',
-          message: 'Nenhum participante foi encontrado',
+          message: 'Não encontramos nenhum registro desse CPF nos eventos da UDF.',
           type: 'not_found'
         }
       })
@@ -605,7 +605,7 @@ class EventParticipantController {
       return response.status(err.status).send({
         error: {
           title: 'Falha!',
-          message: 'Nenhum participante foi encontrado',
+          message: 'Não encontramos nenhum registro desse CPF nos eventos da UDF.',
           type: 'not_found'
         }
       })

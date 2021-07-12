@@ -38,6 +38,7 @@
     "aws-sdk": "^2.623.0",
     "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
+    "moment-timezone": "^0.5.33",
     "pg": "^7.18.2",
     "raven": "^2.6.4",
     "url-parse": "^1.4.7",
