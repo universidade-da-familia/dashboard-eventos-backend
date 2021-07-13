@@ -11,7 +11,8 @@ class Entity extends Model {
 
     this.addHook("beforeSave", async (entityInstance) => {
       if (entityInstance.dirty.password) {
-        entityInstance.password = await Hash.make(entityInstance.password);
+        if(entityInstance.password)
+          entityInstance.password = await Hash.make(entityInstance.password+'');
       }
     });
   }
