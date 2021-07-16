@@ -50,10 +50,6 @@ class OrganizationController {
         const [end_date] = filterData.end_date.split('T')
         const [, ministery_id] = filterData.ministery.split('/')
 
-        console.log('START DATE', start_date)
-        console.log('END DATE', end_date)
-        console.log('MINISTERY ID', ministery_id)
-
         if (filterData.id !== '') {
           this.where('id', filterData.id)
         }
@@ -82,49 +78,47 @@ class OrganizationController {
         }
 
         if (filterData.collapse) {
-          this.whereHas('events')
+          var queryEvents = "";
 
           if (filterData.ministery !== '') {
             this.whereHas('events.defaultEvent', builder => {
               builder.where('ministery_id', ministery_id)
             })
           }
+
           if (filterData.default_event_id) {
-            this.whereHas('events', builder => {
-              builder.where('default_event_id', filterData.default_event_id)
-            })
+            queryEvents != "" ?  queryEvents +=" and default_event_id ="+filterData.default_event_id : queryEvents += "default_event_id ="+filterData.default_event_id;  
           }
-          if (filterData.status === 'Finalizado') {
-            this.whereHas('events', builder => {
-              builder.where('is_finished', true)
-            })
+          
+          if (filterData.status === 'Finalizado') { 
+            queryEvents != "" ?  queryEvents += " and is_finished = true" : queryEvents += "is_finished = true";           
           }
-          if (filterData.status === 'Não iniciado') {
-            this.whereHas('events', builder => {
-              builder.where('start_date', '>', currentDate)
-              builder.where('is_finished', false)
-            })
+          else if (filterData.status === 'Não iniciado') {
+            queryEvents != "" ?  queryEvents += " and (is_finished = false and start_date > "+currentDate+")" : queryEvents += "(is_finished = false and start_date > "+currentDate+")";  
           }
-          if (filterData.status === 'Em andamento') {
-            this.whereHas('events', builder => {
-              builder.where('start_date', '<=', currentDate)
-              builder.where('is_finished', false)
-            })
+          else if (filterData.status === 'Em andamento') {
+            queryEvents != "" ?  queryEvents += " and (is_finished = false and start_date <= "+currentDate+")" : queryEvents += "(is_finished = false and start_date <= "+currentDate+")";  
           }
+
+
           if (start_date) {
-            this.whereHas('events', builder => {
-              builder.where('start_date', '>=', start_date)
-            })
+            queryEvents != "" ?  queryEvents += " and start_date >= '"+ start_date +"'": queryEvents += "start_date >= '"+ start_date+"'" ; 
           }
           if (end_date) {
-            this.whereHas('events', builder => {
-              builder.where('start_date', '<=', end_date)
-            })
+            queryEvents != "" ?  queryEvents += " and start_date <= '"+ end_date +"'" : queryEvents += "start_date <= '"+ end_date+"'" ; 
           }
+
+
+
+          this.whereHas('events', builder => {
+            builder.whereRaw(queryEvents)
+          })
+
+
         }
       })
       .orderBy('id', 'asc')
-      .paginate(page, perPage)
+      .paginate(page, perPage);
 
     return organizations
   }
